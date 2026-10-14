@@ -1,0 +1,1117 @@
+<script>window._c=window._c||function(l,d){return window.HK_DARK?d:l};if(location.search.indexOf('dark')>=0||true){window.HK_DARK=true;document.documentElement.className='hkd';}</script><style>
+/* ===== Formato de libro: el mismo de los reportes de Hekatan LISP (crema, Segoe UI 11 pt, secciones centradas y numeradas) ===== */
+:root{--bg:#FBF7EC;--fg:#171310;--mut:#544d3a;--var:#0b4fa8;--num:#08306b;--sep:#9c86b8;--fig:#FFFDF6;--bord:#d8cfb8;--code:#F3EDDB;--ok:#2b8a3e;--err:#c62828}
+html.hkd{--bg:#141109;--fg:#E8E2D4;--mut:#A89F8C;--var:#7fb2ff;--num:#8ec5ff;--sep:#3a3226;--fig:#1a1712;--bord:#3a3226;--code:#1a1712;--ok:#6fd6a0;--err:#ff8a80}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 1.5em;background:var(--bg);color:var(--fg);font-family:'Segoe UI','Arial Nova',Helvetica,sans-serif;font-size:11pt;line-height:150%;overflow-x:hidden;counter-reset:sec}
+h1,h2,h3,h4,h5,h6{font-family:'Segoe UI','Arial Nova',Helvetica,sans-serif;line-height:150%;color:var(--fg)}
+h1{font-weight:700;font-size:15pt;text-align:center;margin:.7em 0 .5em}
+h2{font-weight:600;font-size:12.5pt;text-align:center;margin:.9em 0 .35em;counter-increment:sec}
+h2::before{content:counter(sec) " ·  "}
+h3{font-weight:600;font-size:11pt;margin:.6em 0 .25em;color:var(--mut)}
+h4{font-weight:600;font-size:10.5pt;margin:.6em 0 .25em;color:var(--mut)}
+p,.osdoc{margin:.35em 0;line-height:150%}
+b,strong,th{color:var(--fg)}
+/* ecuaciones: Georgia, variables en cursiva azul (como .m-var de Hekatan LISP) */
+.eq,.matrix{font-family:Georgia,'Times New Roman',Times,serif;font-size:11.5pt;font-variant-numeric:lining-nums}
+.eq{margin:.4em 0;padding:.3em 0}
+.eq var{font-style:italic;color:var(--var);font-size:105%}
+.eq i{color:var(--num);font-style:normal;font-size:90%}
+.eq b{font-weight:600}
+.eq sub{font-family:Calibri,Candara,Corbel,sans-serif;font-size:80%;vertical-align:-18%;margin-left:1pt}
+.eq sup{display:inline-block;margin-left:1pt;margin-top:-3pt;font-size:75%}
+/* matrices con corchetes, números en azul oscuro */
+.matrix{display:inline-table;vertical-align:middle;margin:4pt 6pt}
+.matrix .tr{display:table-row}
+.matrix .td{white-space:nowrap;padding:0 6pt;min-width:10pt;display:table-cell;font-size:10pt;text-align:right;color:var(--num)}
+.matrix .td:first-child,.matrix .td:last-child{width:.75pt;min-width:.75pt;max-width:.75pt;padding:0 1pt}
+.matrix .td:first-child{border-left:solid 1.2pt var(--fg)}
+.matrix .td:last-child{border-right:solid 1.2pt var(--fg)}
+.matrix .tr:first-child .td:first-child,.matrix .tr:first-child .td:last-child{border-top:solid 1.2pt var(--fg)}
+.matrix .tr:last-child .td:first-child,.matrix .tr:last-child .td:last-child{border-bottom:solid 1.2pt var(--fg)}
+/* figuras: centradas, con su pie «Título · detalle» pequeño y gris */
+.osdefwrap,.osvtkwrap{position:relative;display:block;margin:.6em auto 1em;text-align:center}
+.osdefwrap canvas{border:1px solid var(--bord);background:var(--fig);border-radius:4px;max-width:100%}
+.osvtk{width:660px;max-width:100%;height:420px;border:1px solid var(--bord);background:var(--fig);border-radius:4px;position:relative;margin:0 auto}
+.osvtip{position:absolute;pointer-events:none;display:none;background:var(--fig);border:1px solid var(--bord);border-radius:5px;padding:4px 7px;font:10px/1.35 'Cascadia Code',Consolas,monospace;color:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+canvas{border-color:var(--bord)}
+.hk-cap{font-family:'Segoe UI',sans-serif;font-size:10pt;color:var(--fg);margin:.3em 0 .6em;text-align:center}
+.hk-cap span{color:var(--mut);font-size:.92em}
+/* bloques propios de Hekatan OpenSees (código y salida): Cascadia, fondo suave */
+.osblk{font:10.5pt/1.5 'Cascadia Code',Consolas,monospace;background:var(--code);border:1px solid var(--bord);border-radius:6px;padding:10px 14px;white-space:pre;overflow:auto;margin:.4em 0}
+.osblk .cmt{color:var(--ok);font-style:italic}
+.osblk .kw{color:#cf222e;font-weight:600}
+.osblk .num{color:var(--num)}
+.osout{font:10.5pt/1.5 'Cascadia Code',Consolas,monospace;color:var(--num);white-space:pre-wrap;margin:4px 0}
+.oserr{color:var(--err);background:var(--code);border:1px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:6px;white-space:pre-wrap}
+.osh{font-family:'Segoe UI',sans-serif;margin:.7em 0 .3em;font-weight:600;font-size:12.5pt;line-height:150%;color:var(--fg);text-align:center}
+.osh{counter-increment:sec}
+.osh::before{content:counter(sec) " · "}
+.osh.nonum{counter-increment:none}
+.osh.nonum::before{content:""}
+h4{text-align:center;color:var(--fg)}
+/* tablas estilo libro técnico (booktabs): regla arriba y abajo del encabezado, filita fina entre datos */
+table{border-collapse:collapse;font-size:10.3pt;margin:.5em auto .9em}
+table thead tr,table tr:first-child{border-top:1.4px solid var(--fg)}
+table th{font-weight:700;border-bottom:1.4px solid var(--fg);padding:.3em .85em;white-space:nowrap;text-align:left}
+table td{padding:.26em .85em;border-bottom:.75px solid var(--sep);white-space:nowrap}
+table tr:last-child td{border-bottom:1.4px solid var(--fg)}
+.pagebreak{break-before:page;page-break-before:always;height:0;margin:0;border:0}
+@media print{body{background:#fff}h1,h2,h3{break-after:avoid;page-break-after:avoid}.matrix,.eq{break-inside:avoid}}
+
+.ws-deq{display:flex;flex-wrap:wrap;align-items:center;gap:.3em 1.2em;margin:.2em 0}
+.ws-deq>.deq-body{flex:0 1 auto;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;padding:.4em 0 .25em}
+.ws-deq>.deq-tag{flex:0 0 auto;margin-left:auto;color:var(--mut);font-size:.85em;white-space:nowrap;font-family:'Segoe UI',sans-serif}
+.ws-eq{font-family:Georgia,'Times New Roman',Times,serif;font-size:11.5pt}
+.m-var{font-style:italic;color:var(--var);font-size:105%}.m-num{color:var(--num)}
+.m-op{color:var(--mut);padding:0 .08em}.m-fn{font-style:normal;font-weight:600;color:var(--fg);padding-right:.05em}
+.m-frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:110%}
+.m-frn{border-bottom:1pt solid currentColor;padding:0 .35em .5pt}.m-frd{padding:.5pt .35em 0}
+.m-sup{display:inline-block;margin-left:1pt;vertical-align:.55em;line-height:1;font-size:75%}
+.m-sub{font-family:Calibri,Candara,Corbel,sans-serif;font-size:80%;vertical-align:-18%;margin-left:1pt}
+.m-sqrt{display:inline-flex;align-items:flex-start}.m-rad{font-size:1.05em}.m-radarg{border-top:1.2px solid currentColor;padding:0 .2em;margin-left:-.05em}
+.m-paren{display:inline-flex;align-items:stretch;vertical-align:middle}
+.m-paren>.m-pl,.m-paren>.m-pr{width:.26em;flex:0 0 auto;border:.075em solid var(--mut);border-radius:50%}
+.m-paren>.m-pl{border-right:0;border-top-right-radius:0;border-bottom-right-radius:0;margin-right:.14em}
+.m-paren>.m-pr{border-left:0;border-top-left-radius:0;border-bottom-left-radius:0;margin-left:.14em}
+</style><script>window._c=window._c||function(l,d){return window.HK_DARK?d:l};
+/* mlplot.js — motor de graficas estilo MATLAB para Calcpad.
+   Todo el dibujo canvas vive aqui. Los .cpd solo llaman ML.* (sin <> ).
+   2D: mapeo DATOS->pixeles via ML.axis. 3D: ML.axis3 + arrastrar para ORBITAR. Colormap = jet_r. */
+(function (global) {
+  var ML = {
+    figs: {}, cur: null,
+
+    figure: function (id, w, h) {              // el .js CREA el canvas (no hay <canvas> en el .cpd)
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "position:relative;display:inline-block;vertical-align:top;margin:4px";
+      var cv = document.createElement("canvas"); cv.id = id;
+      cv.style.cssText = "display:block;background:" + _c("#FFFDF6","#1a1712") + ";border:1px solid #ccc;width:" + w + "px;height:" + h + "px";
+      var tip = document.createElement("div");   // datatip 2D (hover) que sigue al cursor
+      tip.style.cssText = "position:absolute;pointer-events:none;display:none;background:rgba(25,28,32,0.9);color:#fff;font:11px Segoe UI;padding:3px 7px;border-radius:4px;white-space:nowrap;transform:translate(10px,-50%);z-index:5;box-shadow:0 1px 4px rgba(0,0,0,0.3)";
+      wrap.appendChild(cv); wrap.appendChild(tip);
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(wrap, sc); else document.body.appendChild(wrap);
+      var dpr = Math.max(2, window.devicePixelRatio || 1);   // render a >=2x para que no pixele al acercar
+      cv.width = w * dpr; cv.height = h * dpr;
+      var ctx = cv.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.font = "11px Segoe UI";
+      this.figs[id] = { ctx: ctx, cv: cv, tip: tip, dpr: dpr, w: w, h: h, xmin: 0, xmax: w, ymin: 0, ymax: h,
+                        sc: 1, padx: 8, pady: 8, mode: "2d", az: 0.7, el: 0.45, prims: [], dpts: [], tipOn: false, tipLabel: "" };
+      this.cur = id;
+    },
+    S: function () { return this.figs[this.cur]; },
+    hold: function () { },
+
+    // ===================== 2D =====================
+    axis: function (x0, x1, y0, y1) {            // EQUAL-aspect (geometria / FEM)
+      var s = this.S(); s.mode = "2d";
+      s.xmin = x0; s.xmax = x1; s.ymin = y0; s.ymax = y1;
+      s.mL = 38; s.mB = 26; s.mR = 84; s.mT = 14;   // margenes: izq(numeros y), abajo(numeros x), der(colorbar), arriba
+      var aW = s.w - s.mL - s.mR, aH = s.h - s.mT - s.mB;
+      s.sc = Math.min(aW / (x1 - x0), aH / (y1 - y0));
+      s.scx = s.sc; s.scy = s.sc; s.bx0 = x0; s.by0 = y0; s.xlog = 0; s.ylog = 0;
+    },
+    axischart: function (x0, x1, y0, y1) {       // escala INDEPENDIENTE (datos: estira para llenar)
+      var s = this.S(); s.mode = "2d";
+      s.xmin = x0; s.xmax = x1; s.ymin = y0; s.ymax = y1; s.xlog = 0; s.ylog = 0;
+      s.mL = 46; s.mB = 28; s.mR = 18; s.mT = 16;
+      s.scx = (s.w - s.mL - s.mR) / (x1 - x0); s.scy = (s.h - s.mT - s.mB) / (y1 - y0);
+      s.sc = Math.min(s.scx, s.scy); s.bx0 = x0; s.by0 = y0;
+    },
+    axislog: function (x0, x1, y0, y1, xl, yl) { // ejes log (semilogx/semilogy/loglog)
+      this.axischart(x0, x1, y0, y1); var s = this.S(); s.xlog = xl ? 1 : 0; s.ylog = yl ? 1 : 0;
+      s.bx0 = s.xlog ? Math.log10(x0) : x0; s.by0 = s.ylog ? Math.log10(y0) : y0;
+      s.scx = (s.w - s.mL - s.mR) / ((s.xlog ? Math.log10(x1) : x1) - s.bx0);
+      s.scy = (s.h - s.mT - s.mB) / ((s.ylog ? Math.log10(y1) : y1) - s.by0);
+    },
+    X: function (x) { var s = this.S(); return s.mL + ((s.xlog ? Math.log10(x) : x) - s.bx0) * s.scx; },
+    Y: function (y) { var s = this.S(); return s.h - s.mB - ((s.ylog ? Math.log10(y) : y) - s.by0) * s.scy; },
+    grid: function (ndx, ndy) {                  // plano cartesiano 2D: grilla + ticks + numeros + caja
+      var s = this.S(), ctx = s.ctx, i;
+      ctx.lineWidth = 1; ctx.font = "10px Segoe UI";
+      for (i = 0; i <= ndx; i++) {
+        var xv = s.xmin + i * (s.xmax - s.xmin) / ndx, px = this.X(xv);
+        ctx.strokeStyle = _c("rgba(0,0,0,0.06)","rgba(255,255,255,0.08)"); ctx.beginPath(); ctx.moveTo(px, this.Y(s.ymax)); ctx.lineTo(px, this.Y(s.ymin)); ctx.stroke();
+        ctx.fillStyle = _c("#555","#c9c0ad"); ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText(this._fmt(xv), px, this.Y(s.ymin) + 4);
+      }
+      for (i = 0; i <= ndy; i++) {
+        var yv = s.ymin + i * (s.ymax - s.ymin) / ndy, py = this.Y(yv);
+        ctx.strokeStyle = _c("rgba(0,0,0,0.06)","rgba(255,255,255,0.08)"); ctx.beginPath(); ctx.moveTo(this.X(s.xmin), py); ctx.lineTo(this.X(s.xmax), py); ctx.stroke();
+        ctx.fillStyle = _c("#555","#c9c0ad"); ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillText(this._fmt(yv), this.X(s.xmin) - 5, py);
+      }
+      ctx.strokeStyle = _c("#888","#8a8272"); ctx.lineWidth = 1;
+      ctx.strokeRect(this.X(s.xmin), this.Y(s.ymax), this.X(s.xmax) - this.X(s.xmin), this.Y(s.ymin) - this.Y(s.ymax));
+    },
+    _fmt: function (v) { return Math.abs(v) < 1e-9 ? "0" : (v === Math.round(v) ? v.toFixed(0) : v.toFixed(1)); },
+    _nf: function (v) { var a = Math.abs(v); if (a < 1e-12) return "0"; if (a >= 1e4 || a < 1e-3) return v.toExponential(2); if (a < 1) return parseFloat(v.toPrecision(3)).toString(); return v.toFixed(2); },
+    datatip: function (label) {                  // datatip 2D (hover) estilo MATLAB datacursormode
+      var s = this.S(), ML = this; s.tipOn = true; s.tipLabel = "" + label;
+      if (s._tipBound) return; s._tipBound = true;
+      s.cv.onmousemove = function (e) {
+        if (!s.tipOn || !s.dpts.length) return;
+        var r = s.cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = Infinity, i, px, py, dx, dy;
+        for (i = 0; i < s.dpts.length; i++) { var d = s.dpts[i]; px = ML.X(d.x); py = ML.Y(d.y); dx = px - mx; dy = py - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) {
+          var d = s.dpts[best];
+          s.tip.style.display = "block"; s.tip.style.left = mx + "px"; s.tip.style.top = my + "px";   // SIGUE AL CURSOR
+          s.tip.innerHTML = "x = " + ML._nf(d.x) + "<br>y = " + ML._nf(d.y) + (s.tipLabel ? "<br>" + s.tipLabel + " = " + ML._nf(d.v) : "");
+        }
+      };
+      s.cv.onmouseleave = function () { s.tip.style.display = "none"; };
+    },
+    datapoint: function (x, y, v) { this.S().dpts.push({ x: x, y: y, v: v }); },
+    jet: function (t) {
+      t = Math.max(0, Math.min(1, t)); var u = 1 - t;
+      function c(z) { return Math.round(255 * Math.max(0, Math.min(1, 1.5 - Math.abs(4 * u - z)))); }
+      return "rgb(" + c(3) + "," + c(2) + "," + c(1) + ")";
+    },
+    patch: function (p, t) {
+      var ctx = this.S().ctx; ctx.beginPath(); ctx.moveTo(this.X(p[0]), this.Y(p[1]));
+      for (var i = 2; i < p.length; i += 2) ctx.lineTo(this.X(p[i]), this.Y(p[i + 1]));
+      ctx.closePath(); ctx.fillStyle = this.jet(t); ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.18)"; ctx.lineWidth = 0.5; ctx.stroke();
+    },
+    fill: function (p, col) {
+      var ctx = this.S().ctx; ctx.beginPath(); ctx.moveTo(this.X(p[0]), this.Y(p[1]));
+      for (var i = 2; i < p.length; i += 2) ctx.lineTo(this.X(p[i]), this.Y(p[i + 1]));
+      ctx.closePath(); ctx.fillStyle = col; ctx.fill();
+      ctx.strokeStyle = _c("#888","#8a8272"); ctx.lineWidth = 1; ctx.stroke();
+    },
+    line: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    plot: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    scatter: function (x, y, col) {
+      var ctx = this.S().ctx; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(this.X(x), this.Y(y), 4, 0, 6.2832); ctx.fill();
+    },
+    rectangle: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      ctx.strokeRect(this.X(x1), this.Y(y1), this.X(x2) - this.X(x1), this.Y(y2) - this.Y(y1));
+    },
+    fixed: function (x1, y, x2) {                  // apoyo EMPOTRADO: linea + rayado de tierra
+      var ctx = this.S().ctx, a = this.X(x1), b = this.X(x2), yy = this.Y(y), i, n, d = 8;
+      ctx.strokeStyle = _c("#333","#e8e2d4"); ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(a, yy); ctx.lineTo(b, yy); ctx.stroke();
+      ctx.lineWidth = 1; n = Math.max(4, Math.round((b - a) / 11));
+      for (i = 0; i <= n; i++) { var px = a + i * (b - a) / n; ctx.beginPath(); ctx.moveTo(px, yy); ctx.lineTo(px - d, yy + d); ctx.stroke(); }
+    },
+    pinned: function (x, y) {                       // apoyo ARTICULADO: triangulo + rayado
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y), w = 8, h = 11, i;
+      ctx.strokeStyle = _c("#333","#e8e2d4"); ctx.fillStyle = "#fff"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px - w, py + h); ctx.lineTo(px + w, py + h); ctx.closePath(); ctx.stroke();
+      ctx.lineWidth = 1;
+      for (i = 0; i <= 5; i++) { var qx = px - w + i * 2 * w / 5; ctx.beginPath(); ctx.moveTo(qx, py + h); ctx.lineTo(qx - 5, py + h + 5); ctx.stroke(); }
+    },
+    quiver: function (x, y, dx, dy, col) {
+      var ctx = this.S().ctx, x1 = this.X(x), y1 = this.Y(y), x2 = this.X(x + dx), y2 = this.Y(y + dy);
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      var a = Math.atan2(y2 - y1, x2 - x1), h = 8;
+      ctx.beginPath(); ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - h * Math.cos(a - 0.4), y2 - h * Math.sin(a - 0.4));
+      ctx.lineTo(x2 - h * Math.cos(a + 0.4), y2 - h * Math.sin(a + 0.4));
+      ctx.closePath(); ctx.fill();
+    },
+    moment: function (x, y, col) {
+      var ctx = this.S().ctx, cx = this.X(x), cy = this.Y(y), r = 16, a1 = -2.2, a2 = 2.2;
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(cx, cy, r, a1, a2, false); ctx.stroke();
+      var ex = cx + r * Math.cos(a2), ey = cy + r * Math.sin(a2), tx = -Math.sin(a2), ty = Math.cos(a2), h = 8;
+      ctx.beginPath(); ctx.moveTo(ex + h * tx, ey + h * ty);
+      ctx.lineTo(ex - 0.5 * h * ty, ey + 0.5 * h * tx); ctx.lineTo(ex + 0.5 * h * ty, ey - 0.5 * h * tx);
+      ctx.closePath(); ctx.fill();
+    },
+    text: function (x, y, s, col) {
+      var ctx = this.S().ctx; ctx.fillStyle = col || _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(s, this.X(x), this.Y(y));
+    },
+    title: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "bold 14px Segoe UI";
+      ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText(s, st.w / 2, 4); ctx.textAlign = "left";
+    },
+    xlabel: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center"; ctx.fillText(s, st.w / 2, st.h - 4); ctx.textAlign = "left";
+    },
+    ylabel: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.save(); ctx.translate(12, st.h / 2); ctx.rotate(-1.5708);
+      ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center"; ctx.fillText(s, 0, 0); ctx.restore();
+    },
+    colorbar: function (vmin, vmax) {
+      var s = this.S();
+      if (s.mode === "3d") { s.prims.push({ k: "cbar", a: vmin, b: vmax }); return; }
+      this._cbar(s, vmin, vmax);
+    },
+    _cbar: function (s, vmin, vmax) {
+      var ctx = s.ctx, n = 24, x0 = s.w - 76, y1 = s.mT, y0 = s.h - s.mB, w = 18, i, k;
+      for (i = 0; i < n; i++) {
+        var t = (i + 0.5) / n, ya = y0 - i / n * (y0 - y1), yb = y0 - (i + 1) / n * (y0 - y1);
+        ctx.fillStyle = this.jet(t); ctx.fillRect(x0, yb, w, ya - yb + 0.6);
+      }
+      ctx.strokeStyle = _c("#444","#a89f8c"); ctx.lineWidth = 1; ctx.strokeRect(x0, y1, w, y0 - y1);
+      ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      for (k = 0; k <= 5; k++) {
+        var v = vmin + k / 5 * (vmax - vmin), yy = y0 - k / 5 * (y0 - y1);
+        ctx.fillText(this._nf(v), x0 + w + 6, yy);
+        ctx.beginPath(); ctx.moveTo(x0 + w, yy); ctx.lineTo(x0 + w + 4, yy); ctx.stroke();
+      }
+    },
+    colormap: function (name) { },
+
+    // ===================== CHARTS MATLAB (elemento por elemento; el .cpd hace el #for) =====================
+    bar: function (x, y, w, col) {                  // una barra (de 0 a y), centrada en x, ancho w
+      var ctx = this.S().ctx, x1 = this.X(x - w / 2), x2 = this.X(x + w / 2), y0 = this.Y(0), y1 = this.Y(y);
+      ctx.fillStyle = col || "#1f6feb"; ctx.fillRect(x1, Math.min(y0, y1), x2 - x1, Math.abs(y1 - y0));
+      ctx.strokeStyle = "rgba(0,0,0,0.35)"; ctx.lineWidth = 1; ctx.strokeRect(x1, Math.min(y0, y1), x2 - x1, Math.abs(y1 - y0));
+    },
+    stem: function (x, y, col) {                    // tallo (stem): linea 0->y + circulo
+      var ctx = this.S().ctx, c = col || "#1f6feb"; ctx.strokeStyle = c; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(this.X(x), this.Y(0)); ctx.lineTo(this.X(x), this.Y(y)); ctx.stroke();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(this.X(x), this.Y(y), 3.5, 0, 6.2832); ctx.fill();
+    },
+    area: function (x1, y1, x2, y2, col) {          // relleno hasta y=0 (trapecio) + borde superior
+      var ctx = this.S().ctx; ctx.beginPath();
+      ctx.moveTo(this.X(x1), this.Y(0)); ctx.lineTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.lineTo(this.X(x2), this.Y(0)); ctx.closePath();
+      ctx.fillStyle = col || "rgba(31,111,235,0.35)"; ctx.fill();
+      ctx.strokeStyle = "#1f6feb"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    stairs: function (x1, y1, x2, y2, col) {        // escalon: horizontal en y1 hasta x2, luego sube a y2
+      var ctx = this.S().ctx; ctx.strokeStyle = col || _c("#333","#e8e2d4"); ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    errorbar: function (x, y, e, col) {             // punto + barra vertical ±e con tapas
+      var ctx = this.S().ctx, c = col || _c("#333","#e8e2d4"), px = this.X(x), pa = this.Y(y - e), pb = this.Y(y + e), w = 4;
+      ctx.strokeStyle = c; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(px, pa); ctx.lineTo(px, pb); ctx.moveTo(px - w, pa); ctx.lineTo(px + w, pa); ctx.moveTo(px - w, pb); ctx.lineTo(px + w, pb); ctx.stroke();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(px, this.Y(y), 3, 0, 6.2832); ctx.fill();
+    },
+    marker: function (x, y, type, col) {            // marcadores MATLAB: o . * + x s d ^ v
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y), r = 4, c = col || "#1f6feb", t = "" + type;
+      ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 1.5;
+      if (t === "o") { ctx.beginPath(); ctx.arc(px, py, r, 0, 6.2832); ctx.stroke(); }
+      else if (t === ".") { ctx.beginPath(); ctx.arc(px, py, 2, 0, 6.2832); ctx.fill(); }
+      else if (t === "*" || t === "+") { ctx.beginPath(); ctx.moveTo(px - r, py); ctx.lineTo(px + r, py); ctx.moveTo(px, py - r); ctx.lineTo(px, py + r); if (t === "*") { ctx.moveTo(px - r * 0.7, py - r * 0.7); ctx.lineTo(px + r * 0.7, py + r * 0.7); ctx.moveTo(px - r * 0.7, py + r * 0.7); ctx.lineTo(px + r * 0.7, py - r * 0.7); } ctx.stroke(); }
+      else if (t === "x") { ctx.beginPath(); ctx.moveTo(px - r, py - r); ctx.lineTo(px + r, py + r); ctx.moveTo(px - r, py + r); ctx.lineTo(px + r, py - r); ctx.stroke(); }
+      else if (t === "s") { ctx.strokeRect(px - r, py - r, 2 * r, 2 * r); }
+      else if (t === "d") { ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r, py); ctx.lineTo(px, py + r); ctx.lineTo(px - r, py); ctx.closePath(); ctx.stroke(); }
+      else if (t === "^") { ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r, py + r); ctx.lineTo(px - r, py + r); ctx.closePath(); ctx.stroke(); }
+      else if (t === "v") { ctx.beginPath(); ctx.moveTo(px, py + r); ctx.lineTo(px + r, py - r); ctx.lineTo(px - r, py - r); ctx.closePath(); ctx.stroke(); }
+    },
+    imagesc: function (x, y, w, h, t) {             // una celda coloreada (imagesc/pcolor/heatmap) por valor t∈[0,1]
+      var ctx = this.S().ctx, x1 = this.X(x), y1 = this.Y(y + h);
+      ctx.fillStyle = this.jet(t); ctx.fillRect(x1, y1, this.X(x + w) - x1 + 0.6, this.Y(y) - y1 + 0.6);
+    },
+    contourCell: function (x0, y0, x1, y1, v00, v10, v11, v01, lv, col) {  // marching squares de 1 celda
+      var c = [v00, v10, v11, v01], xx = [x0, x1, x1, x0], yy = [y0, y0, y1, y1], pts = [], i, j;
+      for (i = 0; i < 4; i++) { j = (i + 1) % 4; var a = c[i], b = c[j]; if ((a < lv) !== (b < lv)) { var tt = (lv - a) / (b - a); pts.push(xx[i] + tt * (xx[j] - xx[i]), yy[i] + tt * (yy[j] - yy[i])); } }
+      if (pts.length >= 4) { var ctx = this.S().ctx; ctx.strokeStyle = col || _c("#222","#f3eddd"); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(this.X(pts[0]), this.Y(pts[1])); for (var k = 2; k < pts.length; k += 2) ctx.lineTo(this.X(pts[k]), this.Y(pts[k + 1])); ctx.stroke(); }
+    },
+    polar: function (theta, r, col) {               // un punto polar (theta en GRADOS); usar axis simetrico ±rmax
+      var a = theta * 0.0174533, ctx = this.S().ctx;
+      ctx.fillStyle = col || "#1f6feb"; ctx.beginPath(); ctx.arc(this.X(r * Math.cos(a)), this.Y(r * Math.sin(a)), 3, 0, 6.2832); ctx.fill();
+    },
+    legend: function (x, y, label, col) {           // una entrada de leyenda (swatch + texto) en coords de DATOS
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y);
+      ctx.fillStyle = col || "#1f6feb"; ctx.fillRect(px, py - 5, 16, 3.5);
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(label, px + 22, py - 3);
+    },
+    pie: function (cx, cy, r, a0, a1, col) {         // una porcion de pastel (angulos en GRADOS, a0>a1 = horario); el .cpd recorre las rebanadas
+      var s = this.S(), ctx = s.ctx, pcx = this.X(cx), pcy = this.Y(cy), pr = r * s.scx;
+      ctx.beginPath(); ctx.moveTo(pcx, pcy); ctx.arc(pcx, pcy, pr, -a0 * 0.0174533, -a1 * 0.0174533, false); ctx.closePath();
+      ctx.fillStyle = col || "#1f6feb"; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+    },
+    compass: function (dx, dy, col) {               // flecha desde el ORIGEN (0,0) — campo polar/direccional
+      this.quiver(0, 0, dx, dy, col || "#1f6feb");
+    },
+
+    // ===================== 3D (interactivo: arrastrar para orbitar) =====================
+    view3: function (azd, eld) { var s = this.S(); s.az = azd * 0.0174533; s.el = eld * 0.0174533; },
+    axis3: function (x0, x1, y0, y1, z0, z1) {
+      var s = this.S(); s.mode = "3d"; s.prims = []; s.dpts3 = []; s.bb = [x0, x1, y0, y1, z0, z1];
+    },
+    datapoint3: function (x, y, z, v) { var s = this.S(); (s.dpts3 || (s.dpts3 = [])).push({ x: x, y: y, z: z, v: v }); },
+    fill3: function (p, t) { this.S().prims.push({ k: "face", p: p, c: this.jet(t) }); },
+    line3: function (x1, y1, z1, x2, y2, z2, col) { this.S().prims.push({ k: "line3", p: [x1, y1, z1, x2, y2, z2], c: col }); },
+    text3: function (x, y, z, str, col) { this.S().prims.push({ k: "text3", p: [x, y, z], s: str, c: col || _c("#333","#e8e2d4") }); },
+    _pr: function (s, x, y, z) {                       // proyeccion ortografica con s.az, s.el
+      var ca = Math.cos(s.az), sa = Math.sin(s.az), ce = Math.cos(s.el), se = Math.sin(s.el);
+      var x1 = x * ca + y * sa, y1 = -x * sa + y * ca;
+      return [x1, -(y1 * se) + z * ce, y1 * ce + z * se];
+    },
+    _fit: function (s) {                               // escala/centro segun bbox proyectada
+      var b = s.bb, p = [], i, j, k;
+      for (i = 0; i < 2; i++) for (j = 0; j < 2; j++) for (k = 0; k < 2; k++)
+        p.push(this._pr(s, i ? b[1] : b[0], j ? b[3] : b[2], k ? b[5] : b[4]));
+      var mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9;
+      for (i = 0; i < p.length; i++) { mnx = Math.min(mnx, p[i][0]); mxx = Math.max(mxx, p[i][0]); mny = Math.min(mny, p[i][1]); mxy = Math.max(mxy, p[i][1]); }
+      var aW = s.w - 2 * s.padx - 80, aH = s.h - 2 * s.pady;
+      s.sc3 = Math.min(aW / (mxx - mnx), aH / (mxy - mny));
+      s.ox3 = s.padx + (aW - (mxx - mnx) * s.sc3) / 2 - mnx * s.sc3;
+      s.oy3 = s.h - s.pady - (aH - (mxy - mny) * s.sc3) / 2 + mny * s.sc3;
+    },
+    _P: function (s, x, y, z) { var q = this._pr(s, x, y, z); return [s.ox3 + q[0] * s.sc3, s.oy3 - q[1] * s.sc3, q[2]]; },
+    // ---- ejes cartesianos 3D: caja (bbox) + ejes X/Y/Z con ticks, numeros y etiquetas ----
+    _axes3: function (s) {
+      var ctx = s.ctx, ML = this, b = s.bb, i;
+      function P(x, y, z) { return ML._P(s, x, y, z); }
+      var c = [[b[0], b[2], b[4]], [b[1], b[2], b[4]], [b[1], b[3], b[4]], [b[0], b[3], b[4]],
+               [b[0], b[2], b[5]], [b[1], b[2], b[5]], [b[1], b[3], b[5]], [b[0], b[3], b[5]]];
+      var e = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+      ctx.strokeStyle = "rgba(120,130,140,0.30)"; ctx.lineWidth = 1;
+      for (i = 0; i < e.length; i++) { var a = P.apply(null, c[e[i][0]]), d = P.apply(null, c[e[i][1]]); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(d[0], d[1]); ctx.stroke(); }
+      this._axis3line(s, b[0], b[2], b[4], b[1], b[2], b[4], "x");
+      this._axis3line(s, b[0], b[2], b[4], b[0], b[3], b[4], "y");
+      this._axis3line(s, b[0], b[2], b[4], b[0], b[2], b[5], "z");
+    },
+    _axis3line: function (s, x0, y0, z0, x1, y1, z1, w) {
+      var ctx = s.ctx, ML = this, a = ML._P(s, x0, y0, z0), b = ML._P(s, x1, y1, z1), i, n = 4;
+      ctx.strokeStyle = _c("#777","#9a9180"); ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      ctx.fillStyle = _c("#555","#c9c0ad"); ctx.font = "10px Segoe UI"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (i = 0; i <= n; i++) {
+        var t = i / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t, z = z0 + (z1 - z0) * t, q = ML._P(s, x, y, z);
+        var val = w === "x" ? x : (w === "y" ? y : z);
+        ctx.fillText(ML._nf(val), q[0] + (w === "y" ? -13 : (w === "z" ? -13 : 0)), q[1] + (w === "x" ? 11 : 0));
+      }
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "bold 12px Segoe UI";
+      ctx.fillText(w.toUpperCase(), b[0] + (w === "x" ? 16 : (w === "y" ? -16 : -16)), b[1] + (w === "z" ? -10 : 10));
+    },
+    _draw3: function (s) {                             // re-dibuja toda la escena 3D
+      var ctx = s.ctx, ML = this, i, k, q;
+      ctx.clearRect(0, 0, s.w, s.h);
+      this._fit(s);
+      if (s.bb) this._axes3(s);                        // ejes cartesianos XYZ al fondo
+      var items = [];
+      for (i = 0; i < s.prims.length; i++) {
+        var o = s.prims[i];
+        if (o.k === "face") {
+          var poly = [], d = 0, n = o.p.length / 3;
+          for (k = 0; k < n; k++) { q = ML._P(s, o.p[3 * k], o.p[3 * k + 1], o.p[3 * k + 2]); poly.push(q[0], q[1]); d += q[2]; }
+          items.push({ k: "face", poly: poly, depth: d / n, c: o.c });
+        } else if (o.k === "line3") {
+          var a = ML._P(s, o.p[0], o.p[1], o.p[2]), b = ML._P(s, o.p[3], o.p[4], o.p[5]);
+          items.push({ k: "line", a: a, b: b, depth: (a[2] + b[2]) / 2, c: o.c });
+        } else if (o.k === "text3") {
+          q = ML._P(s, o.p[0], o.p[1], o.p[2]); items.push({ k: "text", x: q[0], y: q[1], s: o.s, depth: q[2] + 1e6, c: o.c });
+        }
+      }
+      items.sort(function (a, b) { return a.depth - b.depth; });
+      for (i = 0; i < items.length; i++) {
+        var t = items[i];
+        if (t.k === "face") {
+          ctx.beginPath(); ctx.moveTo(t.poly[0], t.poly[1]);
+          for (k = 2; k < t.poly.length; k += 2) ctx.lineTo(t.poly[k], t.poly[k + 1]);
+          ctx.closePath(); ctx.fillStyle = t.c; ctx.fill();
+          ctx.strokeStyle = "rgba(0,0,0,0.22)"; ctx.lineWidth = 0.4; ctx.stroke();
+        } else if (t.k === "line") {
+          ctx.strokeStyle = t.c; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(t.a[0], t.a[1]); ctx.lineTo(t.b[0], t.b[1]); ctx.stroke();
+        } else { ctx.fillStyle = t.c; ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(t.s, t.x + 4, t.y); }
+      }
+      for (i = 0; i < s.prims.length; i++) if (s.prims[i].k === "cbar") this._cbar(s, s.prims[i].a, s.prims[i].b);
+      ctx.fillStyle = "#999"; ctx.font = "10px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("(arrastra para girar)", 6, s.h - 4);
+    },
+    render3: function () {                             // primer dibujo + handlers de rotacion
+      var ML = this, s = this.S(), cv = s.cv;
+      ML._draw3(s);
+      cv.style.cursor = "grab";
+      var drag = false, x0 = 0, y0 = 0, az0 = 0, el0 = 0;
+      cv.onmousedown = function (e) { drag = true; x0 = e.clientX; y0 = e.clientY; az0 = s.az; el0 = s.el; cv.style.cursor = "grabbing"; e.preventDefault(); };
+      cv.onmousemove = function (e) {
+        if (!drag) return;
+        s.az = az0 + (e.clientX - x0) * 0.01;
+        s.el = el0 + (e.clientY - y0) * 0.01;
+        if (s.el > 1.5) s.el = 1.5; if (s.el < -1.5) s.el = -1.5;
+        ML._draw3(s);
+      };
+      var up = function () { drag = false; cv.style.cursor = "grab"; };
+      cv.onmouseup = up;
+      // HOVER 3D: con el cursor (sin arrastrar) marca el nudo mas cercano y su (x,y,z)
+      cv.addEventListener("mousemove", function (e) {
+        if (drag || !s.dpts3 || !s.dpts3.length) return;
+        var r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = Infinity, i, q, dx, dy;
+        for (i = 0; i < s.dpts3.length; i++) { var dp = s.dpts3[i]; q = ML._P(s, dp.x, dp.y, dp.z); dx = q[0] - mx; dy = q[1] - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) {
+          var dp = s.dpts3[best];
+          s.tip.style.display = "block"; s.tip.style.left = mx + "px"; s.tip.style.top = my + "px";   // SIGUE AL CURSOR
+          s.tip.innerHTML = "x = " + ML._nf(dp.x) + "<br>y = " + ML._nf(dp.y) + "<br>z = " + ML._nf(dp.z);
+        }
+      });
+      cv.addEventListener("mouseleave", function () { drag = false; cv.style.cursor = "grab"; s.tip.style.display = "none"; });
+    },
+
+    // ===================== STEPPER (botones "paso a paso") =====================
+    // steps$("titulo") -> step$("titulo paso"; "texto") x N -> endsteps$
+    // El usuario navega con los botones ◀ Anterior / Siguiente ▶. En el texto:
+    //   *negrita*  y  //  = salto de linea. (sin " ; ' < > para no romper el .cpd)
+    steps: function (title) {
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "display:inline-block;vertical-align:top;width:560px;max-width:100%;margin:6px;border:1px solid #cfd6dd;border-radius:10px;background:" + _c("#FFFDF6","#1a1712") + ";font:13px Segoe UI;box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow:hidden";
+      var head = document.createElement("div");
+      head.style.cssText = "background:#1f6feb;color:#fff;padding:8px 14px;font-weight:bold;font-size:14px";
+      head.textContent = title || "Pasos";
+      var body = document.createElement("div");
+      body.style.cssText = "padding:14px 16px;min-height:96px;line-height:1.55;color:#222";
+      var foot = document.createElement("div");
+      foot.style.cssText = "display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid #eee;background:#fafbfc";
+      var bcss = "border:1px solid #1f6feb;border-radius:6px;padding:5px 14px;font:13px Segoe UI;cursor:pointer";
+      var bprev = document.createElement("button"); bprev.style.cssText = bcss + ";background:" + _c("#FFFDF6","#1a1712") + ";color:#1f6feb"; bprev.textContent = "◀ Anterior";
+      var bnext = document.createElement("button"); bnext.style.cssText = bcss + ";background:#1f6feb;color:#fff"; bnext.textContent = "Siguiente ▶";
+      var dots = document.createElement("div"); dots.style.cssText = "flex:1;text-align:center;color:#9aa4ad;letter-spacing:2px";
+      foot.appendChild(bprev); foot.appendChild(dots); foot.appendChild(bnext);
+      wrap.appendChild(head); wrap.appendChild(body); wrap.appendChild(foot);
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(wrap, sc); else document.body.appendChild(wrap);
+      this._stp = { cards: [], cur: 0, body: body, dots: dots, prev: bprev, next: bnext };
+    },
+    step: function (t, html) { if (this._stp) this._stp.cards.push({ t: t, h: html }); },
+    endsteps: function () {
+      var st = this._stp; if (!st || !st.cards.length) return;
+      function fmt(s) { return String(s).replace(/\*([^*]+)\*/g, "<b>$1</b>").replace(/\/\//g, "<br>"); }
+      function show(i) {
+        st.cur = Math.max(0, Math.min(st.cards.length - 1, i));
+        var c = st.cards[st.cur];
+        st.body.innerHTML = "<div style='font-weight:bold;color:#1f6feb;margin-bottom:7px;font-size:14px'>" + fmt(c.t) + "</div>" + fmt(c.h);
+        var d = ""; for (var k = 0; k < st.cards.length; k++) d += (k === st.cur ? "●" : "○") + " ";
+        st.dots.innerHTML = d + "<span style='margin-left:6px;font-size:12px;letter-spacing:0'>" + (st.cur + 1) + " / " + st.cards.length + "</span>";
+        st.prev.style.opacity = st.cur === 0 ? 0.4 : 1;
+        st.next.style.opacity = st.cur === st.cards.length - 1 ? 0.4 : 1;
+      }
+      st.prev.onclick = function () { show(st.cur - 1); };
+      st.next.onclick = function () { show(st.cur + 1); };
+      show(0);
+      this._stp = null;
+    }
+  };
+  global.ML = ML;
+})(window);
+
+/* glplot.js — motor 3D REAL con WebGL crudo sobre <canvas> (sin three.js, sin CDN).
+   GPU, depth-test, perspectiva, orbita con el mouse. fill3 = caras; line3 = lineas
+   (malla sin deformar, apoyos, flecha de carga, caja de ejes). Embebible inline en figure3$. */
+(function (global) {
+  var GL3 = {
+    st: null,
+    etabs: false,   // true = paleta de bandas DISCRETAS de ETABS; false = jet_r suave
+    // paleta de contorno de ETABS — INGENIERIA INVERSA (15 bandas muestreadas de la
+    // leyenda real, capture_20260624_174436): magenta(min) -> rojo -> amarillo -> verde -> azul(max)
+    pal: [[0.784,0,0.784],[0.894,0,0.392],[1,0,0],[1,0.251,0],[1,0.502,0],[1,0.667,0],
+          [1,0.831,0],[1,1,0],[0.502,1,0],[0,1,0],[0,1,0.502],[0,1,1],[0,0.667,1],[0,0.333,1],[0,0,1]],
+    _ins: function (el) {                       // inserta un elemento donde esta el <script> actual
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(el, sc); else document.body.appendChild(el);
+    },
+    figure3: function (id, w, h) {              // el .js CREA el canvas WebGL + un overlay 2D para el texto
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "position:relative;display:inline-block;vertical-align:top;margin:4px";
+      var cv = document.createElement("canvas"); cv.id = id; cv.style.cssText = "display:block;border:1px solid #ccc";
+      var ov = document.createElement("canvas"); ov.style.cssText = "position:absolute;left:0;top:0;pointer-events:none";
+      var tip = document.createElement("div");   // datatip tipo MATLAB (sigue al cursor, sobre la malla)
+      tip.style.cssText = "position:absolute;pointer-events:none;display:none;background:rgba(25,28,32,0.9);color:#fff;font:11px Segoe UI;padding:3px 7px;border-radius:4px;white-space:nowrap;transform:translate(12px,-50%);z-index:5;box-shadow:0 1px 4px rgba(0,0,0,0.3)";
+      wrap.appendChild(cv); wrap.appendChild(ov); wrap.appendChild(tip);
+      var row = document.createElement("div");   // fila flex: canvas + colorbar SIEMPRE en la misma línea
+      row.style.cssText = "display:flex;align-items:flex-start;flex-wrap:nowrap";
+      this._ins(row); row.appendChild(wrap);
+      var dpr = Math.max(2, window.devicePixelRatio || 1);   // render a >=2x para que no pixele al acercar
+      cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
+      ov.width = w * dpr; ov.height = h * dpr; ov.style.width = w + "px"; ov.style.height = h + "px";
+      var octx = ov.getContext("2d"); octx.scale(dpr, dpr);
+      var opt = { preserveDrawingBuffer: true, antialias: true };
+      var gl = cv.getContext("webgl", opt) || cv.getContext("experimental-webgl", opt);
+      this.st = { gl: gl, cv: cv, octx: octx, w: w, h: h, row: row, verts: [], lverts: [], ticks: [], dpts: [], tip: tip, tipOn: false, tipLabel: "", az: 0.8, el: 0.5, bb: [0, 1, 0, 1, 0, 1], dist: 3 };
+      gl.viewport(0, 0, cv.width, cv.height); gl.enable(gl.DEPTH_TEST); gl.clearColor(1, 1, 1, 1);
+    },
+    tick3: function (x, y, z, t) { this.st.ticks.push({ x: x, y: y, z: z, t: "" + t }); },   // texto 3D (numero/etiqueta) que sigue la rotacion
+    datatip: function (label) { this.st.tipOn = true; this.st.tipLabel = "" + label; },      // activa el datatip (hover) tipo MATLAB datacursormode
+    datapoint: function (x, y, z, v) { this.st.dpts.push({ x: x, y: y, z: z, v: v }); },      // registra un nudo y su valor para el hover
+    cartesian3: function (x0, x1, y0, y1, z0, z1, ndx, ndz) {   // plano cartesiano 3D: caja + numeros X/Z (1 llamada)
+      var L = this.st.lverts, c = this.hex("cfd4d8"), i, dx = x1 - x0, dz = z1 - z0;
+      function ln(ax, ay, az, bx, by, bz) { L.push(ax, ay, az, c[0], c[1], c[2], bx, by, bz, c[0], c[1], c[2]); }
+      ln(x0, y0, z0, x1, y0, z0); ln(x1, y0, z0, x1, y1, z0); ln(x1, y1, z0, x0, y1, z0); ln(x0, y1, z0, x0, y0, z0);
+      ln(x0, y0, z1, x1, y0, z1); ln(x1, y0, z1, x1, y1, z1); ln(x1, y1, z1, x0, y1, z1); ln(x0, y1, z1, x0, y0, z1);
+      ln(x0, y0, z0, x0, y0, z1); ln(x1, y0, z0, x1, y0, z1); ln(x1, y1, z0, x1, y1, z1); ln(x0, y1, z0, x0, y1, z1);
+      for (i = 0; i <= ndx; i++) { var xv = x0 + i * dx / ndx; this.tick3(xv, y0, z0 - dz * 0.05, Math.round(xv)); }
+      for (i = 0; i <= ndz; i++) { var zv = z0 + i * dz / ndz; this.tick3(x0 - dx * 0.06, y0, zv, Math.round(zv)); }
+      this.tick3((x0 + x1) / 2, y0, z0 - dz * 0.13, "X (ancho, m)");
+      this.tick3(x0 - dx * 0.15, y0, (z0 + z1) / 2, "Z (altura, m)");
+    },
+    _proj2: function (s, x, y, z) {              // proyecta un punto 3D a pixeles de pantalla (con la MVP actual)
+      var m = s.mvp, cw = m[3] * x + m[7] * y + m[11] * z + m[15];
+      var cx = m[0] * x + m[4] * y + m[8] * z + m[12], cy = m[1] * x + m[5] * y + m[9] * z + m[13];
+      return [(cx / cw * 0.5 + 0.5) * s.w, (1 - (cy / cw * 0.5 + 0.5)) * s.h];
+    },
+    _nf: function (v) {                          // formato: notacion cientifica para valores muy chicos/grandes
+      var a = Math.abs(v);
+      if (a < 1e-12) return "0";
+      if (a >= 1e4 || a < 1e-3) return v.toExponential(2);
+      if (a < 1) return parseFloat(v.toPrecision(3)).toString();
+      return v.toFixed(2);
+    },
+    colorbar3: function (vmin, vmax, h) {        // el .js CREA el <div> de la barra de color
+      var d = document.createElement("div");
+      d.style.cssText = "display:inline-flex;vertical-align:top;margin:6px 0 0 10px;font:11px Segoe UI;color:#333";
+      function rgb(c){ return "rgb(" + Math.round(c[0]*255) + "," + Math.round(c[1]*255) + "," + Math.round(c[2]*255) + ")"; }
+      var grad, lab = "", k, i;
+      if (this.etabs) {                          // BANDAS DISCRETAS con la paleta ETABS (15 colores)
+        var N = 15, stops = [];
+        for (i = 0; i < N; i++) {                 // cada banda = color solido de la paleta, con corte duro
+          var col = rgb(this.pal[i]), p0 = (i / N * 100).toFixed(2), p1 = ((i + 1) / N * 100).toFixed(2);
+          stops.push(col + " " + p0 + "%", col + " " + p1 + "%");
+        }
+        grad = "linear-gradient(to top," + stops.join(",") + ")";
+        for (k = N; k >= 0; k--) lab += "<span>" + this._nf(vmin + k / N * (vmax - vmin)) + "</span>";
+      } else {                                    // jet suave (didactico)
+        grad = "linear-gradient(to top,rgb(128,0,0),rgb(255,0,0),rgb(255,128,0),rgb(255,255,0),rgb(120,255,120),rgb(0,220,255),rgb(0,120,255),rgb(0,0,255),rgb(0,0,140))";
+        for (k = 4; k >= 0; k--) lab += "<span>" + this._nf(vmin + k / 4 * (vmax - vmin)) + "</span>";
+      }
+      d.innerHTML = '<div style="width:18px;height:' + h + 'px;background:' + grad + ';border:1px solid #444"></div>'
+        + '<div style="display:flex;flex-direction:column;justify-content:space-between;height:' + h + 'px;margin-left:5px">' + lab + '</div>';
+      if (this.st && this.st.row) this.st.row.appendChild(d); else this._ins(d);   // misma fila que el canvas
+    },
+    view3: function (azd, eld) { this.st.az = azd * 0.0174533; this.st.el = eld * 0.0174533; },
+    axis3: function (x0, x1, y0, y1, z0, z1) {
+      this.st.bb = [x0, x1, y0, y1, z0, z1]; this.st.verts = []; this.st.lverts = []; this.st.ticks = []; this.st.dpts = []; this.st.tipOn = false;
+      var dx = x1 - x0, dy = y1 - y0, dz = z1 - z0; this.st.dist = 2.1 * Math.sqrt(dx * dx + dy * dy + dz * dz);
+    },
+    jet: function (t) {
+      t = Math.max(0, Math.min(1, t)); var u = 1 - t;
+      function c(z) { return Math.max(0, Math.min(1, 1.5 - Math.abs(4 * u - z))); }
+      return [c(3), c(2), c(1)];
+    },
+    hex: function (s) {
+      if (s.charCodeAt(0) === 35) s = s.substr(1);
+      if (s.length === 3) s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
+      return [parseInt(s.substr(0, 2), 16) / 255, parseInt(s.substr(2, 2), 16) / 255, parseInt(s.substr(4, 2), 16) / 255];
+    },
+    fill3: function (p, t1, t2, t3, t4) {        // guarda el ESCALAR t por vertice (el shader hace jet suave O bandas ETABS)
+      if (t2 === undefined) { t2 = t1; t3 = t1; t4 = t1; }
+      var tt = [t1, t2, t3, t4], idx = [0, 1, 2, 0, 2, 3], i, k, t, V = this.st.verts;
+      for (i = 0; i < 6; i++) { k = idx[i]; t = tt[k]; V.push(p[3 * k], p[3 * k + 1], p[3 * k + 2], t, t, t); }
+    },
+    line3: function (x1, y1, z1, x2, y2, z2, col) {
+      var c = this.hex(col), L = this.st.lverts;
+      L.push(x1, y1, z1, c[0], c[1], c[2], x2, y2, z2, c[0], c[1], c[2]);
+    },
+    point3: function (x, y, z, t, sz) {          // scatter3: marcador 3D = 3 quads cruzados (visible desde cualquier angulo)
+      var b = this.st.bb, d = Math.max(b[1] - b[0], b[3] - b[2], b[5] - b[4]) * (sz || 0.015);
+      this.fill3([x - d, y - d, z, x + d, y - d, z, x + d, y + d, z, x - d, y + d, z], t, t, t, t);  // plano XY
+      this.fill3([x - d, y, z - d, x + d, y, z - d, x + d, y, z + d, x - d, y, z + d], t, t, t, t);  // plano XZ
+      this.fill3([x, y - d, z - d, x, y + d, z - d, x, y + d, z + d, x, y - d, z + d], t, t, t, t);  // plano YZ
+    },
+    quiver3: function (x, y, z, dx, dy, dz, col) {  // vector 3D: tallo + cabeza de flecha (2 lineas)
+      this.line3(x, y, z, x + dx, y + dy, z + dz, col);
+      var L = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1, ux = dx / L, uy = dy / L, uz = dz / L, h = L * 0.22;
+      var ax = x + dx, ay = y + dy, az = z + dz, px = -uy, py = ux, pz = 0, pl = Math.sqrt(px * px + py * py + pz * pz);
+      if (pl < 1e-6) { px = 0; py = -uz; pz = uy; pl = Math.sqrt(py * py + pz * pz) || 1; } px /= pl; py /= pl; pz /= pl;
+      this.line3(ax, ay, az, ax - ux * h + px * h * 0.5, ay - uy * h + py * h * 0.5, az - uz * h + pz * h * 0.5, col);
+      this.line3(ax, ay, az, ax - ux * h - px * h * 0.5, ay - uy * h - py * h * 0.5, az - uz * h - pz * h * 0.5, col);
+    },
+    stem3: function (x, y, z, t) {               // tallo 3D vertical (z=0 -> z) + marcador
+      this.line3(x, y, 0, x, y, z, "808080"); this.point3(x, y, z, t);
+    },
+    tri3: function (x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3) {  // trisurf/trimesh: cara TRIANGULAR (4o vertice = 3o, degenerado)
+      this.fill3([x1, y1, z1, x2, y2, z2, x3, y3, z3, x3, y3, z3], t1, t2, t3 === undefined ? t1 : t3, t3 === undefined ? t1 : t3);
+    },
+    sphere: function (cx, cy, cz, r, t, nu, nv) {  // esfera completa (loops lat/long -> fill3)
+      nu = nu || 16; nv = nv || 10; var i, j, GL = this;
+      function P(u, v) { var th = u / nu * 6.28318, ph = v / nv * 3.14159; return [cx + r * Math.sin(ph) * Math.cos(th), cy + r * Math.sin(ph) * Math.sin(th), cz + r * Math.cos(ph)]; }
+      for (j = 0; j < nv; j++) for (i = 0; i < nu; i++) { var a = P(i, j), b = P(i + 1, j), c = P(i + 1, j + 1), d = P(i, j + 1); GL.fill3([a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2], d[0], d[1], d[2]], t, t, t, t); }
+    },
+    cylinder: function (cx, cy, z0, z1, r, t, nu) {  // cilindro (cara lateral) -> fill3
+      nu = nu || 20; var i; for (i = 0; i < nu; i++) { var a0 = i / nu * 6.28318, a1 = (i + 1) / nu * 6.28318, x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1); this.fill3([x0, y0, z0, x1, y1, z0, x1, y1, z1, x0, y0, z1], t, t, t, t); }
+    },
+    light: false,                                          // iluminacion 3D (GL3.lighting / lighting$ en el .cpd)
+    lighting: function (on) { this.light = !(on === 0 || on === "off" || on === "none" || on === false); },
+    shading: function (m) { this.light = !(m === "none" || m === "off" || m === 0); },   // flat/interp -> con luz
+    render3: function () {
+      var s = this.st, gl = s.gl, GL3 = this;
+      gl.getExtension("OES_standard_derivatives");          // normal por derivadas de pantalla (para iluminar)
+      var vs = "attribute vec3 a;attribute vec3 c;uniform mat4 m;varying vec3 v;varying vec3 vp;void main(){gl_Position=m*vec4(a,1.0);v=c;vp=a;}";
+      // uMode: 0=jet suave · 1=bandas DISCRETAS con la paleta ETABS · 2=linea (rgb directo). uLight: 0/1 iluminacion difusa.
+      var fs = "#extension GL_OES_standard_derivatives : enable\n"
+        + "precision mediump float;varying vec3 v;varying vec3 vp;uniform float uMode;uniform float uLight;uniform vec3 pal[15];"
+        + "void main(){"
+        + " if(uMode>1.5){gl_FragColor=vec4(v,1.0);return;}" // lineas: rgb directo, sin luz
+        + " float t=clamp(v.r,0.0,1.0); vec3 col;"
+        + " if(uMode>0.5){"                                  // BANDAS ETABS: indexar la paleta de 15 colores
+        + "   int bi=int(clamp(floor(t*15.0),0.0,14.0)); col=pal[0];"
+        + "   for(int i=0;i<15;i++){ if(i<=bi) col=pal[i]; } }"
+        + " else { float u=1.0-t;"                           // jet suave (didactico)
+        + "   col=vec3(clamp(1.5-abs(4.0*u-3.0),0.0,1.0),clamp(1.5-abs(4.0*u-2.0),0.0,1.0),clamp(1.5-abs(4.0*u-1.0),0.0,1.0)); }"
+        + " if(uLight>0.5){"                                 // luz difusa: normal de la cara = cross de las derivadas
+        + "   vec3 N=normalize(cross(dFdx(vp),dFdy(vp))); vec3 L=normalize(vec3(0.4,0.5,0.85));"
+        + "   col=col*(0.55+0.45*abs(dot(N,L))); }"          // dos caras (abs): ambiente 0.55 + difuso 0.45
+        + " gl_FragColor=vec4(col,1.0);}";
+      function sh(t, src) { var o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; }
+      var pr = gl.createProgram();
+      gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs));
+      gl.linkProgram(pr); gl.useProgram(pr); s.pr = pr;
+      s.um = gl.getUniformLocation(pr, "m"); s.la = gl.getAttribLocation(pr, "a"); s.lc = gl.getAttribLocation(pr, "c");
+      s.umode = gl.getUniformLocation(pr, "uMode"); s.ulight = gl.getUniformLocation(pr, "uLight");
+      var P = this.pal, pf = []; for (var pi = 0; pi < 15; pi++) { pf.push(P[pi][0], P[pi][1], P[pi][2]); }
+      gl.uniform3fv(gl.getUniformLocation(pr, "pal"), new Float32Array(pf));
+      s.tb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, s.tb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.verts), gl.STATIC_DRAW); s.nv = s.verts.length / 6;
+      s.lb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, s.lb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.lverts), gl.STATIC_DRAW); s.nl = s.lverts.length / 6;
+      var draw = function () { GL3._draw(s); }; s.draw = draw; draw();
+      var cv = s.cv, drag = false, panning = false, px = 0, py = 0; cv.style.cursor = "grab";
+      cv.oncontextmenu = function (e) { e.preventDefault(); };   // permitir arrastrar con boton derecho (pan)
+      cv.onmousedown = function (e) { drag = true; panning = e.shiftKey || e.button === 2; px = e.clientX; py = e.clientY; cv.style.cursor = panning ? "move" : "grabbing"; e.preventDefault(); };
+      cv.onmousemove = function (e) {
+        if (drag && panning) {                        // PAN (shift o boton derecho): desplaza el centro en pantalla
+          s.panx = (s.panx || 0) + (e.clientX - px) * s.dist * 0.0022; s.pany = (s.pany || 0) - (e.clientY - py) * s.dist * 0.0022;
+          px = e.clientX; py = e.clientY; draw(); return;
+        }
+        if (drag) {                                   // TRACKBALL: rotación incremental en TODOS los sentidos
+          var dx = (e.clientX - px) * 0.01, dy = (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY;
+          var dR = GL3._mul(GL3._rotX(dy), GL3._rotY(dx));
+          s.rot = GL3._mul(dR, s.rot); draw(); return;
+        }
+        if (!s.tipOn || !s.dpts.length || !s.mvp) return;   // hover: nudo más cercano al cursor → datatip
+        var r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = 324, i, p, dx, dy;
+        for (i = 0; i < s.dpts.length; i++) { p = GL3._proj2(s, s.dpts[i].x, s.dpts[i].y, s.dpts[i].z); dx = p[0] - mx; dy = p[1] - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) { var dp = s.dpts[best], pp = GL3._proj2(s, dp.x, dp.y, dp.z); s.tip.style.display = "block"; s.tip.style.left = pp[0] + "px"; s.tip.style.top = pp[1] + "px"; s.tip.innerHTML = (s.tipLabel ? s.tipLabel + " = " : "") + GL3._nf(dp.v); }
+        else s.tip.style.display = "none";
+      };
+      var up = function () { drag = false; cv.style.cursor = "grab"; if (s.tip) s.tip.style.display = "none"; };
+      cv.onmouseup = up; cv.onmouseleave = up;
+      cv.onwheel = function (e) { s.dist *= e.deltaY > 0 ? 1.1 : 0.9; draw(); e.preventDefault(); };
+    },
+    _attr: function (s, b) {
+      var gl = s.gl; gl.bindBuffer(gl.ARRAY_BUFFER, b);
+      gl.enableVertexAttribArray(s.la); gl.vertexAttribPointer(s.la, 3, gl.FLOAT, false, 24, 0);
+      gl.enableVertexAttribArray(s.lc); gl.vertexAttribPointer(s.lc, 3, gl.FLOAT, false, 24, 12);
+    },
+    _draw: function (s) {
+      var gl = s.gl; gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      var b = s.bb, cx = (b[0] + b[1]) / 2, cy = (b[2] + b[3]) / 2, cz = (b[4] + b[5]) / 2;
+      // TRACKBALL: rotación libre acumulada en s.rot (todos los sentidos). V = pull-back · rot · centrar.
+      if (!s.rot) s.rot = this._mul(this._rotZ(-0.6), this._rotX(-1.25));   // vista iso inicial (modelo Z-up)
+      var V = this._mul(this._trans(s.panx || 0, s.pany || 0, -s.dist), this._mul(s.rot, this._trans(-cx, -cy, -cz)));
+      var P = this._persp(0.8, s.w / s.h, 0.01, s.dist * 12);
+      s.mvp = this._mul(P, V);
+      gl.uniformMatrix4fv(s.um, false, s.mvp);
+      gl.uniform1f(s.umode, GL3.etabs ? 1 : 0);                 // caras: jet suave o bandas ETABS
+      gl.uniform1f(s.ulight, GL3.light ? 1 : 0);                // iluminacion difusa on/off
+      this._attr(s, s.tb); gl.drawArrays(gl.TRIANGLES, 0, s.nv);
+      if (s.nl > 0) { gl.uniform1f(s.umode, 2); this._attr(s, s.lb); gl.drawArrays(gl.LINES, 0, s.nl); }  // lineas: rgb directo
+      var oc = s.octx; oc.clearRect(0, 0, s.w, s.h);
+      if (s.ticks.length) {
+        oc.fillStyle = "#444"; oc.font = "11px Segoe UI"; oc.textAlign = "center"; oc.textBaseline = "middle";
+        for (var i = 0; i < s.ticks.length; i++) { var k = s.ticks[i], p = this._proj2(s, k.x, k.y, k.z); oc.fillText(k.t, p[0], p[1]); }
+      }
+    },
+    _persp: function (fy, a, n, f) {
+      var t = 1 / Math.tan(fy / 2), nf = 1 / (n - f);
+      return [t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (f + n) * nf, -1, 0, 0, 2 * f * n * nf, 0];
+    },
+    _look: function (e, c, u) {
+      var z0 = e[0] - c[0], z1 = e[1] - c[1], z2 = e[2] - c[2], zl = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+      z0 *= zl; z1 *= zl; z2 *= zl;
+      var x0 = u[1] * z2 - u[2] * z1, x1 = u[2] * z0 - u[0] * z2, x2 = u[0] * z1 - u[1] * z0, xl = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+      if (xl) { xl = 1 / xl; x0 *= xl; x1 *= xl; x2 *= xl; }
+      var y0 = z1 * x2 - z2 * x1, y1 = z2 * x0 - z0 * x2, y2 = z0 * x1 - z1 * x0;
+      return [x0, y0, z0, 0, x1, y1, z1, 0, x2, y2, z2, 0, -(x0 * e[0] + x1 * e[1] + x2 * e[2]), -(y0 * e[0] + y1 * e[1] + y2 * e[2]), -(z0 * e[0] + z1 * e[1] + z2 * e[2]), 1];
+    },
+    _mul: function (a, b) {
+      var o = new Array(16), c, r, k;
+      for (c = 0; c < 4; c++) for (r = 0; r < 4; r++) { var s = 0; for (k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; }
+      return o;
+    },
+    _trans: function (x, y, z) { return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]; },          // column-major
+    _rotX: function (a) { var c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]; },
+    _rotY: function (a) { var c = Math.cos(a), s = Math.sin(a); return [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]; },
+    _rotZ: function (a) { var c = Math.cos(a), s = Math.sin(a); return [c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; }
+  };
+  global.GL3 = GL3;
+})(window);
+
+window._c=window._c||function(l,d){return window.HK_DARK?d:l};
+/* matlab.js — capa de ALTO NIVEL con nombres de MATLAB sobre el motor embebido (ML / glplot).
+   Objetivo: escribir las graficas como en MATLAB (figure, plot, surf, contourf, bar, legend,
+   title, xlabel, colorbar, axis equal ...) recibiendo VECTORES/MATRICES, sin tocar canvas ni JS crudo.
+   No hay <script src>: este .js se EMBEBE inline junto a mlplot.js. Colormap = jet_r (siempre).
+
+   Modelo: cada funcion acumula "ops" en la figura actual y programa un re-dibujo (flush) diferido,
+   asi MATLAB calcula los limites de los ejes con TODOS los datos (auto-escala), como el de verdad. */
+(function (global) {
+  var ML = global.ML;
+  var FIG = null, FIGN = 0;
+
+  // ---- utilidades de arrays (acepta vector JS, o escalar) ----
+  function isArr(a) { return Array.isArray(a); }
+  function arr(a) { return isArr(a) ? a : [a]; }
+  function isMat(a) { return isArr(a) && isArr(a[0]); }
+  function rows(M) { return M.length; }
+  function cols(M) { return M[0].length; }
+  function minA(a) { var m = Infinity, i; for (i = 0; i < a.length; i++) if (a[i] < m) m = a[i]; return m; }
+  function maxA(a) { var m = -Infinity, i; for (i = 0; i < a.length; i++) if (a[i] > m) m = a[i]; return m; }
+  function minM(M) { var m = Infinity, i, j; for (i = 0; i < M.length; i++) for (j = 0; j < M[i].length; j++) if (M[i][j] < m) m = M[i][j]; return m; }
+  function maxM(M) { var m = -Infinity, i, j; for (i = 0; i < M.length; i++) for (j = 0; j < M[i].length; j++) if (M[i][j] > m) m = M[i][j]; return m; }
+  function range(n) { var a = [], i; for (i = 1; i <= n; i++) a.push(i); return a; }   // 1:n estilo MATLAB
+
+  // paleta de Calcpad (chartPens): Tomato, YellowGreen, CornflowerBlue, oro, MediumVioletRed, ...
+  var CORD = ["#FF6347", "#9ACD32", "#6495ED", "#F0D000", "#C71585", "#00FA9A", "#8A2BE2", "#FFA07A", "#FF1493", "#00CED1"];
+  var CMAP = { r: "#e00000", g: "#00a000", b: "#0000ff", c: "#00bdbd", m: "#bd00bd", y: "#cccc00", k: "#000000", w: "#ffffff" };
+
+  // parsea un "linespec" de MATLAB:  'r--o' , 'b:' , 'k.' , 'g-' ...
+  function spec(s) {
+    var o = { color: null, style: "-", marker: null };
+    if (typeof s !== "string") return o;
+    if (s.indexOf("--") >= 0) o.style = "--"; else if (s.indexOf("-.") >= 0) o.style = "-."; else if (s.indexOf(":") >= 0) o.style = ":"; else if (s.indexOf("-") >= 0) o.style = "-"; else o.style = "none";
+    for (var i = 0; i < s.length; i++) { var ch = s[i]; if (CMAP[ch]) o.color = CMAP[ch]; if ("o.*+xsd^v><ph".indexOf(ch) >= 0) o.marker = ch; }
+    return o;
+  }
+
+  // ---- figura ----
+  function newFig() {
+    var id = "mlfig" + (++FIGN);
+    ML.figure(id, 600, 420);
+    FIG = {
+      id: id, ops: [], is3d: false,
+      xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity, zmin: Infinity, zmax: -Infinity,
+      ttl: null, xl: null, yl: null, zl: null, grid: true, equal: false, off: false,
+      lim: null, az: -37.5, el: 30, cidx: 0, cbar: false, crange: null, legends: [], tip: null, sched: false
+    };
+    return FIG;
+  }
+  function fig() { return FIG || newFig(); }
+  function nextColor() { var f = fig(); return CORD[(f.cidx++) % CORD.length]; }
+  function bx(f, x, y, z) {
+    if (x < f.xmin) f.xmin = x; if (x > f.xmax) f.xmax = x;
+    if (y < f.ymin) f.ymin = y; if (y > f.ymax) f.ymax = y;
+    if (z != null) { if (z < f.zmin) f.zmin = z; if (z > f.zmax) f.zmax = z; }
+  }
+  function sched(f) { if (f.sched) return; f.sched = true; setTimeout(function () { f.sched = false; flush2(f); }, 0); }   // el 3D (GL3) se dibuja directo, no por flush
+
+  // ===================== 2D =====================
+  function flush2(f) {
+    var s = ML.figs[f.id], ctx = s.ctx; ML.cur = f.id;
+    ctx.clearRect(0, 0, s.w, s.h);
+    var dx0 = f.xmin, dx1 = f.xmax, dy0 = f.ymin, dy1 = f.ymax;     // rango de DATOS (esquinas)
+    if (f.lim) { dx0 = f.lim[0]; dx1 = f.lim[1]; dy0 = f.lim[2]; dy1 = f.lim[3]; }
+    if (!isFinite(dx0)) { dx0 = 0; dx1 = 1; dy0 = 0; dy1 = 1; }
+    var x0 = dx0, x1 = dx1, y0 = dy0, y1 = dy1;
+    var px = (x1 - x0) * 0.05 || 0.5, py = (y1 - y0) * 0.05 || 0.5;
+    x0 -= px; x1 += px; y0 -= py; y1 += py;
+    if (f.equal) ML.axis(x0, x1, y0, y1); else ML.axischart(x0, x1, y0, y1);
+    if (f.cbar) { s.mR = 92; if (f.equal) { s.sc = Math.min((s.w - s.mL - s.mR) / (x1 - x0), (s.h - s.mT - s.mB) / (y1 - y0)); s.scx = s.sc; s.scy = s.sc; } else { s.scx = (s.w - s.mL - s.mR) / (x1 - x0); s.scy = (s.h - s.mT - s.mB) / (y1 - y0); } }
+    s.dpts = []; s._tipBound = false; s.tipOn = false;
+    // marco SOLO para charts de función o mapas; geometría (axis equal, sin grid) = dibujo limpio como Calcpad
+    if (!f.off && (f.cbar || !f.equal || f.gridForced)) cpframe(f, s, ctx, x0, x1, y0, y1, dx0, dx1, dy0, dy1);
+    var i;
+    for (i = 0; i < f.ops.length; i++) drawOp(f, s, ctx, f.ops[i]);
+    if (f.ttl) ML.title(f.ttl);
+    if (f.cbar) { var cr = f.crange || [Math.min(y0, 0), y1]; ML._cbar(s, cr[0], cr[1]); }
+    if (f.legends.length) drawLegend(f, s, ctx);
+    if (s.dpts.length) ML.datatip(f.tip || "");        // cursor de datos (hover) por defecto
+  }
+
+  // ===== marco estilo Calcpad: grilla tenue, ejes negros en 0 con x/y, numeros en margenes, rangos en esquinas =====
+  function niceStep(range, maxSteps) {
+    var raw = range / Math.max(1, maxSteps); if (!(raw > 0)) return 1;
+    var mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+  }
+  function fmtN(v) {
+    if (Math.abs(v) < 1e-12) return "0";
+    var a = Math.abs(v);
+    if (a >= 1e4 || a < 1e-3) return v.toExponential(1).replace("e+", "E").replace("e-", "E-").replace("e", "E");
+    return parseFloat(v.toPrecision(4)).toString();
+  }
+  function hexA(hex, a) {
+    var c = (hex || "#cc0000").replace("#", ""); if (c.length === 3) c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+    return "rgba(" + parseInt(c.substr(0, 2), 16) + "," + parseInt(c.substr(2, 2), 16) + "," + parseInt(c.substr(4, 2), 16) + "," + a + ")";
+  }
+  function cpframe(f, s, ctx, x0, x1, y0, y1, dx0, dx1, dy0, dy1) {
+    var L = s.mL, R = s.w - s.mR, T = s.mT, B = s.h - s.mB, v, p;
+    ctx.font = "11px Segoe UI";
+    var sy = niceStep(y1 - y0, 8);                 // grilla + numeros Y (margen izq, alineados der)
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (v = Math.ceil(y0 / sy) * sy; v <= y1 + 1e-9; v += sy) {
+      p = ML.Y(v); ctx.strokeStyle = _c("rgba(0,0,0,0.08)","rgba(255,255,255,0.10)"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, p); ctx.lineTo(R, p); ctx.stroke();
+      ctx.fillStyle = _c("#777","#9a9180"); ctx.fillText(fmtN(v), L - 6, p);
+    }
+    var sx = niceStep(x1 - x0, 9);                 // grilla + numeros X (margen inf, centrados)
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (v = Math.ceil(x0 / sx) * sx; v <= x1 + 1e-9; v += sx) {
+      p = ML.X(v); ctx.strokeStyle = _c("rgba(0,0,0,0.08)","rgba(255,255,255,0.10)"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p, T); ctx.lineTo(p, B); ctx.stroke();
+      ctx.fillStyle = _c("#777","#9a9180"); ctx.fillText(fmtN(v), p, B + 5);
+    }
+    ctx.strokeStyle = "rgba(0,0,0,0.25)"; ctx.lineWidth = 1; ctx.strokeRect(L, T, R - L, B - T);   // marco tenue
+    ctx.lineWidth = 1.4; ctx.strokeStyle = _c("#000","#e8e2d4"); ctx.fillStyle = _c("#000","#e8e2d4");    // ejes NEGROS en 0 + x / y
+    if (0 > y0 && 0 < y1) { p = ML.Y(0); ctx.beginPath(); ctx.moveTo(L, p); ctx.lineTo(R, p); ctx.stroke(); ctx.font = "italic 13px Georgia,serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(f.xl || "x", R + 6, p); }
+    if (0 > x0 && 0 < x1) { p = ML.X(0); ctx.beginPath(); ctx.moveTo(p, T); ctx.lineTo(p, B); ctx.stroke(); ctx.font = "italic 13px Georgia,serif"; ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillText(f.yl || "y", p, T - 3); }
+    ctx.fillStyle = _c("#555","#c9c0ad"); ctx.font = "11px Segoe UI"; ctx.textBaseline = "alphabetic";   // rangos en esquinas
+    ctx.textAlign = "left"; ctx.fillText("[" + fmtN(dx0) + "; " + fmtN(dy0) + "]", 3, s.h - 3);
+    ctx.textAlign = "right"; ctx.fillText("[" + fmtN(dx1) + "; " + fmtN(dy1) + "]", s.w - 3, T - 4);
+  }
+
+  function dash(ctx, style) {
+    if (style === "--") ctx.setLineDash([7, 5]); else if (style === ":") ctx.setLineDash([2, 4]);
+    else if (style === "-.") ctx.setLineDash([8, 4, 2, 4]); else ctx.setLineDash([]);
+  }
+
+  function drawOp(f, s, ctx, op) {
+    var i, X = ML.X.bind(ML), Y = ML.Y.bind(ML);
+    if (op.t === "line") {
+      if (op.fill) {                                  // relleno tenue hasta y=0 (estilo Calcpad)
+        var st = ML.S(), b0 = Math.min(Math.max(0, st.ymin), st.ymax), yb = Y(b0);
+        ctx.beginPath(); ctx.moveTo(X(op.x[0]), yb);
+        for (i = 0; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i]));
+        ctx.lineTo(X(op.x[op.x.length - 1]), yb); ctx.closePath();
+        ctx.fillStyle = hexA(op.color, 0.10); ctx.fill();
+      }
+      if (op.style !== "none") {
+        ctx.strokeStyle = op.color; ctx.lineWidth = op.lw || 2.2; dash(ctx, op.style);
+        ctx.beginPath(); ctx.moveTo(X(op.x[0]), Y(op.y[0]));
+        for (i = 1; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i]));
+        ctx.stroke(); ctx.setLineDash([]);
+      }
+      if (op.marker) for (i = 0; i < op.x.length; i++) ML.marker(op.x[i], op.y[i], op.marker, op.color);
+      for (i = 0; i < op.x.length; i++) ML.datapoint(op.x[i], op.y[i], op.y[i]);
+    } else if (op.t === "patch") {                      // cuadrilátero/polígono coloreado jet (como Calcpad)
+      var pp = []; for (i = 0; i < op.x.length; i++) pp.push(op.x[i], op.y[i]); ML.patch(pp, op.tv);
+    } else if (op.t === "cline") {                      // elemento 1D con GRADIENTE de color continuo por valor (jet_r)
+      var dc = (op.cmax - op.cmin) || 1;
+      for (i = 0; i < op.x.length - 1; i++) {
+        var ax = X(op.x[i]), ay = Y(op.y[i]), bx2 = X(op.x[i + 1]), by2 = Y(op.y[i + 1]);
+        var g = ctx.createLinearGradient(ax, ay, bx2, by2);
+        g.addColorStop(0, ML.jet((op.c[i] - op.cmin) / dc)); g.addColorStop(1, ML.jet((op.c[i + 1] - op.cmin) / dc));
+        ctx.strokeStyle = g; ctx.lineWidth = op.lw || 3; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx2, by2); ctx.stroke();
+      }
+      for (i = 0; i < op.x.length; i++) ML.datapoint(op.x[i], op.y[i], op.c[i]);
+    } else if (op.t === "scatter") {
+      for (i = 0; i < op.x.length; i++) { ML.marker(op.x[i], op.y[i], op.mk || "o", op.color); ML.datapoint(op.x[i], op.y[i], op.y[i]); }
+    } else if (op.t === "bar") {
+      for (i = 0; i < op.x.length; i++) ML.bar(op.x[i], op.y[i], op.w, op.color);
+    } else if (op.t === "stem") {
+      for (i = 0; i < op.x.length; i++) ML.stem(op.x[i], op.y[i], op.color);
+    } else if (op.t === "area") {
+      for (i = 0; i < op.x.length - 1; i++) ML.area(op.x[i], op.y[i], op.x[i + 1], op.y[i + 1], op.color);
+    } else if (op.t === "stairs") {
+      for (i = 0; i < op.x.length - 1; i++) ML.stairs(op.x[i], op.y[i], op.x[i + 1], op.y[i + 1], op.color);
+    } else if (op.t === "errorbar") {
+      ctx.strokeStyle = op.color; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(X(op.x[0]), Y(op.y[0])); for (i = 1; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i])); ctx.stroke();
+      for (i = 0; i < op.x.length; i++) ML.errorbar(op.x[i], op.y[i], op.e[i], op.color);
+    } else if (op.t === "fill") {
+      var p = []; for (i = 0; i < op.x.length; i++) p.push(op.x[i], op.y[i]); ML.fill(p, op.color);
+    } else if (op.t === "quiver") {
+      for (i = 0; i < op.x.length; i++) ML.quiver(op.x[i], op.y[i], op.u[i] * op.sc, op.v[i] * op.sc, op.color);
+    } else if (op.t === "imagesc" || op.t === "pcolor" || op.t === "contourf") {
+      var Z = op.Z, nr = rows(Z), nc = cols(Z), zmin = minM(Z), zmax = maxM(Z), dz = (zmax - zmin) || 1;
+      var gx = op.x, gy = op.y, r, c2;
+      for (r = 0; r < nr; r++) for (c2 = 0; c2 < nc; c2++) {
+        var xc = gx[c2], yc = gy[r], w = (c2 < nc - 1 ? gx[c2 + 1] - gx[c2] : gx[c2] - gx[c2 - 1]), h = (r < nr - 1 ? gy[r + 1] - gy[r] : gy[r] - gy[r - 1]);
+        ML.imagesc(xc, yc, w, h, (Z[r][c2] - zmin) / dz);
+      }
+      if (op.t === "contourf" || op.t === "contour") drawContourLines(f, s, op);
+    } else if (op.t === "contour") {
+      drawContourLines(f, s, op);
+    } else if (op.t === "pie") {
+      var tot = 0; for (i = 0; i < op.v.length; i++) tot += op.v[i]; var a = 90;
+      for (i = 0; i < op.v.length; i++) { var sweep = op.v[i] / tot * 360, a2 = a - sweep; ML.pie(0, 0, 1, a, a2, CORD[i % CORD.length]); var am = (a + a2) / 2 * 0.0174533; ML.text(1.15 * Math.cos(am), 1.15 * Math.sin(am), (100 * op.v[i] / tot).toFixed(1) + "%", _c("#222","#f3eddd")); a = a2; }
+    } else if (op.t === "polar") {
+      ctx.strokeStyle = op.color; ctx.lineWidth = 1.8; ctx.beginPath();
+      for (i = 0; i < op.th.length; i++) { var aa = op.th[i] * 0.0174533, xx = op.r[i] * Math.cos(aa), yy = op.r[i] * Math.sin(aa); if (i === 0) ctx.moveTo(X(xx), Y(yy)); else ctx.lineTo(X(xx), Y(yy)); } ctx.stroke();
+    } else if (op.t === "text") {
+      ML.text(op.x, op.y, op.s, op.color);
+    }
+  }
+
+  function drawContourLines(f, s, op) {
+    var Z = op.Z, nr = rows(Z), nc = cols(Z), zmin = minM(Z), zmax = maxM(Z), nl = op.nl || 8, L, r, c2;
+    for (L = 1; L < nl; L++) {
+      var lv = zmin + L / nl * (zmax - zmin);
+      for (r = 0; r < nr - 1; r++) for (c2 = 0; c2 < nc - 1; c2++)
+        ML.contourCell(op.x[c2], op.y[r], op.x[c2 + 1], op.y[r + 1], Z[r][c2], Z[r][c2 + 1], Z[r + 1][c2 + 1], Z[r + 1][c2], lv, _c("#222","#f3eddd"));
+    }
+  }
+
+  function drawLegend(f, s, ctx) {
+    var n = f.legends.length, bw = 120, bh = 16 * n + 8, x = s.w - s.mR - bw - 8, y = s.mT + 6, i;
+    ctx.fillStyle = _c("rgba(255,255,255,0.85)","rgba(26,23,18,0.85)"); ctx.strokeStyle = "#999"; ctx.lineWidth = 1;
+    ctx.fillRect(x, y, bw, bh); ctx.strokeRect(x, y, bw, bh);
+    ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    for (i = 0; i < n; i++) {
+      var yy = y + 12 + i * 16; ctx.strokeStyle = f.legends[i].color; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(x + 8, yy); ctx.lineTo(x + 28, yy); ctx.stroke();
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.fillText(f.legends[i].label, x + 34, yy);
+    }
+  }
+
+  // ===================== 3D (usa el pipeline 3D interactivo de ML) =====================
+  function flush3(f) {
+    var s = ML.figs[f.id]; ML.cur = f.id;
+    ML.view3(f.az, f.el);
+    ML.axis3(f.xmin, f.xmax, f.ymin, f.ymax, f.zmin, f.zmax);
+    var i; for (i = 0; i < f.ops.length; i++) build3(f, f.ops[i]);
+    // datapoints para el hover 3D (cursor que muestra x,y,z del nudo mas cercano)
+    for (i = 0; i < f.ops.length; i++) {
+      var op = f.ops[i];
+      if (op.t === "surf" || op.t === "mesh") { for (var a = 0; a < rows(op.Z); a++) for (var b = 0; b < cols(op.Z); b++) ML.datapoint3(op.X[a][b], op.Y[a][b], op.Z[a][b], op.Z[a][b]); }
+      else if (op.t === "plot3" || op.t === "scatter3") { for (var k = 0; k < op.x.length; k++) ML.datapoint3(op.x[k], op.y[k], op.z[k], op.z[k]); }
+    }
+    if (f.cbar) ML.colorbar((f.crange || [f.zmin, f.zmax])[0], (f.crange || [f.zmin, f.zmax])[1]);
+    ML.render3();
+  }
+  function build3(f, op) {
+    var i, j, dz = (f.zmax - f.zmin) || 1;
+    if (op.t === "surf" || op.t === "mesh") {
+      var X = op.X, Y = op.Y, Z = op.Z, nr = rows(Z), nc = cols(Z);
+      for (i = 0; i < nr - 1; i++) for (j = 0; j < nc - 1; j++) {
+        var p = [X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], X[i + 1][j + 1], Y[i + 1][j + 1], Z[i + 1][j + 1], X[i + 1][j], Y[i + 1][j], Z[i + 1][j]];
+        var zm = (Z[i][j] + Z[i][j + 1] + Z[i + 1][j + 1] + Z[i + 1][j]) / 4;
+        if (op.t === "surf") ML.fill3(p, (zm - f.zmin) / dz);
+        else { var c = ML.jet((zm - f.zmin) / dz); ML.line3(p[0], p[1], p[2], p[3], p[4], p[5], c); ML.line3(p[3], p[4], p[5], p[6], p[7], p[8], c); ML.line3(p[6], p[7], p[8], p[9], p[10], p[11], c); ML.line3(p[9], p[10], p[11], p[0], p[1], p[2], c); }
+      }
+    } else if (op.t === "plot3") {
+      for (i = 0; i < op.x.length - 1; i++) ML.line3(op.x[i], op.y[i], op.z[i], op.x[i + 1], op.y[i + 1], op.z[i + 1], op.color);
+    } else if (op.t === "scatter3") {
+      for (i = 0; i < op.x.length; i++) ML.line3(op.x[i], op.y[i], op.z[i], op.x[i], op.y[i], op.z[i], op.color);
+    } else if (op.t === "text3") {
+      ML.text3(op.x, op.y, op.z, op.s, op.color);
+    }
+  }
+
+  // ===================== API GLOBAL con nombres de MATLAB =====================
+  function figure() { return newFig(); }
+  function clf() { var f = fig(); f.ops = []; f.legends = []; f.cidx = 0; f.xmin = Infinity; f.xmax = -Infinity; f.ymin = Infinity; f.ymax = -Infinity; f.zmin = Infinity; f.zmax = -Infinity; sched(f); }
+  function hold() { }   // en este modelo las series siempre se acumulan en la figura actual
+
+  function plot(x, y, sp) {            // plot(y) | plot(x,y) | plot(x,y,'r--o')
+    var f = fig(); if (y === undefined || typeof y === "string") { sp = y; y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); }
+    var o = spec(sp); var col = o.color || nextColor();
+    for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]);
+    f.ops.push({ t: "line", x: x, y: y, color: col, style: o.style, marker: o.marker, fill: true, lw: 2.4 }); sched(f); return f;
+  }
+  function scatter(x, y, sz, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "scatter", x: x, y: y, color: (typeof c === "string" ? c : nextColor()), mk: "o" }); sched(f); }
+  function line(x, y, sp) { var f = fig(); x = arr(x); y = arr(y); var o = spec(sp); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "line", x: x, y: y, color: o.color || _c("#333","#e8e2d4"), style: o.style === "none" ? "-" : o.style, marker: o.marker, fill: false, lw: 1.8 }); sched(f); }
+  function cline(x, y, c) { var f = fig(); x = arr(x); y = arr(y); c = arr(c); var cmin = minA(c), cmax = maxA(c); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.crange = [cmin, cmax]; f.cbar = true; f.tip = f.tip || "valor"; f.ops.push({ t: "cline", x: x, y: y, c: c, cmin: cmin, cmax: cmax, lw: 3 }); sched(f); }
+  function cline3(x, y, z, c) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z); c = arr(c); var cmin = minA(c), cmax = maxA(c), dc = (cmax - cmin) || 1, i;
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z));
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z), 6, 6);
+    for (i = 0; i < x.length - 1; i++) GL3.line3(x[i], y[i], z[i], x[i + 1], y[i + 1], z[i + 1], jethex(((c[i] + c[i + 1]) / 2 - cmin) / dc));
+    for (i = 0; i < x.length; i++) GL3.datapoint(x[i], y[i], z[i], c[i]);
+    GL3.datatip("valor"); GL3.colorbar3(cmin, cmax, 360); GL3.render3();
+  }
+  function patch(x, y, t) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "patch", x: x, y: y, tv: (t == null ? 0.5 : t) }); sched(f); }
+  function bar(x, y, c) { var f = fig(); if (y === undefined) { y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); } var w = (x.length > 1 ? (x[1] - x[0]) * 0.7 : 0.7); for (var i = 0; i < x.length; i++) bx(f, x[i] - w, y[i]), bx(f, x[i] + w, 0); f.ops.push({ t: "bar", x: x, y: y, w: w, color: (c || CORD[0]) }); sched(f); }
+  function stem(x, y, c) { var f = fig(); if (y === undefined) { y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); } for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]), bx(f, x[i], 0); f.ops.push({ t: "stem", x: x, y: y, color: (c || CORD[0]) }); sched(f); }
+  function area(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]), bx(f, x[i], 0); f.ops.push({ t: "area", x: x, y: y, color: c }); sched(f); }
+  function stairs(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "stairs", x: x, y: y, color: (c || _c("#333","#e8e2d4")) }); sched(f); }
+  function errorbar(x, y, e, c) { var f = fig(); x = arr(x); y = arr(y); e = arr(e); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i] - e[i]), bx(f, x[i], y[i] + e[i]); f.ops.push({ t: "errorbar", x: x, y: y, e: e, color: (c || _c("#333","#e8e2d4")) }); sched(f); }
+  function fill(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "fill", x: x, y: y, color: (typeof c === "string" && CMAP[c] ? CMAP[c] : (c || CORD[0])) }); sched(f); }
+  function quiver(x, y, u, v, c) { var f = fig(); x = arr(x); y = arr(y); u = arr(u); v = arr(v); var mx = 0; for (var i = 0; i < u.length; i++) mx = Math.max(mx, Math.hypot(u[i], v[i])); var spc = (x.length > 1 ? Math.abs(x[1] - x[0]) || 1 : 1); var scl = mx > 0 ? spc / mx : 1; for (i = 0; i < x.length; i++) { bx(f, x[i], y[i]); bx(f, x[i] + u[i] * scl, y[i] + v[i] * scl); } f.ops.push({ t: "quiver", x: x, y: y, u: u, v: v, sc: scl, color: (c || CORD[0]) }); sched(f); }
+  function histogram(d, nb) { d = arr(d); nb = nb || Math.ceil(Math.sqrt(d.length)); var lo = minA(d), hi = maxA(d), w = (hi - lo) / nb || 1, cnt = [], cx = [], i; for (i = 0; i < nb; i++) { cnt[i] = 0; cx[i] = lo + (i + 0.5) * w; } for (i = 0; i < d.length; i++) { var k = Math.min(nb - 1, Math.floor((d[i] - lo) / w)); cnt[k]++; } var f = fig(); for (i = 0; i < nb; i++) bx(f, cx[i] - w / 2, cnt[i]), bx(f, cx[i] + w / 2, 0); f.ops.push({ t: "bar", x: cx, y: cnt, w: w * 0.95, color: CORD[0] }); sched(f); }
+  function pie(v) { var f = fig(); v = arr(v); f.equal = true; f.off = true; f.xmin = -1.4; f.xmax = 1.4; f.ymin = -1.4; f.ymax = 1.4; f.ops.push({ t: "pie", v: v }); sched(f); }
+  function polarplot(th, r, c) { var f = fig(); th = arr(th); r = arr(r); f.equal = true; var rm = maxA(r.map(Math.abs)); bx(f, -rm, -rm); bx(f, rm, rm); f.ops.push({ t: "polar", th: th, r: r, color: (spec(c).color || nextColor()) }); sched(f); }
+  function imagesc(a, b, C) { var f = fig(); var Z = (C === undefined ? a : C); var gx, gy; if (C === undefined) { gx = range(cols(Z)); gy = range(rows(Z)); } else { gx = arr(a); gy = arr(b); } for (var i = 0; i < gx.length; i++) bx(f, gx[i], gy[0]); bx(f, gx[gx.length - 1], gy[gy.length - 1]); f.equal = true; f.crange = [minM(Z), maxM(Z)]; f.cbar = true; f.ops.push({ t: "imagesc", x: gx, y: gy, Z: Z }); sched(f); }
+  function pcolor(a, b, C) { imagesc(a, b, C); fig().ops[fig().ops.length - 1].t = "pcolor"; }
+  function contourf(a, b, C, n) { gridplot("contourf", a, b, C, n); }
+  function contour(a, b, C, n) { gridplot("contour", a, b, C, n); }
+  function gridplot(kind, a, b, C, n) { var f = fig(); var Z, gx, gy; if (C === undefined || typeof C === "number") { Z = a; n = b; gx = range(cols(Z)); gy = range(rows(Z)); } else { gx = isMat(a) ? a[0] : arr(a); gy = isMat(b) ? b.map(function (r) { return r[0]; }) : arr(b); Z = C; } for (var i = 0; i < gx.length; i++) bx(f, gx[i], gy[0]); bx(f, gx[gx.length - 1], gy[gy.length - 1]); f.crange = [minM(Z), maxM(Z)]; f.cbar = true; f.ops.push({ t: kind, x: gx, y: gy, Z: Z, nl: n || 10 }); sched(f); }
+
+  // ---- 3D ----
+  // ===== 3D con GL3 (glplot.js, WebGL suave) — igual que Calcpad-FEM-3D =====
+  function hex6(c) { return (c || "#cc0000").replace("#", ""); }
+  function jethex(t) { var c = GL3.jet(t); function h2(n) { n = Math.round(n * 255); return (n < 16 ? "0" : "") + n.toString(16); } return h2(c[0]) + h2(c[1]) + h2(c[2]); }
+  function gl3init(f) {                                  // quita el canvas ML vacío y crea el lienzo WebGL en su lugar
+    var m = ML.figs[f.id]; if (m && m.cv && m.cv.parentNode && m.cv.parentNode.parentNode) m.cv.parentNode.parentNode.removeChild(m.cv.parentNode);
+    GL3.figure3("gl_" + f.id, 600, 440); GL3.view3(f.az, f.el);
+  }
+  function surf(X, Y, Z) { surf3("surf", X, Y, Z); }
+  function mesh(X, Y, Z) { surf3("mesh", X, Y, Z); }
+  function surf3(kind, X, Y, Z) {
+    var f = fig();
+    if (Z === undefined) { Z = X; X = []; Y = []; for (var r = 0; r < rows(Z); r++) { X[r] = []; Y[r] = []; for (var c = 0; c < cols(Z); c++) { X[r][c] = c + 1; Y[r][c] = r + 1; } } }
+    var nr = rows(Z), nc = cols(Z), i, j, xmn = Infinity, xmx = -Infinity, ymn = Infinity, ymx = -Infinity, zmn = Infinity, zmx = -Infinity;
+    for (i = 0; i < nr; i++) for (j = 0; j < nc; j++) { var x = X[i][j], y = Y[i][j], z = Z[i][j]; if (x < xmn) xmn = x; if (x > xmx) xmx = x; if (y < ymn) ymn = y; if (y > ymx) ymx = y; if (z < zmn) zmn = z; if (z > zmx) zmx = z; }
+    var dz = (zmx - zmn) || 1;
+    gl3init(f);
+    GL3.axis3(xmn, xmx, ymn, ymx, zmn, zmx);
+    GL3.cartesian3(xmn, xmx, ymn, ymx, zmn, zmx, Math.min(8, nc - 1) || 1, Math.min(8, nr - 1) || 1);   // plano cartesiano XYZ
+    for (i = 0; i < nr - 1; i++) for (j = 0; j < nc - 1; j++) {
+      var t1 = (Z[i][j] - zmn) / dz, t2 = (Z[i][j + 1] - zmn) / dz, t3 = (Z[i + 1][j + 1] - zmn) / dz, t4 = (Z[i + 1][j] - zmn) / dz;
+      if (kind === "surf") GL3.fill3([X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], X[i + 1][j + 1], Y[i + 1][j + 1], Z[i + 1][j + 1], X[i + 1][j], Y[i + 1][j], Z[i + 1][j]], t1, t2, t3, t4);
+      else { var col = jethex((t1 + t3) / 2); GL3.line3(X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], col); GL3.line3(X[i][j], Y[i][j], Z[i][j], X[i + 1][j], Y[i + 1][j], Z[i + 1][j], col); }
+    }
+    for (i = 0; i < nr; i++) for (j = 0; j < nc; j++) GL3.datapoint(X[i][j], Y[i][j], Z[i][j], Z[i][j]);
+    GL3.datatip("z"); GL3.colorbar3(zmn, zmx, 360); GL3.render3();
+  }
+  function plot3(x, y, z, sp) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z);
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z));
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z), 6, 6);
+    var col = hex6(spec(sp).color || nextColor()), i;
+    for (i = 0; i < x.length - 1; i++) GL3.line3(x[i], y[i], z[i], x[i + 1], y[i + 1], z[i + 1], col);
+    for (i = 0; i < x.length; i++) GL3.datapoint(x[i], y[i], z[i], z[i]);
+    GL3.datatip("z"); GL3.render3();
+  }
+  function scatter3(x, y, z, c) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z);
+    var zmn = minA(z), zmx = maxA(z), dz = (zmx - zmn) || 1, i;
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), zmn, zmx);
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), zmn, zmx, 6, 6);
+    for (i = 0; i < x.length; i++) { GL3.point3(x[i], y[i], z[i], (z[i] - zmn) / dz); GL3.datapoint(x[i], y[i], z[i], z[i]); }
+    GL3.datatip("z"); GL3.colorbar3(zmn, zmx, 360); GL3.render3();
+  }
+
+  // ---- decoradores / ejes ----
+  function title(s) { var f = fig(); f.ttl = s; sched(f); }
+  function xlabel(s) { var f = fig(); f.xl = s; sched(f); }
+  function ylabel(s) { var f = fig(); f.yl = s; sched(f); }
+  function zlabel(s) { var f = fig(); f.zl = s; sched(f); }
+  function legend() { var f = fig(), a = arguments, k = 0, i; for (i = 0; i < f.ops.length && k < a.length; i++) { var op = f.ops[i]; if (op.color && (op.t === "line" || op.t === "scatter")) f.legends.push({ label: a[k++], color: op.color }); } sched(f); }
+  function colorbar() { var f = fig(); f.cbar = true; sched(f); }
+  function caxis(lo, hi) { var f = fig(); f.crange = [lo, hi]; sched(f); }
+  function colormap() { }   // siempre jet_r (lo fija el motor)
+  function grid(s) { var f = fig(); f.gridForced = (s !== "off" && s !== false); sched(f); }
+  function view(az, el) { var f = fig(); f.az = az; f.el = el; sched(f); }
+  function text(x, y, s, c) { var f = fig(); if (f.is3d) { f.ops.push({ t: "text3", x: x, y: y, z: arguments[2], s: arguments[3], color: arguments[4] || _c("#222","#f3eddd") }); } else { bx(f, x, y); f.ops.push({ t: "text", x: x, y: y, s: s, color: c || _c("#222","#f3eddd") }); } sched(f); }
+  function datacursor(label) { var f = fig(); f.tip = label || "y"; sched(f); }
+  function axis(a, b, c, d) {
+    var f = fig();
+    if (a === "equal") f.equal = true;
+    else if (a === "normal" || a === "auto") f.equal = false;
+    else if (a === "off") f.off = true;
+    else if (a === "on") f.off = false;
+    else if (isArr(a)) f.lim = a;
+    else if (b !== undefined) f.lim = [a, b, c, d];
+    sched(f);
+  }
+  function semilogy(x, y, sp) { plot(x, y, sp); }   // (ejes log: se aproximan como lineales en este motor)
+  function semilogx(x, y, sp) { plot(x, y, sp); }
+  function loglog(x, y, sp) { plot(x, y, sp); }
+  function subplot() { return figure(); }            // simplificado: cada subplot = nueva figura
+
+  // helpers de datos util (estilo MATLAB), por si el reporte los necesita
+  function linspace(a, b, n) { n = n || 100; var o = [], i; for (i = 0; i < n; i++) o.push(a + (b - a) * i / (n - 1)); return o; }
+  function meshgrid(x, y) { y = y || x; var X = [], Y = [], i, j; for (i = 0; i < y.length; i++) { X[i] = []; Y[i] = []; for (j = 0; j < x.length; j++) { X[i][j] = x[j]; Y[i][j] = y[i]; } } return [X, Y]; }
+  function zeros(r, c) { c = c || r; var M = [], i, j; for (i = 0; i < r; i++) { M[i] = []; for (j = 0; j < c; j++) M[i][j] = 0; } return M; }
+
+  // exporta TODOS los nombres MATLAB al ambito global
+  var api = {
+    figure: figure, clf: clf, hold: hold, plot: plot, line: line, cline: cline, cline3: cline3, patch: patch, scatter: scatter, bar: bar, stem: stem, area: area,
+    stairs: stairs, errorbar: errorbar, fill: fill, quiver: quiver, histogram: histogram, hist: histogram,
+    pie: pie, polarplot: polarplot, polar: polarplot, imagesc: imagesc, pcolor: pcolor, contourf: contourf,
+    contour: contour, surf: surf, mesh: mesh, surfc: surf, plot3: plot3, scatter3: scatter3,
+    title: title, xlabel: xlabel, ylabel: ylabel, zlabel: zlabel, legend: legend, colorbar: colorbar,
+    caxis: caxis, colormap: colormap, grid: grid, view: view, text: text, axis: axis,
+    semilogy: semilogy, semilogx: semilogx, loglog: loglog, subplot: subplot, datacursor: datacursor,
+    linspace: linspace, meshgrid: meshgrid, zeros: zeros
+  };
+  for (var k in api) global[k] = api[k];
+  global.MLAB = api;
+})(window);
+
+</script><h1>Muro de Manabí: tiempo-historia con interacción suelo-estructura</h1><div class="osh">Qué se calcula</div><div class="osdoc">El muro de contención de Manabí (285 nudos, 224 Q4 de membrana) sobre <b>muelles de Winkler</b> que representan al suelo: en la base <code>ks</code> (estudio de suelos, 6.59 kg/cm³) y en la cara enterrada <code>nh</code> de Terzaghi.</div><div class="osdoc">La entrada es el registro <b>APO1 N-S de Portoviejo</b> (16-abr-2016), de 5 a 40 s, aplicado en la base. La respuesta es <b>relativa</b> al terreno y el amortiguamiento es <b>Rayleigh con ξ = 5 %</b> en los modos 1 y 2.</div><div class="osdoc">Se repite el cálculo con el suelo <b>×4, ×1, ×0.25 y ×0.05</b> y con la <b>base fija</b>: así se ve cómo el suelo alarga el periodo y cambia el cortante en la base. Es lo que hizo <i>Hekatan Struct</i>.</div><div class="osh">Resultados</div><div class="osdoc">Para cada rigidez del suelo: periodo T1, desplazamiento máximo de la coronación y cortante máximo en la base (V/W con W = 138.6 kN/m).</div><div class="osh">Desplazamiento de la coronación en el tiempo</div><div class="osdoc">Con el suelo, el muro se mueve más y más despacio: la curva roja (suelo del estudio) y la verde (suelo blando) contra la azul (base fija).</div><script>var ux_fija_t=[-0.0056,-0.0199,-0.0275,-0.0204,-0.0150,-0.0202,-0.0242,-0.0171,-0.0087,-0.0108,-0.0165,-0.0137,-0.0051,-0.0031,-0.0064,-0.0043,0.0042,0.0095,0.0080,0.0079,0.0133,0.0184,0.0183,0.0170,0.0191,0.0214,0.0192,0.0141,0.0117,0.0123,0.0112,0.0075,0.0043,0.0037,0.0023,-0.0014,-0.0056,-0.0083,-0.0106,-0.0142,-0.0179,-0.0198,-0.0188,-0.0162,-0.0132,-0.0092,-0.0041,0.0001,0.0025,0.0049,0.0079,0.0097,0.0092,0.0078,0.0078,0.0089,0.0100,0.0103,0.0105,0.0111,0.0110,0.0093,0.0080,0.0084,0.0081,0.0057,0.0029,0.0013,0.0008,0.0004,0.0006,0.0018,0.0027,0.0018,0.0001,-0.0001,0.0003,-0.0010,-0.0040,-0.0067,-0.0086,-0.0109,-0.0132,-0.0136,-0.0115,-0.0094,-0.0088,-0.0078,-0.0054,-0.0028,-0.0015,-0.0008,0.0015,0.0049,0.0071,0.0081,0.0098,0.0120,0.0126,0.0109,0.0087,0.0076,0.0067,0.0063,0.0074,0.0093,0.0104,0.0101,0.0090,0.0079,0.0073,0.0071,0.0073,0.0078,0.0080,0.0070,0.0048,0.0024,0.0001,-0.0025,-0.0047,-0.0061,-0.0073,-0.0090,-0.0103,-0.0103,-0.0096,-0.0101,-0.0120,-0.0133,-0.0131,-0.0124,-0.0126,-0.0126,-0.0112,-0.0093,-0.0080,-0.0061,-0.0034,-0.0011,-0.0001,0.0003,0.0012,0.0025,0.0038,0.0047,0.0051,0.0050,0.0039,0.0026,0.0026,0.0039,0.0052,0.0059,0.0067,0.0075,0.0077,0.0078,0.0088,0.0108,0.0121,0.0119,0.0109,0.0101,0.0086,0.0056,0.0024,0.0005,-0.0003,-0.0011,-0.0023,-0.0030,-0.0030,-0.0029,-0.0032,-0.0037,-0.0043,-0.0052,-0.0063,-0.0064,-0.0051,-0.0033,-0.0016,0.0008,0.0037,0.0059,0.0068,0.0078,0.0090,0.0092,0.0084,0.0081,0.0086,0.0090,0.0084,0.0078,0.0079,0.0077,0.0059,0.0044,0.0042,0.0046,0.0041,0.0021,-0.0001,-0.0015,-0.0031,-0.0055,-0.0075,-0.0079,-0.0070,-0.0060,-0.0053,-0.0040,-0.0022,-0.0016,-0.0027,-0.0042,-0.0050,-0.0057,-0.0065,-0.0067,-0.0062,-0.0061,-0.0074,-0.0097,-0.0111,-0.0108,-0.0100,-0.0097,-0.0091,-0.0075,-0.0057,-0.0056,-0.0061,-0.0054,-0.0042,-0.0045,-0.0053,-0.0047,-0.0026,-0.0008,-0.0001,0.0001,0.0007,0.0001,-0.0036,-0.0089,-0.0127,-0.0149,-0.0176,-0.0203,-0.0203,-0.0180,-0.0156,-0.0138,-0.0116,-0.0086,-0.0056,-0.0041,-0.0049,-0.0066,-0.0075,-0.0078,-0.0085,-0.0097,-0.0109,-0.0123,-0.0143,-0.0165,-0.0174,-0.0155,-0.0119,-0.0082,-0.0047,-0.0005,0.0041,0.0081,0.0108,0.0123,0.0126,0.0119,0.0108,0.0108,0.0119,0.0127,0.0132,0.0145,0.0164,0.0174,0.0168,0.0154,0.0141,0.0123,0.0086,0.0038,-0.0004,-0.0033,-0.0053,-0.0069,-0.0091,-0.0120,-0.0152,-0.0175,-0.0183,-0.0179,-0.0173,-0.0166,-0.0163,-0.0172,-0.0179,-0.0167,-0.0139,-0.0113,-0.0084,-0.0036,0.0031,0.0098,0.0172,0.0258,0.0337,0.0393,0.0435,0.0468,0.0484,0.0478,0.0467,0.0460,0.0443,0.0404,0.0354,0.0310,0.0265,0.0215,0.0174,0.0142,0.0108,0.0070,0.0035,-0.0000,-0.0048,-0.0116,-0.0190,-0.0251,-0.0306,-0.0368,-0.0410,-0.0415,-0.0418,-0.0442,-0.0465,-0.0461,-0.0433,-0.0393,-0.0353,-0.0305,-0.0239,-0.0171,-0.0124,-0.0096,-0.0060,-0.0006,0.0055,0.0113,0.0167,0.0216,0.0267,0.0322,0.0367,0.0396,0.0421,0.0444,0.0448,0.0430,0.0409,0.0393,0.0371,0.0331,0.0273,0.0212,0.0145,0.0064,-0.0020,-0.0090,-0.0150,-0.0221,-0.0299,-0.0362,-0.0415,-0.0473,-0.0527,-0.0564,-0.0583,-0.0597,-0.0616,-0.0628,-0.0617,-0.0589,-0.0558,-0.0512,-0.0441,-0.0360,-0.0281,-0.0190,-0.0085,0.0008,0.0072,0.0123,0.0177,0.0227,0.0263,0.0306,0.0374,0.0442,0.0483,0.0514,0.0547,0.0556,0.0530,0.0492,0.0465,0.0437,0.0391,0.0326,0.0260,0.0193,0.0109,0.0005,-0.0093,-0.0170,-0.0241,-0.0309,-0.0347,-0.0346,-0.0345,-0.0359,-0.0351,-0.0296,-0.0225,-0.0171,-0.0130,-0.0076,-0.0012,0.0019,0.0012,0.0013,0.0025,0.0009,-0.0035,-0.0069,-0.0093,-0.0129,-0.0181,-0.0231,-0.0263,-0.0289,-0.0333,-0.0379,-0.0405,-0.0431,-0.0480,-0.0541,-0.0593,-0.0627,-0.0657,-0.0692,-0.0710,-0.0702,-0.0683,-0.0653,-0.0600,-0.0535,-0.0468,-0.0378,-0.0255,-0.0130,-0.0024,0.0078,0.0195,0.0316,0.0411,0.0480,0.0545,0.0611,0.0667,0.0697,0.0687,0.0649,0.0589,0.0498,0.0375,0.0242,0.0120,0.0004,-0.0128,-0.0273,-0.0406,-0.0524,-0.0652,-0.0797,-0.0918,-0.0987,-0.1032,-0.1090,-0.1146,-0.1162,-0.1139,-0.1109,-0.1070,-0.1000,-0.0913,-0.0829,-0.0743,-0.0642,-0.0539,-0.0435,-0.0305,-0.0143,0.0033,0.0221,0.0432,0.0647,0.0828,0.0964,0.1074,0.1166,0.1220,0.1247,0.1277,0.1312,0.1325,0.1304,0.1287,0.1282,0.1239,0.1140,0.1017,0.0880,0.0732,0.0596,0.0475,0.0346,0.0189,0.0010,-0.0152,-0.0293,-0.0456,-0.0642,-0.0786,-0.0858,-0.0894,-0.0938,-0.0983,-0.0984,-0.0942,-0.0892,-0.0842,-0.0798,-0.0763,-0.0711,-0.0580,-0.0373,-0.0180,-0.0017,0.0224,0.0593,0.0936,0.1117,0.1216,0.1340,0.1468,0.1526,0.1504,0.1468,0.1467,0.1479,0.1475,0.1456,0.1414,0.1366,0.1347,0.1310,0.1182,0.1034,0.0985,0.0945,0.0761,0.0507,0.0346,0.0223,-0.0028,-0.0377,-0.0678,-0.0923,-0.1216,-0.1535,-0.1738,-0.1780,-0.1762,-0.1758,-0.1729,-0.1637,-0.1536,-0.1468,-0.1399,-0.1309,-0.1205,-0.1051,-0.0831,-0.0602,-0.0401,-0.0234,-0.0079,0.0125,0.0402,0.0692,0.0943,0.1146,0.1293,0.1427,0.1594,0.1731,0.1722,0.1581,0.1458,0.1408,0.1347,0.1240,0.1153,0.1077,0.0889,0.0608,0.0471,0.0535,0.0498,0.0224,-0.0002,-0.0005,-0.0018,-0.0252,-0.0517,-0.0560,-0.0495,-0.0594,-0.0842,-0.0979,-0.0945,-0.0931,-0.1011,-0.1021,-0.0894,-0.0809,-0.0871,-0.0930,-0.0862,-0.0754,-0.0698,-0.0609,-0.0394,-0.0145,0.0018,0.0157,0.0393,0.0684,0.0888,0.0988,0.1104,0.1276,0.1402,0.1393,0.1322,0.1302,0.1289,0.1181,0.0998,0.0838,0.0716,0.0578,0.0392,0.0198,0.0064,-0.0043,-0.0215,-0.0425,-0.0581,-0.0692,-0.0827,-0.0969,-0.1046,-0.1039,-0.1003,-0.0980,-0.0969,-0.0942,-0.0890,-0.0836,-0.0781,-0.0700,-0.0585,-0.0470,-0.0376,-0.0320,-0.0307,-0.0300,-0.0270,-0.0242,-0.0241,-0.0243,-0.0197,-0.0083,0.0061,0.0195,0.0326,0.0464,0.0592,0.0681,0.0721,0.0717,0.0671,0.0610,0.0572,0.0564,0.0557,0.0523,0.0467,0.0406,0.0346,0.0267,0.0152,0.0014,-0.0127,-0.0271,-0.0424,-0.0573,-0.0696,-0.0779,-0.0832,-0.0864,-0.0871,-0.0882,-0.0919,-0.0943,-0.0939,-0.0937,-0.0934,-0.0893,-0.0808,-0.0712,-0.0611,-0.0479,-0.0308,-0.0133,0.0032,0.0214,0.0435,0.0665,0.0857,0.1009,0.1138,0.1221,0.1224,0.1187,0.1129,0.1005,0.0831,0.0666,0.0497,0.0270,0.0009,-0.0187,-0.0284,-0.0376,-0.0517,-0.0609,-0.0602,-0.0613,-0.0710,-0.0806,-0.0837,-0.0852,-0.0923,-0.1038,-0.1101,-0.1114,-0.1172,-0.1263,-0.1297,-0.1264,-0.1222,-0.1200,-0.1162,-0.1072,-0.0957,-0.0870,-0.0798,-0.0680,-0.0507,-0.0341,-0.0223,-0.0114,0.0024,0.0160,0.0253,0.0331,0.0446,0.0594,0.0730,0.0842,0.0957,0.1079,0.1163,0.1183,0.1179,0.1193,0.1206,0.1175,0.1104,0.1034,0.0962,0.0858,0.0729,0.0606,0.0485,0.0313,0.0096,-0.0111,-0.0307,-0.0536,-0.0781,-0.0956,-0.1051,-0.1133,-0.1221,-0.1254,-0.1224,-0.1209,-0.1222,-0.1176,-0.1025,-0.0881,-0.0830,-0.0760,-0.0581,-0.0406,-0.0361,-0.0365,-0.0254,-0.0075,0.0007,-0.0010,0.0025,0.0163,0.0287,0.0332,0.0366,0.0435,0.0510,0.0552,0.0592,0.0685,0.0783,0.0780,0.0707,0.0671,0.0657,0.0553,0.0358,0.0171,0.0045,-0.0048,-0.0147,-0.0239,-0.0279,-0.0269,-0.0260,-0.0260,-0.0223,-0.0157,-0.0122,-0.0118,-0.0098,-0.0071,-0.0095,-0.0153,-0.0187,-0.0210,-0.0270,-0.0339,-0.0368,-0.0393,-0.0457,-0.0495,-0.0432,-0.0329,-0.0260,-0.0178,-0.0045,0.0058,0.0074,0.0064,0.0099,0.0155,0.0167,0.0164,0.0233,0.0345,0.0408,0.0435,0.0508,0.0598,0.0622,0.0597,0.0603,0.0635,0.0614,0.0534,0.0472,0.0458,0.0425,0.0325,0.0185,0.0069,0.0005,-0.0046,-0.0111,-0.0140,-0.0100,-0.0045,-0.0042,-0.0051,0.0005,0.0102,0.0157,0.0156,0.0166,0.0209,0.0200,0.0105,0.0007,-0.0056,-0.0134,-0.0246,-0.0346,-0.0409,-0.0456,-0.0504,-0.0522,-0.0492,-0.0449,-0.0423,-0.0387,-0.0330,-0.0291,-0.0297,-0.0324,-0.0339,-0.0326,-0.0295,-0.0230,-0.0098,0.0089,0.0269,0.0420,0.0581,0.0761,0.0907,0.0987,0.1033,0.1072,0.1081,0.1039,0.0960,0.0862,0.0728,0.0554,0.0387,0.0262,0.0138,-0.0020,-0.0170,-0.0275,-0.0364,-0.0468,-0.0559,-0.0589,-0.0554,-0.0492,-0.0405,-0.0261,-0.0086,0.0071,0.0214,0.0361,0.0490,0.0561,0.0570,0.0554,0.0533,0.0500,0.0461,0.0438,0.0438,0.0443,0.0435,0.0413,0.0384,0.0361,0.0346,0.0349,0.0368,0.0362,0.0340,0.0324,0.0294,0.0230,0.0161,0.0116,0.0064,-0.0017,-0.0095,-0.0132,-0.0149,-0.0192,-0.0227,-0.0210,-0.0206,-0.0262,-0.0311,-0.0329,-0.0394,-0.0526,-0.0649,-0.0712,-0.0758,-0.0837,-0.0907,-0.0912,-0.0860,-0.0799,-0.0745,-0.0687,-0.0611,-0.0500,-0.0354,-0.0194,-0.0043,0.0091,0.0205,0.0312,0.0417,0.0499,0.0539,0.0552,0.0565,0.0591,0.0636,0.0689,0.0716,0.0732,0.0764,0.0790,0.0765,0.0679,0.0570,0.0469,0.0368,0.0257,0.0157,0.0076,0.0002,-0.0070,-0.0126,-0.0161,-0.0200,-0.0254,-0.0299,-0.0321,-0.0351,-0.0403,-0.0450,-0.0479,-0.0508,-0.0556,-0.0617,-0.0678,-0.0737,-0.0789,-0.0823,-0.0822,-0.0776,-0.0681,-0.0540,-0.0370,-0.0218,-0.0104,0.0013,0.0149,0.0273,0.0368,0.0452,0.0539,0.0603,0.0615,0.0596,0.0583,0.0569,0.0536,0.0494,0.0465,0.0445,0.0394,0.0305,0.0200,0.0101,0.0021,-0.0052,-0.0132,-0.0196,-0.0225,-0.0245,-0.0278,-0.0301,-0.0302,-0.0307,-0.0334,-0.0369,-0.0384,-0.0379,-0.0364,-0.0339,-0.0300,-0.0241,-0.0182,-0.0145,-0.0104,-0.0029,0.0060,0.0141,0.0235,0.0344,0.0432,0.0498,0.0568,0.0640,0.0686,0.0703,0.0709,0.0698,0.0644,0.0559,0.0475,0.0396,0.0312,0.0226,0.0158,0.0107,0.0049,-0.0022,-0.0073,-0.0096,-0.0109,-0.0114,-0.0095,-0.0050,-0.0016,-0.0029,-0.0070,-0.0102,-0.0139,-0.0205,-0.0270,-0.0286,-0.0254,-0.0229,-0.0216,-0.0160,-0.0064,0.0010,0.0039,0.0068,0.0125,0.0180,0.0206,0.0227,0.0268,0.0303,0.0306,0.0298,0.0313,0.0340,0.0339,0.0309,0.0284,0.0280,0.0277,0.0255,0.0225,0.0210,0.0192,0.0141,0.0079,0.0044,0.0023,-0.0008,-0.0045,-0.0072,-0.0083,-0.0103,-0.0150,-0.0194,-0.0204,-0.0207,-0.0244,-0.0295,-0.0320,-0.0327,-0.0351,-0.0387,-0.0404,-0.0400,-0.0395,-0.0379,-0.0324,-0.0234,-0.0141,-0.0050,0.0051,0.0160,0.0247,0.0298,0.0343,0.0378,0.0377,0.0342,0.0312,0.0300,0.0276,0.0224,0.0172,0.0140,0.0111,0.0069,0.0037,0.0039,0.0052,0.0043,0.0027,0.0039,0.0071,0.0077,0.0040,0.0005,-0.0006,-0.0031,-0.0086,-0.0123,-0.0114,-0.0097,-0.0098,-0.0081,-0.0018,0.0043,0.0053,0.0043,0.0052,0.0069,0.0060,0.0041,0.0059,0.0111,0.0151,0.0180,0.0240,0.0331,0.0416,0.0488,0.0575,0.0672,0.0731,0.0744,0.0746,0.0741,0.0698,0.0620,0.0537,0.0467,0.0397,0.0299,0.0186,0.0113,0.0082,0.0036,-0.0027,-0.0054,-0.0042,-0.0046,-0.0093,-0.0147,-0.0174,-0.0200,-0.0255,-0.0307,-0.0315,-0.0295,-0.0281,-0.0269,-0.0233,-0.0175,-0.0135,-0.0122,-0.0100,-0.0053,-0.0017,-0.0019,-0.0034,-0.0031,-0.0018,-0.0020,-0.0027,-0.0012,0.0019,0.0039,0.0054,0.0096,0.0162,0.0220,0.0260,0.0302,0.0342,0.0345,0.0301,0.0236,0.0177,0.0127,0.0080,0.0047,0.0049,0.0077,0.0108,0.0140,0.0175,0.0200,0.0211,0.0210,0.0195,0.0159,0.0102,0.0031,-0.0038,-0.0096,-0.0158,-0.0224,-0.0273,-0.0298,-0.0316,-0.0333,-0.0343,-0.0343,-0.0347,-0.0367,-0.0391,-0.0395,-0.0386,-0.0384,-0.0381,-0.0356,-0.0316,-0.0287,-0.0277,-0.0260,-0.0219,-0.0184,-0.0174,-0.0157,-0.0118,-0.0102,-0.0126,-0.0148,-0.0145,-0.0137,-0.0135,-0.0110,-0.0044,0.0028,0.0079,0.0130,0.0200,0.0263,0.0299,0.0331,0.0379,0.0428,0.0453,0.0458,0.0464,0.0470,0.0451,0.0406,0.0372,0.0357,0.0325,0.0256,0.0188,0.0150,0.0110,0.0036,-0.0037,-0.0075,-0.0099,-0.0151,-0.0215,-0.0252,-0.0272,-0.0306,-0.0349,-0.0362,-0.0338,-0.0305,-0.0273,-0.0223,-0.0150,-0.0079,-0.0026,0.0021,0.0069,0.0107,0.0128,0.0136,0.0144,0.0147,0.0139,0.0141,0.0168,0.0202,0.0226,0.0245,0.0266,0.0271,0.0243,0.0201,0.0168,0.0136,0.0083,0.0014,-0.0050,-0.0104,-0.0157,-0.0212,-0.0252,-0.0263,-0.0257,-0.0256,-0.0260,-0.0255,-0.0244,-0.0240,-0.0234,-0.0210,-0.0174,-0.0137,-0.0107,-0.0079,-0.0042,-0.0003,0.0029,0.0052,0.0067,0.0075,0.0078,0.0081,0.0094,0.0118,0.0156,0.0208,0.0260,0.0297,0.0328,0.0355,0.0373,0.0384,0.0382,0.0356,0.0311,0.0268,0.0234,0.0208,0.0184,0.0150,0.0101,0.0041,-0.0025,-0.0091,-0.0159,-0.0223,-0.0277,-0.0323,-0.0355,-0.0370,-0.0366,-0.0338,-0.0284,-0.0223,-0.0163,-0.0102,-0.0042,0.0011,0.0047,0.0070,0.0088,0.0098,0.0094,0.0087,0.0079,0.0059,0.0019,-0.0027,-0.0060,-0.0085,-0.0116,-0.0147,-0.0166,-0.0177,-0.0192,-0.0207,-0.0220,-0.0228,-0.0227,-0.0223,-0.0221,-0.0215,-0.0200,-0.0181,-0.0165,-0.0151,-0.0142,-0.0133,-0.0114,-0.0080,-0.0039,0.0007,0.0062,0.0125,0.0184,0.0231,0.0272,0.0315,0.0338,0.0323,0.0281,0.0225,0.0152,0.0059,-0.0038,-0.0119,-0.0186,-0.0255,-0.0331,-0.0399,-0.0447,-0.0480,-0.0501,-0.0508,-0.0497,-0.0462,-0.0415,-0.0363,-0.0294,-0.0201,-0.0100,-0.0009,0.0075,0.0169,0.0280,0.0385,0.0459,0.0512,0.0572,0.0629,0.0656,0.0667,0.0674,0.0663,0.0620,0.0560,0.0507,0.0453,0.0374,0.0286,0.0214,0.0151,0.0075,-0.0004,-0.0068,-0.0115,-0.0161,-0.0212,-0.0261,-0.0300,-0.0334,-0.0378,-0.0425,-0.0460,-0.0490,-0.0532,-0.0571,-0.0595,-0.0625,-0.0662,-0.0684,-0.0679,-0.0663,-0.0645,-0.0595,-0.0503,-0.0395,-0.0308,-0.0233,-0.0137,-0.0035,0.0045,0.0114,0.0204,0.0306,0.0381,0.0431,0.0495,0.0566,0.0605,0.0616,0.0621,0.0625,0.0607,0.0550,0.0481,0.0425,0.0364,0.0286,0.0212,0.0166,0.0136,0.0095,0.0041,0.0002,-0.0026,-0.0070,-0.0131,-0.0181,-0.0212,-0.0246,-0.0296,-0.0340,-0.0361,-0.0379,-0.0408,-0.0429,-0.0434,-0.0433,-0.0435,-0.0434,-0.0409,-0.0363,-0.0314,-0.0256,-0.0169,-0.0068,0.0034,0.0133,0.0228,0.0328,0.0413,0.0459,0.0485,0.0508,0.0514,0.0494,0.0464,0.0434,0.0401,0.0358,0.0311,0.0271,0.0241,0.0218,0.0191,0.0154,0.0104,0.0039,-0.0040,-0.0123,-0.0200,-0.0272,-0.0349,-0.0415,-0.0453,-0.0487,-0.0533,-0.0569,-0.0575,-0.0570,-0.0576,-0.0577,-0.0553,-0.0520,-0.0495,-0.0465,-0.0423,-0.0377,-0.0334,-0.0293,-0.0252,-0.0208,-0.0167,-0.0126,-0.0077,-0.0022,0.0034,0.0089,0.0146,0.0203,0.0253,0.0289,0.0312,0.0329,0.0343,0.0344,0.0339,0.0342,0.0351,0.0353,0.0345,0.0340,0.0338,0.0321,0.0279,0.0229,0.0184,0.0139,0.0081,0.0015,-0.0045,-0.0100,-0.0157,-0.0212,-0.0252,-0.0276,-0.0293,-0.0305,-0.0305,-0.0290,-0.0271,-0.0249,-0.0221,-0.0190,-0.0157,-0.0126,-0.0096,-0.0067,-0.0044,-0.0032,-0.0022,-0.0002,0.0018,0.0025,0.0031,0.0048,0.0069,0.0075,0.0072,0.0068,0.0056,0.0029,-0.0014,-0.0060,-0.0098,-0.0131,-0.0171,-0.0215,-0.0243,-0.0252,-0.0261,-0.0272,-0.0264,-0.0243,-0.0235,-0.0244,-0.0255,-0.0263,-0.0274,-0.0294,-0.0316,-0.0330,-0.0338,-0.0351,-0.0365,-0.0366,-0.0357,-0.0352,-0.0341,-0.0314,-0.0283,-0.0268,-0.0263,-0.0252,-0.0228,-0.0207,-0.0196,-0.0171,-0.0129,-0.0092,-0.0059,-0.0022,0.0017,0.0054,0.0086,0.0114,0.0143,0.0178,0.0206,0.0222,0.0232,0.0238,0.0233,0.0212,0.0188,0.0166,0.0141,0.0113,0.0088,0.0077,0.0076,0.0077,0.0081,0.0093,0.0113,0.0129,0.0133,0.0134,0.0140,0.0141,0.0131,0.0121,0.0119,0.0117,0.0108,0.0096,0.0084,0.0069,0.0055,0.0041,0.0025,0.0014,0.0005,-0.0010,-0.0026,-0.0036,-0.0045,-0.0062,-0.0083,-0.0096,-0.0096,-0.0087,-0.0072,-0.0043,0.0004,0.0055,0.0097,0.0127,0.0157,0.0183,0.0200,0.0203,0.0197,0.0189,0.0171,0.0132,0.0085,0.0040,-0.0006,-0.0047,-0.0075,-0.0094,-0.0105,-0.0109,-0.0107,-0.0096,-0.0075,-0.0051,-0.0027,-0.0005,0.0014,0.0031,0.0045,0.0058,0.0076,0.0101,0.0123,0.0137,0.0143,0.0139,0.0125,0.0093,0.0041,-0.0011,-0.0055,-0.0105,-0.0162,-0.0207,-0.0242,-0.0280,-0.0320,-0.0348,-0.0362,-0.0370,-0.0376,-0.0366,-0.0335,-0.0293,-0.0252,-0.0212,-0.0168,-0.0124,-0.0082,-0.0043,-0.0005,0.0034,0.0074,0.0108,0.0134,0.0158,0.0181,0.0198,0.0196,0.0180,0.0162,0.0134,0.0088,0.0036,-0.0012,-0.0059,-0.0106,-0.0151,-0.0191,-0.0215,-0.0224,-0.0224,-0.0219,-0.0206,-0.0188,-0.0177,-0.0178,-0.0183,-0.0180,-0.0172,-0.0162,-0.0145,-0.0114,-0.0079,-0.0049,-0.0018,0.0013,0.0035,0.0043,0.0045,0.0047,0.0044,0.0030,0.0015,0.0004,-0.0006,-0.0020,-0.0032,-0.0039,-0.0047,-0.0055,-0.0059,-0.0063,-0.0065,-0.0067,-0.0074,-0.0082,-0.0083,-0.0074,-0.0062,-0.0050,-0.0033,-0.0009,0.0013,0.0033,0.0054,0.0082,0.0113,0.0142,0.0171,0.0198,0.0224,0.0249,0.0270,0.0282,0.0287,0.0285,0.0272,0.0247,0.0216,0.0187,0.0164,0.0138,0.0106,0.0077,0.0056,0.0031,-0.0001,-0.0028,-0.0047,-0.0066,-0.0089,-0.0109,-0.0122,-0.0135,-0.0153,-0.0168,-0.0181,-0.0201,-0.0225,-0.0241,-0.0246,-0.0248,-0.0247,-0.0236,-0.0215,-0.0195,-0.0179,-0.0151,-0.0111,-0.0071,-0.0032,0.0009,0.0053,0.0092,0.0121,0.0146,0.0171,0.0186,0.0195,0.0205,0.0208,0.0208,0.0206,0.0195,0.0179,0.0162,0.0134,0.0103,0.0079,0.0052,0.0015,-0.0013,-0.0033,-0.0057,-0.0077,-0.0081,-0.0078,-0.0077,-0.0074,-0.0066,-0.0059,-0.0065,-0.0074,-0.0073,-0.0070,-0.0077,-0.0083,-0.0084,-0.0086,-0.0090,-0.0097,-0.0108,-0.0115,-0.0112,-0.0110,-0.0109,-0.0099,-0.0083,-0.0076,-0.0078,-0.0072,-0.0058,-0.0046,-0.0036,-0.0020,0.0001,0.0018,0.0026,0.0034,0.0042,0.0046,0.0042,0.0033,0.0022,0.0012,0.0002,-0.0010,-0.0017,-0.0019,-0.0026,-0.0037,-0.0044,-0.0044,-0.0039,-0.0029,-0.0012,0.0015,0.0046,0.0069,0.0088,0.0110,0.0135,0.0157,0.0175,0.0190,0.0204,0.0216,0.0224,0.0230,0.0232,0.0231,0.0229,0.0226,0.0216,0.0193,0.0162,0.0128,0.0085,0.0032,-0.0023,-0.0072,-0.0117,-0.0156,-0.0186,-0.0206,-0.0215,-0.0221,-0.0225,-0.0220,-0.0201,-0.0180,-0.0161,-0.0136,-0.0105,-0.0073,-0.0042,-0.0011,0.0026,0.0067,0.0106,0.0142,0.0177,0.0213,0.0248,0.0272,0.0287,0.0303,0.0323,0.0333,0.0331,0.0328,0.0326,0.0316,0.0304,0.0294,0.0285,0.0265,0.0233,0.0199,0.0164,0.0118,0.0068,0.0026,-0.0008,-0.0039,-0.0069,-0.0090,-0.0103,-0.0123,-0.0149,-0.0168,-0.0182,-0.0193,-0.0206,-0.0216,-0.0213,-0.0196,-0.0178,-0.0158,-0.0130,-0.0095,-0.0062,-0.0038,-0.0013,0.0020,0.0045,0.0057,0.0067,0.0077,0.0076,0.0057,0.0031,0.0007,-0.0017,-0.0046,-0.0077,-0.0101,-0.0119,-0.0134,-0.0143,-0.0144,-0.0145,-0.0151,-0.0158,-0.0165,-0.0181,-0.0204,-0.0228,-0.0245,-0.0253,-0.0256,-0.0254,-0.0236,-0.0203,-0.0166,-0.0129,-0.0084,-0.0033,0.0010,0.0041,0.0074,0.0111,0.0138,0.0157,0.0179,0.0204,0.0220,0.0228,0.0234,0.0234,0.0219,0.0196,0.0177,0.0163,0.0145,0.0121,0.0098,0.0079,0.0056,0.0022,-0.0014,-0.0044,-0.0076,-0.0115,-0.0154,-0.0185,-0.0206,-0.0221,-0.0230,-0.0221,-0.0196,-0.0164,-0.0127,-0.0087,-0.0045,-0.0004,0.0028,0.0053,0.0076,0.0096,0.0108,0.0116,0.0125,0.0134,0.0138,0.0137,0.0136,0.0140,0.0139,0.0130,0.0120,0.0115,0.0108,0.0090,0.0070,0.0052,0.0033,0.0014,0.0010,0.0020,0.0033,0.0043,0.0060,0.0086,0.0116,0.0140,0.0159,0.0182,0.0204,0.0220,0.0230,0.0239,0.0243,0.0239,0.0227,0.0213,0.0200,0.0182,0.0158,0.0139,0.0129,0.0120,0.0113,0.0110,0.0108,0.0109,0.0107,0.0102,0.0099,0.0099,0.0095,0.0085,0.0079,0.0083,0.0087,0.0087,0.0088,0.0099,0.0110,0.0115,0.0120,0.0130,0.0140,0.0141,0.0136,0.0130,0.0125,0.0115,0.0099,0.0085,0.0078,0.0066,0.0050,0.0037,0.0031,0.0024,0.0010,-0.0004,-0.0014,-0.0022,-0.0032,-0.0046,-0.0063,-0.0077,-0.0095,-0.0120,-0.0141,-0.0149,-0.0153,-0.0159,-0.0160,-0.0149,-0.0134,-0.0121,-0.0104,-0.0077,-0.0046,-0.0021,0.0001,0.0027,0.0051,0.0067,0.0080,0.0096,0.0111,0.0121,0.0130,0.0142,0.0155,0.0166,0.0175,0.0184,0.0192,0.0194,0.0187,0.0174,0.0156,0.0130,0.0097,0.0063,0.0034,0.0007,-0.0019,-0.0040,-0.0052,-0.0062,-0.0077,-0.0091,-0.0100,-0.0106,-0.0111,-0.0111,-0.0102,-0.0086,-0.0064,-0.0039,-0.0013,0.0016,0.0048,0.0077,0.0099,0.0117,0.0136,0.0152,0.0159,0.0164,0.0172,0.0184,0.0197,0.0209,0.0220,0.0236,0.0246,0.0241,0.0227,0.0211,0.0187,0.0152,0.0121,0.0096,0.0069,0.0042,0.0021,0.0006,-0.0003,-0.0009,-0.0010,-0.0002,0.0008,0.0017,0.0024,0.0026,0.0025,0.0021,0.0014,0.0002,-0.0011,-0.0028,-0.0048,-0.0070,-0.0091,-0.0111,-0.0129,-0.0147,-0.0167,-0.0186,-0.0199,-0.0211,-0.0223,-0.0231,-0.0230,-0.0226,-0.0219,-0.0208,-0.0192,-0.0173,-0.0157,-0.0138,-0.0116,-0.0097,-0.0081,-0.0066,-0.0050,-0.0034,-0.0017,0.0001,0.0020,0.0039,0.0058,0.0077,0.0094,0.0109,0.0123,0.0132,0.0139,0.0145,0.0149,0.0148,0.0145,0.0142,0.0136,0.0124,0.0103,0.0076,0.0047,0.0018,-0.0009,-0.0036,-0.0064,-0.0088,-0.0103,-0.0115,-0.0127,-0.0137,-0.0141,-0.0144,-0.0152,-0.0159,-0.0159,-0.0156,-0.0150,-0.0141,-0.0126,-0.0103,-0.0077,-0.0057,-0.0038,-0.0012,0.0011,0.0020,0.0024,0.0029,0.0032,0.0026,0.0020,0.0023,0.0029,0.0030,0.0033,0.0042,0.0055,0.0066,0.0073,0.0081,0.0092,0.0100,0.0104,0.0106,0.0108,0.0109,0.0103,0.0094,0.0085,0.0074,0.0064,0.0055,0.0049,0.0045,0.0045,0.0048,0.0050,0.0051,0.0049,0.0047,0.0042,0.0035,0.0026,0.0012,-0.0005,-0.0019,-0.0036,-0.0057,-0.0066,-0.0064,-0.0063,-0.0061,-0.0049,-0.0029,-0.0007,0.0012,0.0036,0.0065,0.0092,0.0111,0.0130,0.0155,0.0176,0.0186,0.0193,0.0206,0.0225,0.0239,0.0245,0.0254,0.0261,0.0259,0.0248,0.0234,0.0221,0.0203,0.0177,0.0151,0.0128,0.0107,0.0089,0.0066,0.0042,0.0022,-0.0000,-0.0028,-0.0055,-0.0078,-0.0102,-0.0131,-0.0158,-0.0175,-0.0189,-0.0208,-0.0222,-0.0227,-0.0228,-0.0229,-0.0229,-0.0219,-0.0197,-0.0174,-0.0156,-0.0138,-0.0119,-0.0106,-0.0101,-0.0098,-0.0092,-0.0083,-0.0077,-0.0070,-0.0055,-0.0037,-0.0019,-0.0001,0.0015,0.0033,0.0055,0.0072,0.0083,0.0094,0.0102,0.0097,0.0084,0.0068,0.0046,0.0022,-0.0003,-0.0028,-0.0052,-0.0074,-0.0095,-0.0116,-0.0134,-0.0149,-0.0159,-0.0168,-0.0174,-0.0176,-0.0175,-0.0167,-0.0155,-0.0144,-0.0134,-0.0119,-0.0097,-0.0081,-0.0069,-0.0056,-0.0041,-0.0029,-0.0025,-0.0026,-0.0025,-0.0023,-0.0026,-0.0033,-0.0037,-0.0039,-0.0041,-0.0044,-0.0045,-0.0038,-0.0028,-0.0017,-0.0008,0.0004,0.0022,0.0038,0.0052,0.0067,0.0085,0.0095,0.0102,0.0116,0.0128,0.0129,0.0127,0.0131,0.0134,0.0129,0.0124,0.0124,0.0129,0.0130,0.0126,0.0119,0.0114,0.0103,0.0086,0.0068,0.0051,0.0036,0.0019,-0.0001,-0.0019,-0.0035,-0.0053,-0.0069,-0.0078,-0.0087,-0.0097,-0.0106,-0.0107,-0.0103,-0.0103,-0.0108,-0.0110,-0.0110,-0.0116,-0.0134,-0.0155,-0.0163,-0.0163,-0.0170,-0.0184,-0.0187,-0.0181,-0.0182,-0.0193,-0.0195,-0.0182,-0.0171,-0.0170,-0.0162,-0.0139,-0.0120,-0.0114,-0.0104,-0.0085,-0.0072,-0.0068,-0.0065,-0.0056,-0.0049,-0.0050,-0.0053,-0.0051,-0.0045,-0.0048,-0.0059,-0.0070,-0.0080,-0.0094,-0.0115,-0.0136,-0.0150,-0.0161,-0.0174,-0.0184,-0.0184,-0.0178,-0.0168,-0.0154,-0.0134,-0.0110,-0.0090,-0.0073,-0.0055,-0.0037,-0.0024,-0.0016,-0.0010,-0.0007,-0.0011,-0.0022,-0.0032,-0.0036,-0.0043,-0.0055,-0.0061,-0.0056,-0.0049,-0.0049,-0.0049,-0.0043,-0.0035,-0.0038,-0.0045,-0.0045,-0.0044,-0.0051,-0.0059,-0.0060,-0.0056,-0.0053,-0.0049,-0.0040,-0.0027,-0.0017,-0.0010,0.0002,0.0019,0.0032,0.0040,0.0050,0.0065,0.0076,0.0081,0.0085,0.0092,0.0094,0.0087,0.0076,0.0065,0.0054,0.0041,0.0027,0.0017,0.0012,0.0005,-0.0006,-0.0015,-0.0021,-0.0027,-0.0035,-0.0041,-0.0046,-0.0054,-0.0060,-0.0060,-0.0055,-0.0052,-0.0050,-0.0046,-0.0039,-0.0035,-0.0033,-0.0028,-0.0018,-0.0014,-0.0018,-0.0018,-0.0010,-0.0003,-0.0002,0.0004,0.0022,0.0042,0.0060,0.0078,0.0100,0.0122,0.0140,0.0149,0.0155,0.0160,0.0161,0.0154,0.0142,0.0134,0.0129,0.0120,0.0110,0.0101,0.0088,0.0068,0.0042,0.0017,-0.0009,-0.0036,-0.0067,-0.0096,-0.0117,-0.0131,-0.0141,-0.0145,-0.0135,-0.0115,-0.0093,-0.0074,-0.0054,-0.0033,-0.0016,-0.0002,0.0008,0.0014,0.0018,0.0022,0.0023,0.0020,0.0015,0.0012,0.0009,0.0003,-0.0004,-0.0009,-0.0007,-0.0003,-0.0002,-0.0004,-0.0004,-0.0003,-0.0006,-0.0013,-0.0021,-0.0032,-0.0045,-0.0061,-0.0077,-0.0088,-0.0097,-0.0108,-0.0118,-0.0122,-0.0124,-0.0126,-0.0126,-0.0125,-0.0119,-0.0105,-0.0087,-0.0069,-0.0049,-0.0025,-0.0001,0.0023,0.0046,0.0072,0.0099,0.0123,0.0141,0.0156,0.0167,0.0170,0.0167,0.0162,0.0155,0.0145,0.0131,0.0115,0.0095,0.0071,0.0046,0.0024,0.0002,-0.0022,-0.0045,-0.0065,-0.0083,-0.0099,-0.0114,-0.0125,-0.0129,-0.0132,-0.0134,-0.0135,-0.0131,-0.0123,-0.0115,-0.0104,-0.0089,-0.0069,-0.0045,-0.0019,0.0009,0.0041,0.0075,0.0106,0.0136,0.0164,0.0190,0.0212,0.0232,0.0250,0.0259,0.0259,0.0258,0.0257,0.0251,0.0237,0.0224,0.0214,0.0199,0.0177,0.0158,0.0145,0.0129,0.0104,0.0083,0.0066,0.0045,0.0019,-0.0001,-0.0015,-0.0030,-0.0045,-0.0052,-0.0055,-0.0057,-0.0057,-0.0056,-0.0056,-0.0055,-0.0054,-0.0051,-0.0047,-0.0040,-0.0033,-0.0021,-0.0003,0.0013,0.0028,0.0046,0.0066,0.0086,0.0105,0.0125,0.0146,0.0167,0.0184,0.0197,0.0205,0.0215,0.0225,0.0226,0.0219,0.0215,0.0212,0.0199,0.0174,0.0147,0.0122,0.0096,0.0066,0.0041,0.0023,0.0008,-0.0006,-0.0017,-0.0020,-0.0017,-0.0013,-0.0006,0.0005,0.0020,0.0033,0.0040,0.0045,0.0050,0.0057,0.0062,0.0063,0.0064,0.0070,0.0073,0.0069,0.0062,0.0055,0.0045,0.0027,0.0006,-0.0013,-0.0027,-0.0046,-0.0068,-0.0080,-0.0085,-0.0090,-0.0095,-0.0097,-0.0098,-0.0099,-0.0099,-0.0099,-0.0093,-0.0085,-0.0078,-0.0075,-0.0071,-0.0063,-0.0056,-0.0052,-0.0045,-0.0034,-0.0025,-0.0017,-0.0010,-0.0008,-0.0004,-0.0000,0.0000,-0.0002,-0.0005,-0.0012,-0.0024,-0.0037,-0.0049,-0.0060,-0.0071,-0.0082,-0.0090,-0.0094,-0.0098,-0.0103,-0.0109,-0.0109,-0.0108,-0.0109,-0.0112,-0.0114,-0.0118,-0.0126,-0.0134,-0.0141,-0.0145,-0.0145,-0.0140,-0.0132,-0.0122,-0.0110,-0.0097,-0.0087,-0.0079,-0.0072,-0.0062,-0.0050,-0.0040,-0.0030,-0.0016,0.0002,0.0020,0.0036,0.0053,0.0069,0.0078,0.0079,0.0074,0.0061,0.0045,0.0027,0.0006,-0.0018,-0.0043,-0.0065,-0.0088,-0.0114,-0.0139,-0.0160,-0.0177,-0.0189,-0.0195,-0.0197,-0.0197,-0.0193,-0.0185,-0.0171,-0.0156,-0.0143,-0.0128,-0.0109,-0.0088,-0.0069,-0.0051,-0.0029,-0.0004,0.0016,0.0033,0.0052,0.0071,0.0085,0.0094,0.0101,0.0107,0.0110,0.0106,0.0102,0.0098,0.0092,0.0078,0.0059,0.0044,0.0029,0.0008,-0.0013,-0.0026,-0.0036,-0.0047,-0.0059,-0.0067,-0.0074,-0.0081,-0.0088,-0.0095,-0.0099,-0.0100,-0.0097,-0.0093,-0.0085,-0.0073,-0.0057,-0.0041,-0.0025,-0.0006,0.0018,0.0043,0.0062,0.0081,0.0103,0.0120,0.0129,0.0137,0.0145,0.0150,0.0152,0.0152,0.0151,0.0150,0.0148,0.0145,0.0140,0.0132,0.0125,0.0119,0.0110,0.0101,0.0096,0.0087,0.0073,0.0060,0.0048,0.0033,0.0015,-0.0000,-0.0012,-0.0024,-0.0036,-0.0040,-0.0038,-0.0037,-0.0034,-0.0029,-0.0026,-0.0024,-0.0023,-0.0021,-0.0018,-0.0012,-0.0007,-0.0003,0.0002,0.0008,0.0011,0.0012,0.0013,0.0017,0.0020,0.0024,0.0026,0.0027,0.0025,0.0016,0.0003,-0.0009,-0.0020,-0.0032,-0.0043,-0.0049,-0.0055,-0.0062,-0.0070,-0.0078,-0.0089,-0.0098,-0.0104,-0.0111,-0.0118,-0.0120,-0.0115,-0.0108,-0.0099,-0.0088,-0.0074,-0.0058,-0.0042,-0.0026,-0.0009,0.0006,0.0019,0.0027,0.0033,0.0042,0.0048,0.0050,0.0055,0.0061,0.0064,0.0064,0.0065,0.0066,0.0065,0.0063,0.0063,0.0064,0.0064,0.0067,0.0070,0.0073,0.0074,0.0071,0.0071,0.0073,0.0074,0.0071,0.0072,0.0077,0.0083,0.0089,0.0098,0.0112,0.0129,0.0144,0.0157,0.0170,0.0182,0.0191,0.0197,0.0199,0.0201,0.0203,0.0202,0.0199,0.0195,0.0189,0.0181,0.0167,0.0148,0.0129,0.0110,0.0085,0.0058,0.0036,0.0018,0.0000,-0.0016,-0.0026,-0.0033,-0.0043,-0.0054,-0.0061,-0.0067,-0.0075,-0.0088,-0.0098,-0.0102,-0.0106,-0.0111,-0.0112,-0.0113,-0.0115,-0.0119,-0.0122,-0.0123,-0.0123,-0.0124,-0.0124,-0.0121,-0.0116,-0.0108,-0.0102,-0.0094,-0.0083,-0.0071,-0.0063,-0.0056,-0.0045,-0.0035,-0.0030,-0.0025,-0.0019,-0.0013,-0.0011,-0.0012,-0.0015,-0.0019,-0.0022,-0.0028,-0.0036,-0.0043,-0.0045,-0.0042,-0.0039,-0.0033,-0.0023,-0.0011,-0.0003,0.0003,0.0010,0.0015,0.0016,0.0017,0.0022,0.0027,0.0029,0.0033,0.0041,0.0047,0.0050,0.0049,0.0047,0.0046,0.0043,0.0036,0.0032,0.0031,0.0030,0.0027,0.0023,0.0025,0.0027,0.0026,0.0023,0.0021,0.0020,0.0019,0.0016,0.0012,0.0011,0.0009,0.0003,-0.0006,-0.0015,-0.0025,-0.0037,-0.0052,-0.0070,-0.0084,-0.0095,-0.0110,-0.0124,-0.0131,-0.0136,-0.0144,-0.0152,-0.0154,-0.0155,-0.0157,-0.0154,-0.0144,-0.0133,-0.0120,-0.0102,-0.0078,-0.0053,-0.0027,0.0002,0.0034,0.0067,0.0096,0.0122,0.0148,0.0171,0.0187,0.0195,0.0201,0.0206,0.0205,0.0199,0.0192,0.0188,0.0182,0.0172,0.0161,0.0153,0.0147,0.0138,0.0126,0.0114,0.0101,0.0084,0.0064,0.0044,0.0022,0.0000,-0.0018,-0.0034,-0.0052,-0.0068,-0.0080,-0.0088,-0.0054];var T1_fija_s=0.0342715253986434;var ux_fija_mm=0.177989;var T1_s4_s=0.05030355982196769;var ux_s4_mm=0.52242;var V_s4_kNm=53.13213330000001;var VW_s4=0.38334872510822515;var ux_s1_t=[-0.0071,-0.0378,-0.1019,-0.1904,-0.2722,-0.3043,-0.2616,-0.1586,-0.0430,0.0354,0.0509,0.0085,-0.0665,-0.1381,-0.1701,-0.1394,-0.0497,0.0676,0.1681,0.2176,0.2079,0.1564,0.0935,0.0480,0.0391,0.0732,0.1391,0.2061,0.2348,0.2000,0.1103,0.0050,-0.0693,-0.0869,-0.0543,-0.0005,0.0411,0.0477,0.0113,-0.0620,-0.1528,-0.2318,-0.2695,-0.2490,-0.1750,-0.0705,0.0332,0.1072,0.1329,0.1089,0.0533,-0.0016,-0.0245,-0.0029,0.0495,0.1032,0.1331,0.1321,0.1102,0.0819,0.0568,0.0385,0.0305,0.0362,0.0538,0.0731,0.0792,0.0616,0.0221,-0.0247,-0.0581,-0.0620,-0.0329,0.0171,0.0644,0.0848,0.0660,0.0152,-0.0454,-0.0924,-0.1148,-0.1162,-0.1073,-0.0960,-0.0842,-0.0710,-0.0577,-0.0473,-0.0414,-0.0371,-0.0284,-0.0118,0.0112,0.0355,0.0564,0.0720,0.0835,0.0920,0.0977,0.0994,0.0939,0.0784,0.0529,0.0250,0.0078,0.0135,0.0440,0.0876,0.1229,0.1315,0.1082,0.0636,0.0177,-0.0102,-0.0089,0.0194,0.0598,0.0899,0.0888,0.0485,-0.0205,-0.0931,-0.1420,-0.1514,-0.1233,-0.0752,-0.0301,-0.0071,-0.0153,-0.0526,-0.1057,-0.1540,-0.1771,-0.1636,-0.1178,-0.0579,-0.0065,0.0205,0.0199,-0.0002,-0.0248,-0.0392,-0.0342,-0.0094,0.0268,0.0610,0.0810,0.0809,0.0622,0.0317,-0.0006,-0.0233,-0.0258,-0.0022,0.0426,0.0921,0.1245,0.1254,0.0964,0.0555,0.0266,0.0259,0.0531,0.0924,0.1209,0.1204,0.0853,0.0249,-0.0403,-0.0872,-0.0998,-0.0764,-0.0301,0.0177,0.0464,0.0446,0.0128,-0.0374,-0.0876,-0.1184,-0.1161,-0.0791,-0.0195,0.0420,0.0855,0.1007,0.0901,0.0653,0.0402,0.0255,0.0270,0.0440,0.0693,0.0921,0.1020,0.0942,0.0720,0.0444,0.0215,0.0100,0.0106,0.0202,0.0331,0.0424,0.0408,0.0236,-0.0085,-0.0480,-0.0832,-0.1032,-0.1021,-0.0807,-0.0456,-0.0075,0.0215,0.0316,0.0196,-0.0095,-0.0448,-0.0745,-0.0899,-0.0877,-0.0698,-0.0429,-0.0187,-0.0105,-0.0275,-0.0668,-0.1125,-0.1423,-0.1392,-0.1020,-0.0455,0.0067,0.0344,0.0289,-0.0049,-0.0509,-0.0885,-0.1010,-0.0825,-0.0390,0.0141,0.0585,0.0789,0.0673,0.0242,-0.0415,-0.1139,-0.1744,-0.2077,-0.2074,-0.1788,-0.1367,-0.0969,-0.0692,-0.0557,-0.0524,-0.0528,-0.0510,-0.0444,-0.0349,-0.0290,-0.0334,-0.0505,-0.0748,-0.0971,-0.1103,-0.1148,-0.1166,-0.1205,-0.1258,-0.1252,-0.1098,-0.0743,-0.0211,0.0398,0.0942,0.1302,0.1418,0.1306,0.1046,0.0738,0.0488,0.0382,0.0469,0.0746,0.1140,0.1522,0.1755,0.1754,0.1521,0.1140,0.0732,0.0398,0.0173,0.0017,-0.0146,-0.0359,-0.0600,-0.0805,-0.0934,-0.1020,-0.1141,-0.1338,-0.1559,-0.1683,-0.1611,-0.1359,-0.1061,-0.0878,-0.0891,-0.1051,-0.1207,-0.1189,-0.0887,-0.0300,0.0485,0.1342,0.2155,0.2840,0.3354,0.3680,0.3817,0.3786,0.3637,0.3450,0.3301,0.3215,0.3148,0.3011,0.2719,0.2246,0.1656,0.1078,0.0632,0.0379,0.0300,0.0310,0.0294,0.0140,-0.0240,-0.0873,-0.1704,-0.2593,-0.3351,-0.3801,-0.3864,-0.3599,-0.3179,-0.2821,-0.2708,-0.2882,-0.3208,-0.3422,-0.3272,-0.2649,-0.1660,-0.0575,0.0293,0.0723,0.0677,0.0331,0.0008,0.0044,0.0609,0.1617,0.2765,0.3686,0.4129,0.4060,0.3625,0.3063,0.2608,0.2417,0.2512,0.2778,0.3000,0.2961,0.2526,0.1701,0.0622,-0.0494,-0.1421,-0.2001,-0.2207,-0.2168,-0.2126,-0.2328,-0.2888,-0.3721,-0.4592,-0.5230,-0.5462,-0.5273,-0.4802,-0.4270,-0.3878,-0.3724,-0.3750,-0.3772,-0.3568,-0.2991,-0.2029,-0.0814,0.0422,0.1435,0.2039,0.2169,0.1927,0.1561,0.1386,0.1647,0.2396,0.3470,0.4555,0.5309,0.5490,0.5048,0.4144,0.3087,0.2224,0.1800,0.1845,0.2149,0.2354,0.2124,0.1300,-0.0030,-0.1569,-0.2932,-0.3781,-0.3942,-0.3473,-0.2647,-0.1845,-0.1398,-0.1428,-0.1785,-0.2122,-0.2089,-0.1526,-0.0539,0.0555,0.1374,0.1640,0.1270,0.0408,-0.0617,-0.1434,-0.1796,-0.1684,-0.1303,-0.0970,-0.0956,-0.1362,-0.2114,-0.2997,-0.3753,-0.4182,-0.4219,-0.3987,-0.3751,-0.3789,-0.4231,-0.4980,-0.5758,-0.6255,-0.6274,-0.5786,-0.4913,-0.3875,-0.2910,-0.2181,-0.1706,-0.1342,-0.0858,-0.0075,0.1018,0.2272,0.3467,0.4417,0.5007,0.5212,0.5117,0.4905,0.4771,0.4797,0.4863,0.4694,0.4038,0.2827,0.1235,-0.0428,-0.1863,-0.2899,-0.3530,-0.3909,-0.4295,-0.4946,-0.5988,-0.7314,-0.8609,-0.9505,-0.9770,-0.9433,-0.8739,-0.7995,-0.7407,-0.7032,-0.6803,-0.6585,-0.6206,-0.5534,-0.4544,-0.3341,-0.2099,-0.0952,0.0105,0.1212,0.2535,0.4138,0.5938,0.7725,0.9229,1.0190,1.0454,1.0083,0.9375,0.8759,0.8590,0.8962,0.9671,1.0329,1.0553,1.0123,0.9015,0.7353,0.5394,0.3504,0.2055,0.1260,0.1028,0.0962,0.0546,-0.0576,-0.2427,-0.4688,-0.6854,-0.8429,-0.9074,-0.8720,-0.7641,-0.6378,-0.5519,-0.5378,-0.5828,-0.6434,-0.6752,-0.6541,-0.5744,-0.4361,-0.2420,-0.0070,0.2389,0.4648,0.6596,0.8361,1.0066,1.1535,1.2375,1.2362,1.1698,1.0876,1.0310,1.0110,1.0191,1.0475,1.0891,1.1253,1.1247,1.0621,0.9416,0.7994,0.6764,0.5872,0.5197,0.4555,0.3787,0.2692,0.1035,-0.1315,-0.4233,-0.7340,-1.0185,-1.2466,-1.4101,-1.5088,-1.5341,-1.4731,-1.3337,-1.1598,-1.0147,-0.9433,-0.9460,-0.9850,-1.0096,-0.9752,-0.8546,-0.6422,-0.3582,-0.0556,0.1921,0.3313,0.3681,0.3717,0.4345,0.6121,0.8876,1.1883,1.4300,1.5548,1.5430,1.4085,1.1902,0.9473,0.7499,0.6566,0.6836,0.7870,0.8771,0.8618,0.6983,0.4172,0.1077,-0.1236,-0.2070,-0.1497,-0.0300,0.0486,0.0087,-0.1680,-0.4320,-0.6882,-0.8470,-0.8756,-0.8109,-0.7238,-0.6651,-0.6408,-0.6310,-0.6244,-0.6294,-0.6549,-0.6893,-0.6986,-0.6496,-0.5344,-0.3711,-0.1842,0.0093,0.1983,0.3703,0.5157,0.6378,0.7502,0.8626,0.9702,1.0586,1.1146,1.1313,1.1043,1.0283,0.9052,0.7545,0.6081,0.4901,0.3994,0.3127,0.2071,0.0818,-0.0475,-0.1691,-0.2852,-0.4057,-0.5344,-0.6609,-0.7669,-0.8382,-0.8700,-0.8612,-0.8125,-0.7324,-0.6433,-0.5755,-0.5497,-0.5602,-0.5764,-0.5613,-0.4922,-0.3694,-0.2174,-0.0795,-0.0033,-0.0200,-0.1218,-0.2566,-0.3520,-0.3540,-0.2525,-0.0759,0.1330,0.3360,0.5023,0.6062,0.6342,0.5963,0.5255,0.4590,0.4171,0.3981,0.3913,0.3910,0.3965,0.4005,0.3851,0.3336,0.2453,0.1353,0.0206,-0.0928,-0.2076,-0.3235,-0.4328,-0.5281,-0.6088,-0.6773,-0.7266,-0.7397,-0.7081,-0.6499,-0.6046,-0.6067,-0.6588,-0.7274,-0.7675,-0.7503,-0.6717,-0.5429,-0.3803,-0.2043,-0.0396,0.0936,0.1930,0.2792,0.3850,0.5326,0.7184,0.9123,1.0694,1.1468,1.1204,0.9923,0.7925,0.5728,0.3852,0.2553,0.1710,0.0935,-0.0147,-0.1644,-0.3336,-0.4822,-0.5744,-0.5974,-0.5640,-0.5037,-0.4538,-0.4525,-0.5215,-0.6515,-0.8034,-0.9269,-0.9884,-0.9868,-0.9461,-0.9000,-0.8750,-0.8789,-0.9011,-0.9187,-0.9051,-0.8417,-0.7288,-0.5874,-0.4478,-0.3317,-0.2418,-0.1657,-0.0885,-0.0034,0.0877,0.1802,0.2708,0.3575,0.4387,0.5155,0.5951,0.6872,0.7938,0.9011,0.9826,1.0146,0.9903,0.9244,0.8441,0.7755,0.7313,0.7067,0.6827,0.6367,0.5523,0.4264,0.2689,0.0965,-0.0766,-0.2446,-0.4090,-0.5710,-0.7256,-0.8604,-0.9597,-1.0109,-1.0108,-0.9699,-0.9097,-0.8534,-0.8146,-0.7892,-0.7587,-0.7008,-0.6028,-0.4710,-0.3282,-0.2018,-0.1139,-0.0736,-0.0728,-0.0846,-0.0740,-0.0201,0.0715,0.1766,0.2729,0.3504,0.4054,0.4343,0.4348,0.4176,0.4128,0.4520,0.5394,0.6398,0.6966,0.6668,0.5444,0.3577,0.1462,-0.0544,-0.2115,-0.2978,-0.3029,-0.2444,-0.1646,-0.1086,-0.0974,-0.1206,-0.1525,-0.1710,-0.1640,-0.1267,-0.0639,0.0027,0.0364,0.0050,-0.0949,-0.2281,-0.3412,-0.3972,-0.3960,-0.3642,-0.3284,-0.2990,-0.2724,-0.2381,-0.1847,-0.1050,-0.0017,0.1083,0.1944,0.2247,0.1890,0.1111,0.0393,0.0205,0.0761,0.1967,0.3516,0.4992,0.5972,0.6181,0.5630,0.4635,0.3677,0.3159,0.3200,0.3602,0.3995,0.4064,0.3651,0.2719,0.1327,-0.0315,-0.1818,-0.2724,-0.2724,-0.1861,-0.0532,0.0712,0.1432,0.1475,0.0987,0.0335,-0.0050,0.0141,0.0910,0.1896,0.2535,0.2366,0.1256,-0.0542,-0.2508,-0.4099,-0.4952,-0.4976,-0.4355,-0.3465,-0.2716,-0.2397,-0.2543,-0.2936,-0.3246,-0.3211,-0.2778,-0.2134,-0.1602,-0.1454,-0.1736,-0.2196,-0.2363,-0.1755,-0.0137,0.2326,0.5100,0.7498,0.8982,0.9375,0.8885,0.7958,0.7072,0.6564,0.6521,0.6736,0.6785,0.6209,0.4762,0.2585,0.0172,-0.1856,-0.3059,-0.3378,-0.3118,-0.2759,-0.2733,-0.3242,-0.4160,-0.5045,-0.5308,-0.4490,-0.2535,0.0148,0.2870,0.4955,0.6001,0.5980,0.5160,0.3975,0.2885,0.2263,0.2277,0.2821,0.3568,0.4139,0.4285,0.3963,0.3299,0.2506,0.1817,0.1461,0.1596,0.2195,0.3007,0.3626,0.3673,0.3008,0.1803,0.0433,-0.0708,-0.1359,-0.1466,-0.1181,-0.0800,-0.0629,-0.0824,-0.1320,-0.1914,-0.2387,-0.2618,-0.2667,-0.2718,-0.2975,-0.3585,-0.4589,-0.5867,-0.7126,-0.7988,-0.8184,-0.7678,-0.6658,-0.5430,-0.4304,-0.3510,-0.3114,-0.2960,-0.2700,-0.1937,-0.0485,0.1462,0.3393,0.4775,0.5335,0.5144,0.4500,0.3758,0.3241,0.3224,0.3844,0.4981,0.6255,0.7176,0.7399,0.6882,0.5832,0.4523,0.3173,0.1952,0.1034,0.0536,0.0397,0.0359,0.0127,-0.0418,-0.1151,-0.1844,-0.2345,-0.2636,-0.2765,-0.2779,-0.2730,-0.2739,-0.2971,-0.3505,-0.4225,-0.4893,-0.5349,-0.5622,-0.5859,-0.6144,-0.6406,-0.6462,-0.6140,-0.5334,-0.4007,-0.2231,-0.0249,0.1528,0.2685,0.3058,0.2893,0.2687,0.2871,0.3560,0.4537,0.5429,0.5890,0.5710,0.4892,0.3675,0.2491,0.1782,0.1750,0.2206,0.2650,0.2558,0.1690,0.0195,-0.1498,-0.2890,-0.3596,-0.3478,-0.2685,-0.1622,-0.0815,-0.0676,-0.1304,-0.2433,-0.3594,-0.4342,-0.4419,-0.3803,-0.2673,-0.1350,-0.0224,0.0366,0.0310,-0.0183,-0.0666,-0.0658,0.0121,0.1606,0.3424,0.5067,0.6097,0.6308,0.5815,0.4998,0.4323,0.4098,0.4320,0.4697,0.4819,0.4377,0.3323,0.1878,0.0427,-0.0642,-0.1093,-0.0932,-0.0410,0.0079,0.0202,-0.0141,-0.0760,-0.1293,-0.1412,-0.1021,-0.0316,0.0306,0.0439,-0.0127,-0.1289,-0.2654,-0.3690,-0.3951,-0.3267,-0.1827,-0.0105,0.1349,0.2135,0.2132,0.1513,0.0671,0.0079,0.0111,0.0867,0.2106,0.3335,0.4047,0.3970,0.3200,0.2132,0.1247,0.0878,0.1092,0.1709,0.2403,0.2838,0.2793,0.2230,0.1302,0.0288,-0.0521,-0.0931,-0.0898,-0.0533,-0.0069,0.0226,0.0142,-0.0388,-0.1229,-0.2089,-0.2659,-0.2770,-0.2479,-0.2037,-0.1752,-0.1825,-0.2263,-0.2906,-0.3521,-0.3889,-0.3854,-0.3351,-0.2426,-0.1233,0.0003,0.1064,0.1816,0.2249,0.2457,0.2572,0.2685,0.2814,0.2902,0.2856,0.2607,0.2168,0.1643,0.1162,0.0806,0.0572,0.0408,0.0276,0.0182,0.0158,0.0212,0.0311,0.0402,0.0455,0.0480,0.0487,0.0449,0.0300,-0.0018,-0.0489,-0.1001,-0.1393,-0.1533,-0.1359,-0.0895,-0.0251,0.0412,0.0932,0.1183,0.1115,0.0771,0.0287,-0.0145,-0.0330,-0.0142,0.0430,0.1274,0.2180,0.2936,0.3432,0.3726,0.4001,0.4438,0.5087,0.5826,0.6413,0.6603,0.6270,0.5456,0.4330,0.3132,0.2105,0.1409,0.1059,0.0928,0.0819,0.0569,0.0145,-0.0362,-0.0804,-0.1052,-0.1061,-0.0909,-0.0774,-0.0862,-0.1288,-0.1989,-0.2735,-0.3238,-0.3285,-0.2837,-0.2028,-0.1099,-0.0313,0.0125,0.0137,-0.0188,-0.0621,-0.0892,-0.0830,-0.0463,0.0015,0.0366,0.0451,0.0282,-0.0003,-0.0226,-0.0230,0.0072,0.0671,0.1462,0.2272,0.2920,0.3273,0.3277,0.2938,0.2303,0.1467,0.0586,-0.0131,-0.0501,-0.0439,-0.0006,0.0637,0.1309,0.1855,0.2164,0.2181,0.1922,0.1484,0.1015,0.0626,0.0316,-0.0010,-0.0452,-0.1031,-0.1671,-0.2254,-0.2683,-0.2906,-0.2909,-0.2727,-0.2454,-0.2233,-0.2199,-0.2406,-0.2790,-0.3204,-0.3482,-0.3499,-0.3212,-0.2670,-0.2017,-0.1453,-0.1155,-0.1181,-0.1426,-0.1675,-0.1715,-0.1464,-0.1005,-0.0530,-0.0242,-0.0278,-0.0644,-0.1185,-0.1621,-0.1653,-0.1106,-0.0035,0.1283,0.2457,0.3162,0.3285,0.2954,0.2466,0.2157,0.2266,0.2826,0.3641,0.4361,0.4646,0.4326,0.3483,0.2405,0.1450,0.0883,0.0776,0.0989,0.1241,0.1242,0.0819,-0.0010,-0.1038,-0.1958,-0.2506,-0.2594,-0.2344,-0.2010,-0.1843,-0.1971,-0.2349,-0.2782,-0.3002,-0.2787,-0.2059,-0.0945,0.0267,0.1237,0.1719,0.1659,0.1218,0.0672,0.0302,0.0275,0.0586,0.1091,0.1587,0.1915,0.2031,0.1997,0.1919,0.1867,0.1843,0.1787,0.1621,0.1300,0.0833,0.0271,-0.0326,-0.0904,-0.1421,-0.1838,-0.2121,-0.2253,-0.2237,-0.2103,-0.1903,-0.1705,-0.1581,-0.1575,-0.1667,-0.1771,-0.1768,-0.1563,-0.1140,-0.0583,-0.0029,0.0390,0.0606,0.0636,0.0554,0.0457,0.0410,0.0440,0.0545,0.0715,0.0958,0.1296,0.1735,0.2239,0.2726,0.3080,0.3223,0.3154,0.2949,0.2692,0.2426,0.2138,0.1798,0.1430,0.1109,0.0903,0.0799,0.0684,0.0402,-0.0140,-0.0918,-0.1790,-0.2564,-0.3087,-0.3286,-0.3191,-0.2905,-0.2540,-0.2164,-0.1779,-0.1348,-0.0849,-0.0313,0.0191,0.0595,0.0866,0.1001,0.1000,0.0871,0.0656,0.0429,0.0262,0.0168,0.0079,-0.0107,-0.0443,-0.0888,-0.1316,-0.1605,-0.1704,-0.1643,-0.1505,-0.1392,-0.1383,-0.1502,-0.1699,-0.1877,-0.1934,-0.1824,-0.1576,-0.1260,-0.0954,-0.0723,-0.0617,-0.0650,-0.0766,-0.0829,-0.0662,-0.0162,0.0629,0.1524,0.2292,0.2773,0.2929,0.2826,0.2564,0.2227,0.1841,0.1377,0.0789,0.0054,-0.0790,-0.1637,-0.2360,-0.2875,-0.3188,-0.3380,-0.3546,-0.3724,-0.3890,-0.3977,-0.3912,-0.3647,-0.3163,-0.2477,-0.1647,-0.0764,0.0077,0.0819,0.1454,0.2026,0.2602,0.3228,0.3901,0.4554,0.5078,0.5377,0.5429,0.5286,0.5029,0.4715,0.4360,0.3948,0.3465,0.2912,0.2309,0.1677,0.1041,0.0430,-0.0121,-0.0597,-0.1002,-0.1348,-0.1640,-0.1891,-0.2128,-0.2398,-0.2730,-0.3111,-0.3487,-0.3806,-0.4058,-0.4265,-0.4458,-0.4658,-0.4859,-0.5051,-0.5217,-0.5318,-0.5277,-0.5000,-0.4427,-0.3566,-0.2505,-0.1396,-0.0415,0.0297,0.0708,0.0921,0.1136,0.1547,0.2234,0.3132,0.4064,0.4818,0.5247,0.5317,0.5088,0.4688,0.4261,0.3905,0.3637,0.3386,0.3037,0.2518,0.1843,0.1115,0.0482,0.0066,-0.0088,-0.0044,0.0048,0.0008,-0.0293,-0.0869,-0.1607,-0.2318,-0.2822,-0.3035,-0.2995,-0.2834,-0.2706,-0.2720,-0.2909,-0.3220,-0.3534,-0.3715,-0.3655,-0.3310,-0.2720,-0.1981,-0.1196,-0.0445,0.0256,0.0932,0.1620,0.2341,0.3074,0.3744,0.4244,0.4475,0.4387,0.4026,0.3519,0.3014,0.2624,0.2387,0.2262,0.2167,0.2025,0.1793,0.1483,0.1138,0.0798,0.0454,0.0043,-0.0510,-0.1229,-0.2049,-0.2850,-0.3500,-0.3916,-0.4096,-0.4105,-0.4048,-0.4031,-0.4116,-0.4288,-0.4455,-0.4507,-0.4372,-0.4049,-0.3586,-0.3071,-0.2594,-0.2220,-0.1973,-0.1826,-0.1703,-0.1515,-0.1207,-0.0778,-0.0273,0.0255,0.0764,0.1226,0.1626,0.1960,0.2233,0.2453,0.2616,0.2710,0.2717,0.2646,0.2536,0.2445,0.2420,0.2472,0.2572,0.2661,0.2667,0.2524,0.2192,0.1678,0.1043,0.0397,-0.0155,-0.0561,-0.0848,-0.1096,-0.1381,-0.1731,-0.2114,-0.2455,-0.2672,-0.2701,-0.2528,-0.2198,-0.1800,-0.1436,-0.1174,-0.1021,-0.0932,-0.0840,-0.0694,-0.0480,-0.0223,0.0023,0.0203,0.0284,0.0274,0.0225,0.0203,0.0259,0.0401,0.0594,0.0761,0.0811,0.0671,0.0320,-0.0201,-0.0798,-0.1346,-0.1740,-0.1934,-0.1954,-0.1886,-0.1827,-0.1838,-0.1909,-0.1982,-0.1995,-0.1920,-0.1794,-0.1703,-0.1733,-0.1919,-0.2226,-0.2561,-0.2825,-0.2956,-0.2945,-0.2829,-0.2666,-0.2515,-0.2407,-0.2334,-0.2263,-0.2153,-0.1990,-0.1800,-0.1627,-0.1506,-0.1428,-0.1345,-0.1205,-0.0971,-0.0632,-0.0212,0.0229,0.0616,0.0892,0.1040,0.1105,0.1169,0.1299,0.1514,0.1776,0.2007,0.2121,0.2054,0.1789,0.1369,0.0895,0.0491,0.0257,0.0225,0.0354,0.0559,0.0756,0.0892,0.0955,0.0966,0.0959,0.0965,0.0998,0.1044,0.1074,0.1059,0.0989,0.0878,0.0756,0.0654,0.0583,0.0530,0.0473,0.0390,0.0267,0.0119,-0.0030,-0.0154,-0.0238,-0.0288,-0.0328,-0.0386,-0.0484,-0.0623,-0.0779,-0.0896,-0.0906,-0.0745,-0.0385,0.0147,0.0763,0.1335,0.1736,0.1885,0.1791,0.1548,0.1293,0.1134,0.1094,0.1105,0.1048,0.0817,0.0367,-0.0242,-0.0868,-0.1337,-0.1514,-0.1364,-0.0977,-0.0517,-0.0150,0.0028,0.0026,-0.0071,-0.0146,-0.0110,0.0070,0.0357,0.0674,0.0940,0.1109,0.1179,0.1179,0.1134,0.1043,0.0882,0.0615,0.0228,-0.0263,-0.0815,-0.1354,-0.1804,-0.2116,-0.2294,-0.2385,-0.2461,-0.2578,-0.2745,-0.2918,-0.3017,-0.2959,-0.2695,-0.2228,-0.1626,-0.1011,-0.0512,-0.0207,-0.0091,-0.0075,-0.0033,0.0137,0.0473,0.0931,0.1406,0.1776,0.1946,0.1882,0.1624,0.1262,0.0887,0.0552,0.0262,-0.0016,-0.0322,-0.0675,-0.1068,-0.1467,-0.1818,-0.2057,-0.2125,-0.1999,-0.1706,-0.1335,-0.1010,-0.0845,-0.0894,-0.1129,-0.1442,-0.1681,-0.1704,-0.1439,-0.0922,-0.0285,0.0297,0.0678,0.0788,0.0660,0.0393,0.0118,-0.0055,-0.0075,0.0034,0.0185,0.0263,0.0195,-0.0022,-0.0317,-0.0589,-0.0749,-0.0757,-0.0631,-0.0441,-0.0274,-0.0215,-0.0304,-0.0513,-0.0750,-0.0894,-0.0850,-0.0595,-0.0187,0.0258,0.0615,0.0807,0.0829,0.0758,0.0719,0.0829,0.1133,0.1581,0.2052,0.2411,0.2572,0.2524,0.2317,0.2028,0.1734,0.1485,0.1300,0.1166,0.1050,0.0915,0.0734,0.0502,0.0233,-0.0043,-0.0291,-0.0484,-0.0616,-0.0698,-0.0760,-0.0834,-0.0941,-0.1083,-0.1240,-0.1390,-0.1526,-0.1651,-0.1774,-0.1893,-0.1988,-0.2021,-0.1962,-0.1804,-0.1569,-0.1299,-0.1034,-0.0800,-0.0590,-0.0366,-0.0089,0.0260,0.0656,0.1041,0.1352,0.1542,0.1603,0.1566,0.1489,0.1425,0.1413,0.1460,0.1528,0.1559,0.1492,0.1292,0.0969,0.0579,0.0197,-0.0108,-0.0297,-0.0382,-0.0417,-0.0456,-0.0529,-0.0629,-0.0713,-0.0730,-0.0657,-0.0515,-0.0365,-0.0275,-0.0292,-0.0414,-0.0597,-0.0761,-0.0847,-0.0833,-0.0745,-0.0635,-0.0571,-0.0599,-0.0723,-0.0898,-0.1042,-0.1070,-0.0941,-0.0688,-0.0403,-0.0192,-0.0126,-0.0202,-0.0343,-0.0438,-0.0393,-0.0180,0.0152,0.0493,0.0721,0.0759,0.0607,0.0332,0.0036,-0.0190,-0.0291,-0.0269,-0.0161,-0.0034,0.0039,0.0006,-0.0141,-0.0357,-0.0553,-0.0628,-0.0515,-0.0208,0.0232,0.0693,0.1059,0.1250,0.1257,0.1150,0.1050,0.1064,0.1238,0.1529,0.1837,0.2055,0.2115,0.2010,0.1789,0.1539,0.1347,0.1258,0.1248,0.1225,0.1073,0.0716,0.0160,-0.0511,-0.1165,-0.1673,-0.1946,-0.1965,-0.1788,-0.1535,-0.1339,-0.1288,-0.1377,-0.1515,-0.1575,-0.1458,-0.1142,-0.0683,-0.0184,0.0246,0.0535,0.0677,0.0734,0.0810,0.0999,0.1332,0.1766,0.2203,0.2536,0.2698,0.2681,0.2536,0.2353,0.2225,0.2202,0.2273,0.2373,0.2422,0.2366,0.2193,0.1924,0.1592,0.1227,0.0850,0.0484,0.0147,-0.0152,-0.0407,-0.0611,-0.0758,-0.0853,-0.0919,-0.0992,-0.1105,-0.1270,-0.1467,-0.1652,-0.1778,-0.1811,-0.1733,-0.1545,-0.1270,-0.0950,-0.0636,-0.0369,-0.0165,-0.0010,0.0124,0.0258,0.0401,0.0548,0.0677,0.0751,0.0726,0.0569,0.0275,-0.0109,-0.0502,-0.0819,-0.1008,-0.1074,-0.1060,-0.1022,-0.0999,-0.1009,-0.1053,-0.1124,-0.1213,-0.1320,-0.1446,-0.1600,-0.1783,-0.1973,-0.2122,-0.2171,-0.2077,-0.1832,-0.1461,-0.1012,-0.0541,-0.0105,0.0249,0.0501,0.0667,0.0791,0.0919,0.1085,0.1291,0.1513,0.1717,0.1873,0.1955,0.1942,0.1826,0.1622,0.1363,0.1100,0.0883,0.0746,0.0684,0.0653,0.0590,0.0435,0.0165,-0.0203,-0.0617,-0.1008,-0.1322,-0.1539,-0.1671,-0.1744,-0.1777,-0.1763,-0.1680,-0.1498,-0.1200,-0.0800,-0.0343,0.0106,0.0474,0.0712,0.0811,0.0801,0.0746,0.0715,0.0754,0.0872,0.1035,0.1182,0.1257,0.1231,0.1117,0.0961,0.0818,0.0724,0.0687,0.0682,0.0668,0.0598,0.0442,0.0204,-0.0057,-0.0244,-0.0262,-0.0065,0.0307,0.0745,0.1124,0.1362,0.1449,0.1434,0.1393,0.1402,0.1505,0.1695,0.1914,0.2074,0.2092,0.1938,0.1643,0.1289,0.0966,0.0746,0.0665,0.0711,0.0837,0.0970,0.1034,0.0994,0.0869,0.0716,0.0600,0.0556,0.0582,0.0644,0.0704,0.0731,0.0713,0.0656,0.0596,0.0575,0.0625,0.0749,0.0917,0.1079,0.1188,0.1217,0.1167,0.1057,0.0918,0.0782,0.0672,0.0597,0.0549,0.0507,0.0450,0.0367,0.0260,0.0141,0.0029,-0.0061,-0.0126,-0.0175,-0.0221,-0.0283,-0.0373,-0.0495,-0.0649,-0.0834,-0.1033,-0.1219,-0.1355,-0.1406,-0.1354,-0.1215,-0.1027,-0.0841,-0.0687,-0.0564,-0.0445,-0.0292,-0.0085,0.0168,0.0426,0.0643,0.0787,0.0853,0.0863,0.0854,0.0866,0.0924,0.1038,0.1195,0.1365,0.1509,0.1591,0.1593,0.1519,0.1388,0.1220,0.1027,0.0807,0.0558,0.0281,-0.0002,-0.0258,-0.0451,-0.0560,-0.0592,-0.0578,-0.0564,-0.0592,-0.0681,-0.0815,-0.0946,-0.1012,-0.0961,-0.0770,-0.0457,-0.0080,0.0286,0.0577,0.0760,0.0848,0.0885,0.0926,0.1005,0.1124,0.1260,0.1379,0.1457,0.1495,0.1517,0.1558,0.1643,0.1769,0.1898,0.1971,0.1928,0.1727,0.1376,0.0934,0.0496,0.0160,-0.0017,-0.0039,0.0030,0.0104,0.0117,0.0052,-0.0054,-0.0135,-0.0131,-0.0017,0.0174,0.0366,0.0472,0.0435,0.0249,-0.0030,-0.0325,-0.0563,-0.0709,-0.0772,-0.0794,-0.0829,-0.0922,-0.1092,-0.1322,-0.1564,-0.1762,-0.1875,-0.1889,-0.1821,-0.1709,-0.1590,-0.1488,-0.1408,-0.1337,-0.1253,-0.1132,-0.0962,-0.0757,-0.0545,-0.0363,-0.0239,-0.0175,-0.0144,-0.0104,-0.0014,0.0145,0.0362,0.0604,0.0823,0.0981,0.1064,0.1077,0.1051,0.1022,0.1018,0.1046,0.1096,0.1138,0.1141,0.1080,0.0944,0.0732,0.0456,0.0143,-0.0168,-0.0432,-0.0620,-0.0732,-0.0797,-0.0849,-0.0911,-0.0985,-0.1059,-0.1124,-0.1173,-0.1203,-0.1214,-0.1208,-0.1184,-0.1134,-0.1044,-0.0899,-0.0697,-0.0457,-0.0213,0.0005,0.0173,0.0282,0.0331,0.0323,0.0266,0.0183,0.0106,0.0065,0.0077,0.0136,0.0229,0.0334,0.0432,0.0515,0.0579,0.0630,0.0674,0.0719,0.0768,0.0816,0.0853,0.0867,0.0849,0.0794,0.0702,0.0582,0.0453,0.0338,0.0259,0.0232,0.0254,0.0313,0.0385,0.0447,0.0479,0.0465,0.0399,0.0295,0.0176,0.0064,-0.0034,-0.0125,-0.0227,-0.0353,-0.0492,-0.0615,-0.0683,-0.0659,-0.0533,-0.0324,-0.0075,0.0168,0.0374,0.0538,0.0675,0.0806,0.0948,0.1108,0.1277,0.1439,0.1574,0.1662,0.1702,0.1717,0.1745,0.1815,0.1924,0.2031,0.2078,0.2022,0.1852,0.1591,0.1294,0.1017,0.0802,0.0662,0.0583,0.0526,0.0451,0.0326,0.0137,-0.0112,-0.0394,-0.0673,-0.0910,-0.1084,-0.1201,-0.1288,-0.1380,-0.1499,-0.1637,-0.1764,-0.1850,-0.1869,-0.1818,-0.1711,-0.1562,-0.1383,-0.1181,-0.0968,-0.0775,-0.0638,-0.0584,-0.0611,-0.0683,-0.0746,-0.0754,-0.0683,-0.0538,-0.0341,-0.0127,0.0075,0.0236,0.0345,0.0414,0.0469,0.0541,0.0649,0.0777,0.0883,0.0909,0.0812,0.0579,0.0247,-0.0114,-0.0424,-0.0629,-0.0722,-0.0742,-0.0755,-0.0816,-0.0949,-0.1140,-0.1342,-0.1499,-0.1563,-0.1515,-0.1368,-0.1168,-0.0972,-0.0828,-0.0754,-0.0731,-0.0714,-0.0656,-0.0532,-0.0354,-0.0167,-0.0022,0.0042,0.0011,-0.0098,-0.0243,-0.0368,-0.0432,-0.0421,-0.0353,-0.0271,-0.0216,-0.0203,-0.0220,-0.0234,-0.0205,-0.0108,0.0057,0.0261,0.0463,0.0626,0.0734,0.0788,0.0807,0.0820,0.0847,0.0900,0.0975,0.1047,0.1087,0.1074,0.1009,0.0919,0.0841,0.0808,0.0836,0.0908,0.0977,0.0982,0.0883,0.0678,0.0409,0.0142,-0.0064,-0.0182,-0.0222,-0.0227,-0.0251,-0.0334,-0.0485,-0.0675,-0.0852,-0.0965,-0.0986,-0.0922,-0.0805,-0.0683,-0.0609,-0.0622,-0.0729,-0.0910,-0.1123,-0.1320,-0.1457,-0.1508,-0.1469,-0.1368,-0.1259,-0.1205,-0.1239,-0.1347,-0.1474,-0.1551,-0.1525,-0.1380,-0.1143,-0.0874,-0.0644,-0.0503,-0.0467,-0.0509,-0.0574,-0.0605,-0.0570,-0.0474,-0.0348,-0.0240,-0.0189,-0.0216,-0.0309,-0.0433,-0.0551,-0.0644,-0.0716,-0.0792,-0.0898,-0.1041,-0.1210,-0.1374,-0.1498,-0.1552,-0.1521,-0.1408,-0.1232,-0.1018,-0.0797,-0.0595,-0.0434,-0.0321,-0.0249,-0.0198,-0.0145,-0.0080,-0.0014,0.0025,0.0006,-0.0083,-0.0228,-0.0392,-0.0528,-0.0600,-0.0591,-0.0511,-0.0386,-0.0257,-0.0163,-0.0135,-0.0179,-0.0274,-0.0379,-0.0458,-0.0492,-0.0480,-0.0440,-0.0398,-0.0371,-0.0358,-0.0344,-0.0304,-0.0222,-0.0103,0.0034,0.0164,0.0270,0.0353,0.0419,0.0475,0.0527,0.0583,0.0645,0.0709,0.0757,0.0767,0.0722,0.0615,0.0457,0.0275,0.0107,-0.0011,-0.0059,-0.0045,-0.0003,0.0021,-0.0011,-0.0107,-0.0244,-0.0382,-0.0481,-0.0523,-0.0512,-0.0468,-0.0412,-0.0363,-0.0327,-0.0304,-0.0292,-0.0283,-0.0269,-0.0240,-0.0192,-0.0130,-0.0067,-0.0024,-0.0015,-0.0038,-0.0068,-0.0068,-0.0004,0.0135,0.0339,0.0582,0.0824,0.1029,0.1171,0.1243,0.1256,0.1231,0.1188,0.1139,0.1088,0.1034,0.0973,0.0904,0.0827,0.0749,0.0669,0.0580,0.0459,0.0282,0.0040,-0.0248,-0.0545,-0.0809,-0.1012,-0.1142,-0.1201,-0.1194,-0.1124,-0.0993,-0.0809,-0.0585,-0.0347,-0.0133,0.0023,0.0106,0.0128,0.0120,0.0112,0.0119,0.0137,0.0158,0.0172,0.0168,0.0137,0.0071,-0.0019,-0.0109,-0.0169,-0.0175,-0.0122,-0.0030,0.0066,0.0123,0.0110,0.0023,-0.0114,-0.0265,-0.0397,-0.0501,-0.0584,-0.0657,-0.0729,-0.0800,-0.0867,-0.0928,-0.0978,-0.1008,-0.1009,-0.0976,-0.0917,-0.0837,-0.0737,-0.0606,-0.0436,-0.0231,-0.0009,0.0205,0.0398,0.0566,0.0720,0.0872,0.1030,0.1191,0.1337,0.1434,0.1449,0.1370,0.1219,0.1042,0.0887,0.0776,0.0697,0.0617,0.0497,0.0319,0.0086,-0.0174,-0.0421,-0.0622,-0.0755,-0.0827,-0.0860,-0.0885,-0.0923,-0.0979,-0.1037,-0.1075,-0.1074,-0.1027,-0.0938,-0.0816,-0.0674,-0.0524,-0.0369,-0.0204,-0.0014,0.0213,0.0477,0.0765,0.1054,0.1318,0.1534,0.1692,0.1797,0.1869,0.1927,0.1979,0.2015,0.2014,0.1959,0.1853,0.1717,0.1575,0.1441,0.1318,0.1202,0.1087,0.0966,0.0834,0.0687,0.0523,0.0344,0.0157,-0.0023,-0.0184,-0.0315,-0.0404,-0.0450,-0.0463,-0.0457,-0.0440,-0.0417,-0.0394,-0.0377,-0.0372,-0.0381,-0.0392,-0.0383,-0.0335,-0.0242,-0.0107,0.0053,0.0223,0.0389,0.0536,0.0660,0.0770,0.0883,0.1018,0.1181,0.1363,0.1538,0.1676,0.1753,0.1763,0.1721,0.1654,0.1590,0.1543,0.1500,0.1434,0.1309,0.1102,0.0817,0.0488,0.0175,-0.0062,-0.0190,-0.0210,-0.0158,-0.0084,-0.0035,-0.0027,-0.0050,-0.0065,-0.0030,0.0080,0.0253,0.0441,0.0581,0.0628,0.0580,0.0477,0.0380,0.0338,0.0373,0.0465,0.0572,0.0634,0.0598,0.0440,0.0179,-0.0127,-0.0405,-0.0596,-0.0680,-0.0675,-0.0630,-0.0593,-0.0595,-0.0643,-0.0721,-0.0798,-0.0845,-0.0844,-0.0792,-0.0699,-0.0585,-0.0477,-0.0400,-0.0370,-0.0386,-0.0425,-0.0444,-0.0410,-0.0309,-0.0157,0.0001,0.0115,0.0154,0.0113,0.0019,-0.0081,-0.0147,-0.0166,-0.0156,-0.0160,-0.0212,-0.0330,-0.0495,-0.0669,-0.0810,-0.0883,-0.0878,-0.0814,-0.0731,-0.0677,-0.0684,-0.0750,-0.0844,-0.0925,-0.0968,-0.0977,-0.0973,-0.0981,-0.1017,-0.1074,-0.1128,-0.1144,-0.1090,-0.0956,-0.0765,-0.0565,-0.0410,-0.0337,-0.0345,-0.0399,-0.0444,-0.0426,-0.0315,-0.0117,0.0131,0.0377,0.0571,0.0683,0.0712,0.0679,0.0606,0.0507,0.0387,0.0243,0.0077,-0.0103,-0.0290,-0.0478,-0.0667,-0.0853,-0.1032,-0.1202,-0.1358,-0.1489,-0.1580,-0.1612,-0.1578,-0.1493,-0.1381,-0.1267,-0.1161,-0.1062,-0.0961,-0.0852,-0.0727,-0.0581,-0.0410,-0.0221,-0.0030,0.0146,0.0298,0.0430,0.0544,0.0645,0.0729,0.0796,0.0846,0.0874,0.0872,0.0834,0.0764,0.0677,0.0588,0.0499,0.0396,0.0264,0.0100,-0.0079,-0.0248,-0.0383,-0.0470,-0.0508,-0.0511,-0.0507,-0.0523,-0.0576,-0.0665,-0.0765,-0.0843,-0.0873,-0.0839,-0.0744,-0.0600,-0.0430,-0.0263,-0.0122,-0.0011,0.0089,0.0207,0.0365,0.0564,0.0782,0.0980,0.1124,0.1195,0.1194,0.1142,0.1075,0.1032,0.1035,0.1080,0.1140,0.1180,0.1172,0.1108,0.0999,0.0867,0.0741,0.0650,0.0611,0.0615,0.0628,0.0607,0.0518,0.0356,0.0148,-0.0065,-0.0240,-0.0349,-0.0385,-0.0361,-0.0305,-0.0247,-0.0205,-0.0182,-0.0175,-0.0175,-0.0178,-0.0179,-0.0172,-0.0147,-0.0098,-0.0030,0.0040,0.0097,0.0129,0.0138,0.0130,0.0114,0.0104,0.0111,0.0143,0.0196,0.0248,0.0265,0.0215,0.0088,-0.0101,-0.0309,-0.0482,-0.0574,-0.0572,-0.0501,-0.0415,-0.0380,-0.0438,-0.0590,-0.0794,-0.0985,-0.1103,-0.1115,-0.1025,-0.0867,-0.0688,-0.0532,-0.0427,-0.0375,-0.0349,-0.0310,-0.0218,-0.0062,0.0135,0.0324,0.0453,0.0494,0.0452,0.0366,0.0292,0.0274,0.0332,0.0447,0.0574,0.0659,0.0666,0.0593,0.0473,0.0358,0.0296,0.0316,0.0414,0.0555,0.0687,0.0754,0.0728,0.0619,0.0476,0.0364,0.0335,0.0402,0.0540,0.0702,0.0844,0.0942,0.0996,0.1030,0.1079,0.1169,0.1301,0.1450,0.1577,0.1648,0.1649,0.1589,0.1496,0.1406,0.1348,0.1336,0.1355,0.1365,0.1317,0.1179,0.0949,0.0661,0.0368,0.0119,-0.0054,-0.0147,-0.0177,-0.0174,-0.0176,-0.0212,-0.0295,-0.0416,-0.0548,-0.0660,-0.0732,-0.0763,-0.0770,-0.0775,-0.0792,-0.0821,-0.0854,-0.0882,-0.0898,-0.0905,-0.0912,-0.0921,-0.0933,-0.0940,-0.0934,-0.0909,-0.0862,-0.0797,-0.0719,-0.0631,-0.0539,-0.0449,-0.0369,-0.0305,-0.0260,-0.0225,-0.0191,-0.0149,-0.0101,-0.0059,-0.0034,-0.0037,-0.0071,-0.0130,-0.0205,-0.0283,-0.0351,-0.0397,-0.0413,-0.0388,-0.0320,-0.0214,-0.0089,0.0030,0.0120,0.0168,0.0176,0.0153,0.0118,0.0091,0.0093,0.0135,0.0216,0.0315,0.0403,0.0459,0.0471,0.0439,0.0375,0.0295,0.0222,0.0173,0.0161,0.0178,0.0208,0.0233,0.0239,0.0223,0.0193,0.0160,0.0135,0.0124,0.0123,0.0126,0.0124,0.0110,0.0083,0.0045,-0.0003,-0.0064,-0.0142,-0.0241,-0.0358,-0.0488,-0.0620,-0.0746,-0.0861,-0.0957,-0.1027,-0.1070,-0.1093,-0.1109,-0.1127,-0.1154,-0.1184,-0.1202,-0.1187,-0.1123,-0.1002,-0.0831,-0.0627,-0.0412,-0.0197,0.0015,0.0227,0.0448,0.0681,0.0919,0.1150,0.1355,0.1512,0.1606,0.1634,0.1604,0.1537,0.1460,0.1397,0.1356,0.1334,0.1315,0.1280,0.1217,0.1126,0.1018,0.0912,0.0821,0.0747,0.0672,0.0576,0.0438,0.0255,0.0038,-0.0182,-0.0376,-0.0516,-0.0595,-0.0628,-0.0642,-0.0614];var T1_s1_s=0.0897047920778649;var ux_s1_mm=1.55478;var V_s1_kNm=58.807289899999994;var VW_s1=0.4242950209235209;var ux_s025_t=[-0.0070,-0.0374,-0.1046,-0.2150,-0.3685,-0.5539,-0.7488,-0.9215,-1.0372,-1.0676,-0.9979,-0.8313,-0.5879,-0.3004,-0.0059,0.2618,0.4793,0.6349,0.7272,0.7614,0.7452,0.6877,0.5995,0.4929,0.3834,0.2880,0.2225,0.1960,0.2084,0.2490,0.2989,0.3364,0.3430,0.3094,0.2374,0.1383,0.0271,-0.0840,-0.1900,-0.2937,-0.4029,-0.5241,-0.6553,-0.7826,-0.8809,-0.9195,-0.8713,-0.7219,-0.4749,-0.1529,0.2065,0.5582,0.8580,1.0694,1.1698,1.1519,1.0235,0.8042,0.5228,0.2142,-0.0839,-0.3354,-0.5088,-0.5822,-0.5483,-0.4169,-0.2137,0.0236,0.2533,0.4387,0.5548,0.5924,0.5566,0.4628,0.3308,0.1799,0.0253,-0.1240,-0.2628,-0.3876,-0.4942,-0.5763,-0.6266,-0.6385,-0.6085,-0.5380,-0.4340,-0.3072,-0.1697,-0.0330,0.0930,0.2006,0.2841,0.3400,0.3669,0.3666,0.3445,0.3096,0.2723,0.2423,0.2253,0.2209,0.2233,0.2239,0.2153,0.1945,0.1646,0.1349,0.1165,0.1186,0.1445,0.1900,0.2442,0.2931,0.3238,0.3282,0.3042,0.2551,0.1866,0.1038,0.0100,-0.0931,-0.2038,-0.3178,-0.4262,-0.5161,-0.5735,-0.5884,-0.5592,-0.4936,-0.4067,-0.3165,-0.2393,-0.1845,-0.1532,-0.1396,-0.1343,-0.1280,-0.1155,-0.0962,-0.0732,-0.0504,-0.0293,-0.0077,0.0203,0.0603,0.1148,0.1797,0.2443,0.2937,0.3142,0.2986,0.2484,0.1750,0.0961,0.0306,-0.0065,-0.0076,0.0266,0.0889,0.1688,0.2551,0.3387,0.4123,0.4688,0.5001,0.4961,0.4473,0.3478,0.1999,0.0157,-0.1827,-0.3675,-0.5107,-0.5909,-0.5988,-0.5386,-0.4267,-0.2862,-0.1402,-0.0068,0.1033,0.1866,0.2448,0.2814,0.2990,0.2992,0.2836,0.2552,0.2190,0.1828,0.1547,0.1413,0.1450,0.1632,0.1890,0.2140,0.2301,0.2328,0.2216,0.2000,0.1731,0.1453,0.1176,0.0872,0.0494,-0.0010,-0.0663,-0.1448,-0.2301,-0.3116,-0.3768,-0.4140,-0.4149,-0.3760,-0.2997,-0.1949,-0.0754,0.0416,0.1384,0.1993,0.2139,0.1785,0.0969,-0.0210,-0.1607,-0.3056,-0.4390,-0.5459,-0.6152,-0.6398,-0.6164,-0.5461,-0.4346,-0.2918,-0.1319,0.0278,0.1680,0.2711,0.3240,0.3218,0.2685,0.1763,0.0627,-0.0532,-0.1558,-0.2365,-0.2952,-0.3384,-0.3758,-0.4173,-0.4685,-0.5283,-0.5895,-0.6399,-0.6653,-0.6537,-0.5979,-0.4966,-0.3557,-0.1882,-0.0133,0.1468,0.2699,0.3365,0.3332,0.2545,0.1044,-0.1031,-0.3456,-0.5940,-0.8157,-0.9786,-1.0556,-1.0287,-0.8912,-0.6492,-0.3211,0.0633,0.4658,0.8429,1.1514,1.3544,1.4274,1.3624,1.1692,0.8750,0.5207,0.1551,-0.1725,-0.4196,-0.5569,-0.5716,-0.4688,-0.2711,-0.0146,0.2558,0.4938,0.6584,0.7199,0.6628,0.4880,0.2120,-0.1347,-0.5114,-0.8729,-1.1749,-1.3804,-1.4652,-1.4216,-1.2580,-0.9973,-0.6727,-0.3227,0.0158,0.3129,0.5499,0.7211,0.8333,0.9024,0.9478,0.9880,1.0370,1.1013,1.1803,1.2666,1.3493,1.4159,1.4542,1.4532,1.4048,1.3035,1.1478,0.9411,0.6932,0.4191,0.1392,-0.1237,-0.3469,-0.5125,-0.6114,-0.6468,-0.6338,-0.5967,-0.5645,-0.5650,-0.6173,-0.7274,-0.8887,-1.0834,-1.2864,-1.4713,-1.6126,-1.6888,-1.6845,-1.5909,-1.4053,-1.1322,-0.7850,-0.3871,0.0288,0.4248,0.7636,1.0158,1.1652,1.2121,1.1736,1.0797,0.9656,0.8631,0.7956,0.7744,0.7994,0.8615,0.9474,1.0426,1.1326,1.2026,1.2360,1.2146,1.1203,0.9384,0.6630,0.3012,-0.1259,-0.5860,-1.0400,-1.4490,-1.7817,-2.0185,-2.1532,-2.1913,-2.1465,-2.0363,-1.8802,-1.6975,-1.5068,-1.3259,-1.1705,-1.0515,-0.9718,-0.9246,-0.8924,-0.8484,-0.7624,-0.6093,-0.3762,-0.0671,0.2965,0.6800,1.0435,1.3513,1.5800,1.7213,1.7812,1.7766,1.7278,1.6523,1.5609,1.4579,1.3427,1.2141,1.0726,0.9209,0.7628,0.6009,0.4332,0.2529,0.0503,-0.1828,-0.4492,-0.7414,-1.0403,-1.3172,-1.5407,-1.6833,-1.7262,-1.6614,-1.4917,-1.2284,-0.8893,-0.4960,-0.0729,0.3506,0.7395,1.0549,1.2572,1.3121,1.2000,0.9221,0.5028,-0.0120,-0.5620,-1.0842,-1.5227,-1.8374,-2.0093,-2.0391,-1.9436,-1.7521,-1.5009,-1.2306,-0.9837,-0.8007,-0.7165,-0.7550,-0.9235,-1.2086,-1.5751,-1.9690,-2.3251,-2.5795,-2.6799,-2.5922,-2.3045,-1.8278,-1.1920,-0.4415,0.3712,1.1887,1.9522,2.6043,3.0933,3.3798,3.4438,3.2896,2.9451,2.4586,1.8899,1.2994,0.7367,0.2346,-0.1931,-0.5476,-0.8403,-1.0857,-1.2965,-1.4830,-1.6551,-1.8256,-2.0098,-2.2223,-2.4728,-2.7606,-3.0714,-3.3771,-3.6390,-3.8162,-3.8738,-3.7901,-3.5613,-3.1998,-2.7292,-2.1801,-1.5864,-0.9813,-0.3951,0.1458,0.6211,1.0213,1.3509,1.6295,1.8882,2.1623,2.4809,2.8563,3.2771,3.7080,4.0982,4.3933,4.5487,4.5411,4.3751,4.0794,3.6970,3.2725,2.8405,2.4181,2.0075,1.6030,1.1985,0.7925,0.3887,-0.0065,-0.3875,-0.7538,-1.1132,-1.4788,-1.8611,-2.2600,-2.6586,-3.0257,-3.3225,-3.5119,-3.5682,-3.4821,-3.2618,-2.9316,-2.5258,-2.0774,-1.6084,-1.1274,-0.6351,-0.1289,0.3980,0.9576,1.5613,2.2147,2.9144,3.6425,4.3660,5.0379,5.5961,5.9718,6.1044,5.9581,5.5366,4.8851,4.0832,3.2339,2.4481,1.8201,1.4086,1.2327,1.2758,1.4879,1.7921,2.0997,2.3214,2.3738,2.1869,1.7107,0.9214,-0.1736,-1.5314,-3.0718,-4.6810,-6.2207,-7.5420,-8.5040,-8.9943,-8.9461,-8.3493,-7.2533,-5.7634,-4.0326,-2.2418,-0.5715,0.8210,1.8214,2.3717,2.4727,2.1808,1.6034,0.8874,0.1995,-0.2937,-0.4513,-0.1821,0.5443,1.6914,3.1530,4.7588,6.2958,7.5437,8.3128,8.4773,7.9985,6.9289,5.3976,3.5788,1.6644,-0.1540,-1.7057,-2.8652,-3.5600,-3.7655,-3.5028,-2.8384,-1.8831,-0.7848,0.2867,1.1622,1.6945,1.7799,1.3765,0.5147,-0.7068,-2.1359,-3.5903,-4.8845,-5.8563,-6.3866,-6.4102,-5.9234,-4.9812,-3.6876,-2.1805,-0.6135,0.8628,2.1200,3.0693,3.6717,3.9395,3.9277,3.7186,3.4060,3.0810,2.8183,2.6650,2.6370,2.7223,2.8868,3.0813,3.2493,3.3340,3.2862,3.0715,2.6726,2.0906,1.3475,0.4840,-0.4477,-1.3880,-2.2761,-3.0569,-3.6854,-4.1293,-4.3702,-4.4027,-4.2327,-3.8792,-3.3763,-2.7738,-2.1329,-1.5207,-1.0009,-0.6223,-0.4094,-0.3570,-0.4310,-0.5798,-0.7493,-0.8936,-0.9844,-1.0148,-0.9952,-0.9440,-0.8743,-0.7832,-0.6495,-0.4404,-0.1237,0.3189,0.8821,1.5331,2.2137,2.8480,3.3544,3.6606,3.7172,3.5067,3.0461,2.3838,1.5923,0.7591,-0.0247,-0.6776,-1.1414,-1.3907,-1.4373,-1.3285,-1.1374,-0.9491,-0.8441,-0.8810,-1.0856,-1.4457,-1.9146,-2.4253,-2.9053,-3.2898,-3.5345,-3.6209,-3.5538,-3.3538,-3.0483,-2.6634,-2.2183,-1.7239,-1.1861,-0.6101,-0.0046,0.6175,1.2408,1.8497,2.4305,2.9710,3.4592,3.8785,4.2052,4.4114,4.4653,4.3356,4.0015,3.4600,2.7263,1.8325,0.8236,-0.2445,-1.3068,-2.2956,-3.1439,-3.7855,-4.1625,-4.2367,-4.0001,-3.4836,-2.7621,-1.9465,-1.1701,-0.5681,-0.2507,-0.2833,-0.6761,-1.3820,-2.3069,-3.3276,-4.3096,-5.1269,-5.6764,-5.8863,-5.7202,-5.1808,-4.3087,-3.1790,-1.8922,-0.5649,0.6830,1.7435,2.5341,3.0082,3.1584,3.0142,2.6364,2.1083,1.5264,0.9906,0.5954,0.4210,0.5221,0.9176,1.5840,2.4542,3.4229,4.3594,5.1267,5.6033,5.7027,5.3879,4.6760,3.6342,2.3656,0.9907,-0.3695,-1.6084,-2.6455,-3.4337,-3.9582,-4.2319,-4.2887,-4.1762,-3.9473,-3.6516,-3.3312,-3.0196,-2.7399,-2.5033,-2.3092,-2.1513,-2.0211,-1.9055,-1.7874,-1.6494,-1.4776,-1.2627,-0.9993,-0.6866,-0.3315,0.0507,0.4376,0.8043,1.1270,1.3872,1.5723,1.6760,1.7029,1.6686,1.5994,1.5302,1.4964,1.5226,1.6177,1.7708,1.9495,2.1023,2.1666,2.0799,1.7958,1.2994,0.6136,-0.2023,-1.0606,-1.8584,-2.4955,-2.8903,-2.9915,-2.7861,-2.3006,-1.5943,-0.7503,0.1330,0.9518,1.6084,2.0217,2.1334,1.9170,1.3843,0.5869,-0.3910,-1.4411,-2.4411,-3.2683,-3.8167,-4.0083,-3.8006,-3.1938,-2.2348,-1.0140,0.3416,1.6815,2.8493,3.7031,4.1384,4.1087,3.6343,2.8004,1.7464,0.6426,-0.3405,-1.0594,-1.4179,-1.3782,-0.9614,-0.2404,0.6749,1.6547,2.5655,3.2853,3.7137,3.7796,3.4503,2.7402,1.7123,0.4732,-0.8361,-2.0574,-3.0376,-3.6527,-3.8249,-3.5323,-2.8095,-1.7419,-0.4533,0.9108,2.1996,3.2688,3.9926,4.2759,4.0624,3.3451,2.1747,0.6599,-1.0405,-2.7343,-4.2194,-5.3137,-5.8819,-5.8575,-5.2511,-4.1461,-2.6849,-1.0481,0.5695,1.9804,3.0247,3.5876,3.6124,3.1107,2.1667,0.9315,-0.3943,-1.5871,-2.4334,-2.7649,-2.4884,-1.6037,-0.2046,1.5364,3.3963,5.1361,6.5336,7.4089,7.6416,7.1801,6.0471,4.3376,2.2105,-0.1250,-2.4285,-4.4554,-5.9892,-6.8714,-7.0263,-6.4709,-5.3087,-3.7089,-1.8757,-0.0143,1.6938,3.1092,4.1407,4.7425,4.9066,4.6555,4.0389,3.1312,2.0319,0.8616,-0.2469,-1.1638,-1.7800,-2.0238,-1.8730,-1.3581,-0.5575,0.4165,1.4352,2.3722,3.1177,3.5869,3.7282,3.5261,2.9999,2.2023,1.2168,0.1492,-0.8845,-1.7728,-2.4228,-2.7733,-2.8035,-2.5362,-2.0290,-1.3640,-0.6369,0.0569,0.6355,1.0331,1.2005,1.1071,0.7418,0.1165,-0.7304,-1.7318,-2.7939,-3.8025,-4.6350,-5.1764,-5.3395,-5.0817,-4.4139,-3.3969,-2.1307,-0.7399,0.6435,1.8956,2.9121,3.6186,3.9751,3.9767,3.6518,3.0597,2.2854,1.4338,0.6204,-0.0433,-0.4670,-0.5931,-0.4051,0.0699,0.7645,1.5792,2.3958,3.0932,3.5627,3.7211,3.5212,2.9570,2.0662,0.9286,-0.3403,-1.6027,-2.7159,-3.5519,-4.0152,-4.0583,-3.6900,-2.9754,-2.0261,-0.9838,0.0001,0.7862,1.2646,1.3675,1.0764,0.4231,-0.5150,-1.6242,-2.7654,-3.7885,-4.5473,-4.9169,-4.8135,-4.2085,-3.1349,-1.6860,-0.0053,1.7322,3.3439,4.6628,5.5589,5.9512,5.8149,5.1801,4.1260,2.7726,1.2698,-0.2159,-1.5170,-2.4853,-3.0125,-3.0498,-2.6187,-1.8087,-0.7654,0.3330,1.3080,2.0110,2.3458,2.2791,1.8394,1.1026,0.1738,-0.8312,-1.8016,-2.6392,-3.2639,-3.6144,-3.6526,-3.3675,-2.7790,-1.9409,-0.9394,0.1175,1.1153,1.9495,2.5427,2.8563,2.8917,2.6854,2.2997,1.8113,1.2992,0.8369,0.4870,0.2965,0.2925,0.4758,0.8185,1.2627,1.7254,2.1107,2.3277,2.3092,2.0276,1.5015,0.7924,-0.0070,-0.7927,-1.4681,-1.9584,-2.2182,-2.2313,-2.0078,-1.5805,-1.0005,-0.3345,0.3372,0.9255,1.3431,1.5199,1.4184,1.0445,0.4513,-0.2662,-0.9884,-1.5942,-1.9839,-2.0957,-1.9131,-1.4608,-0.7957,0.0063,0.8606,1.6815,2.3866,2.9021,3.1684,3.1489,2.8381,2.2680,1.5085,0.6607,-0.1590,-0.8394,-1.2958,-1.4834,-1.4035,-1.0987,-0.6396,-0.1076,0.4183,0.8725,1.2061,1.3857,1.3924,1.2205,0.8772,0.3864,-0.2080,-0.8450,-1.4527,-1.9588,-2.3034,-2.4496,-2.3902,-2.1479,-1.7691,-1.3144,-0.8462,-0.4182,-0.0685,0.1825,0.3316,0.3904,0.3823,0.3394,0.2975,0.2916,0.3502,0.4877,0.6990,0.9581,1.2227,1.4419,1.5678,1.5654,1.4221,1.1492,0.7798,0.3604,-0.0577,-0.4271,-0.7114,-0.8875,-0.9451,-0.8843,-0.7136,-0.4504,-0.1227,0.2315,0.5665,0.8327,0.9846,0.9906,0.8400,0.5472,0.1504,-0.2926,-0.7139,-1.0484,-1.2442,-1.2703,-1.1210,-0.8150,-0.3914,0.0959,0.5874,1.0256,1.3617,1.5638,1.6212,1.5465,1.3749,1.1590,0.9612,0.8414,0.8446,0.9916,1.2737,1.6521,2.0641,2.4349,2.6911,2.7741,2.6511,2.3177,1.7976,1.1392,0.4074,-0.3266,-0.9926,-1.5284,-1.8848,-2.0312,-1.9593,-1.6862,-1.2539,-0.7260,-0.1807,0.3008,0.6467,0.8069,0.7614,0.5236,0.1367,-0.3339,-0.8134,-1.2293,-1.5211,-1.6467,-1.5867,-1.3454,-0.9501,-0.4476,0.1008,0.6260,1.0604,1.3473,1.4511,1.3635,1.1070,0.7324,0.3101,-0.0829,-0.3766,-0.5194,-0.4872,-0.2862,0.0491,0.4622,0.8845,1.2468,1.4895,1.5715,1.4770,1.2179,0.8323,0.3795,-0.0703,-0.4478,-0.6957,-0.7786,-0.6893,-0.4494,-0.1058,0.2772,0.6293,0.8854,0.9938,0.9236,0.6689,0.2494,-0.2921,-0.8945,-1.4862,-1.9956,-2.3602,-2.5375,-2.5107,-2.2909,-1.9146,-1.4379,-0.9256,-0.4409,-0.0362,0.2523,0.4063,0.4250,0.3227,0.1237,-0.1407,-0.4337,-0.7166,-0.9532,-1.1130,-1.1754,-1.1334,-0.9945,-0.7786,-0.5127,-0.2248,0.0611,0.3285,0.5698,0.7833,0.9684,1.1232,1.2430,1.3224,1.3580,1.3525,1.3152,1.2610,1.2063,1.1623,1.1316,1.1075,1.0761,1.0216,0.9308,0.7984,0.6291,0.4340,0.2262,0.0173,-0.1859,-0.3807,-0.5664,-0.7409,-0.8983,-1.0291,-1.1232,-1.1729,-1.1767,-1.1396,-1.0706,-0.9786,-0.8682,-0.7373,-0.5781,-0.3818,-0.1441,0.1285,0.4170,0.6925,0.9211,1.0726,1.1274,1.0808,0.9448,0.7456,0.5173,0.2961,0.1151,0.0004,-0.0325,0.0197,0.1480,0.3308,0.5357,0.7220,0.8463,0.8696,0.7648,0.5240,0.1608,-0.2899,-0.7767,-1.2399,-1.6214,-1.8746,-1.9705,-1.9016,-1.6813,-1.3398,-0.9189,-0.4655,-0.0256,0.3597,0.6581,0.8487,0.9230,0.8854,0.7520,0.5476,0.3030,0.0515,-0.1747,-0.3471,-0.4436,-0.4487,-0.3541,-0.1598,0.1252,0.4826,0.8837,1.2915,1.6634,1.9554,2.1269,2.1474,2.0032,1.7007,1.2678,0.7507,0.2059,-0.3082,-0.7408,-1.0556,-1.2359,-1.2847,-1.2230,-1.0845,-0.9090,-0.7354,-0.5954,-0.5097,-0.4846,-0.5120,-0.5719,-0.6361,-0.6739,-0.6577,-0.5687,-0.4011,-0.1647,0.1170,0.4096,0.6747,0.8766,0.9884,0.9949,0.8938,0.6946,0.4161,0.0836,-0.2744,-0.6278,-0.9466,-1.2032,-1.3739,-1.4418,-1.4012,-1.2584,-1.0326,-0.7534,-0.4573,-0.1815,0.0418,0.1897,0.2512,0.2272,0.1281,-0.0281,-0.2175,-0.4121,-0.5812,-0.6940,-0.7217,-0.6423,-0.4452,-0.1351,0.2661,0.7215,1.1816,1.5915,1.8977,2.0552,2.0327,1.8161,1.4101,0.8384,0.1423,-0.6223,-1.3894,-2.0892,-2.6554,-3.0329,-3.1855,-3.1019,-2.7973,-2.3108,-1.6997,-1.0310,-0.3710,0.2229,0.7083,1.0604,1.2723,1.3538,1.3297,1.2362,1.1142,1.0048,0.9446,0.9593,1.0603,1.2435,1.4884,1.7611,2.0196,2.2208,2.3268,2.3102,2.1565,1.8658,1.4526,0.9434,0.3750,-0.2091,-0.7620,-1.2383,-1.5980,-1.8126,-1.8698,-1.7760,-1.5567,-1.2544,-0.9228,-0.6185,-0.3940,-0.2897,-0.3275,-0.5095,-0.8190,-1.2232,-1.6775,-2.1305,-2.5299,-2.8270,-2.9799,-2.9569,-2.7403,-2.3309,-1.7492,-1.0357,-0.2475,0.5467,1.2768,1.8798,2.3095,2.5411,2.5751,2.4355,2.1644,1.8150,1.4439,1.1034,0.8360,0.6701,0.6165,0.6684,0.8018,0.9785,1.1517,1.2735,1.3039,1.2182,1.0119,0.7011,0.3196,-0.0888,-0.4793,-0.8147,-1.0706,-1.2372,-1.3181,-1.3258,-1.2778,-1.1922,-1.0863,-0.9762,-0.8766,-0.8014,-0.7625,-0.7672,-0.8168,-0.9030,-1.0088,-1.1098,-1.1771,-1.1815,-1.0983,-0.9102,-0.6098,-0.2020,0.2969,0.8584,1.4412,1.9953,2.4655,2.7977,2.9475,2.8885,2.6181,2.1606,1.5658,0.9013,0.2432,-0.3352,-0.7736,-1.0326,-1.0985,-0.9835,-0.7236,-0.3732,0.0016,0.3322,0.5547,0.6184,0.4938,0.1784,-0.3033,-0.9027,-1.5525,-2.1772,-2.7038,-3.0720,-3.2411,-3.1943,-2.9389,-2.5037,-1.9341,-1.2882,-0.6303,-0.0248,0.4701,0.8078,0.9608,0.9238,0.7163,0.3815,-0.0200,-0.4182,-0.7438,-0.9386,-0.9634,-0.8029,-0.4677,0.0081,0.5722,1.1608,1.7060,2.1447,2.4259,2.5176,2.4103,2.1191,1.6817,1.1542,0.6017,0.0887,-0.3301,-0.6174,-0.7574,-0.7561,-0.6390,-0.4449,-0.2199,-0.0106,0.1422,0.2075,0.1676,0.0200,-0.2224,-0.5320,-0.8699,-1.1904,-1.4472,-1.6005,-1.6232,-1.5052,-1.2545,-0.8962,-0.4684,-0.0169,0.4104,0.7697,1.0260,1.1560,1.1501,1.0139,0.7679,0.4458,0.0908,-0.2496,-0.5306,-0.7173,-0.7904,-0.7500,-0.6156,-0.4214,-0.2100,-0.0253,0.0957,0.1285,0.0643,-0.0905,-0.3157,-0.5811,-0.8516,-1.0919,-1.2716,-1.3690,-1.3746,-1.2919,-1.1376,-0.9389,-0.7297,-0.5438,-0.4108,-0.3498,-0.3671,-0.4566,-0.6017,-0.7780,-0.9576,-1.1138,-1.2237,-1.2714,-1.2485,-1.1543,-0.9958,-0.7871,-0.5466,-0.2955,-0.0555,0.1554,0.3236,0.4417,0.5091,0.5309,0.5165,0.4784,0.4308,0.3876,0.3613,0.3611,0.3914,0.4507,0.5304,0.6164,0.6905,0.7336,0.7297,0.6696,0.5540,0.3937,0.2087,0.0244,-0.1324,-0.2375,-0.2743,-0.2359,-0.1257,0.0427,0.2480,0.4636,0.6614,0.8152,0.9042,0.9157,0.8467,0.7041,0.5037,0.2685,0.0247,-0.2015,-0.3870,-0.5151,-0.5770,-0.5719,-0.5069,-0.3953,-0.2555,-0.1086,0.0239,0.1235,0.1775,0.1806,0.1378,0.0634,-0.0206,-0.0887,-0.1166,-0.0868,0.0083,0.1642,0.3648,0.5847,0.7938,0.9614,1.0601,1.0695,0.9779,0.7835,0.4967,0.1392,-0.2565,-0.6494,-0.9948,-1.2498,-1.3798,-1.3644,-1.2014,-0.9076,-0.5172,-0.0759,0.3657,0.7591,1.0641,1.2533,1.3142,1.2494,1.0747,0.8167,0.5089,0.1880,-0.1114,-0.3617,-0.5448,-0.6544,-0.6963,-0.6860,-0.6448,-0.5955,-0.5593,-0.5513,-0.5803,-0.6478,-0.7487,-0.8731,-1.0061,-1.1292,-1.2216,-1.2623,-1.2334,-1.1233,-0.9304,-0.6637,-0.3436,0.0015,0.3391,0.6382,0.8737,1.0295,1.0997,1.0880,1.0054,0.8669,0.6895,0.4908,0.2870,0.0923,-0.0819,-0.2283,-0.3442,-0.4318,-0.4975,-0.5503,-0.5986,-0.6469,-0.6947,-0.7355,-0.7592,-0.7548,-0.7152,-0.6402,-0.5376,-0.4223,-0.3122,-0.2241,-0.1682,-0.1463,-0.1508,-0.1674,-0.1787,-0.1694,-0.1301,-0.0594,0.0359,0.1431,0.2464,0.3297,0.3798,0.3872,0.3479,0.2629,0.1393,-0.0113,-0.1731,-0.3273,-0.4552,-0.5410,-0.5744,-0.5530,-0.4833,-0.3792,-0.2587,-0.1399,-0.0371,0.0412,0.0935,0.1240,0.1398,0.1487,0.1567,0.1680,0.1854,0.2117,0.2503,0.3056,0.3818,0.4816,0.6034,0.7402,0.8794,1.0044,1.0969,1.1400,1.1215,1.0358,0.8857,0.6814,0.4393,0.1803,-0.0724,-0.2962,-0.4716,-0.5846,-0.6289,-0.6073,-0.5309,-0.4179,-0.2911,-0.1737,-0.0863,-0.0434,-0.0525,-0.1141,-0.2227,-0.3678,-0.5356,-0.7103,-0.8745,-1.0104,-1.1005,-1.1301,-1.0888,-0.9726,-0.7855,-0.5395,-0.2533,0.0496,0.3445,0.6078,0.8202,0.9680,1.0439,1.0466,0.9819,0.8613,0.7016,0.5238,0.3509,0.2040,0.1001,0.0482,0.0472,0.0868,0.1501,0.2160,0.2640,0.2790,0.2521,0.1820,0.0744,-0.0593,-0.2051,-0.3472,-0.4701,-0.5595,-0.6041,-0.5976,-0.5393,-0.4356,-0.2997,-0.1503,-0.0085,0.1052,0.1742,0.1897,0.1503,0.0614,-0.0652,-0.2140,-0.3679,-0.5095,-0.6219,-0.6905,-0.7048,-0.6596,-0.5567,-0.4056,-0.2228,-0.0294,0.1521,0.3020,0.4065,0.4595,0.4625,0.4227,0.3506,0.2570,0.1519,0.0431,-0.0625,-0.1578,-0.2360,-0.2899,-0.3135,-0.3045,-0.2652,-0.2028,-0.1282,-0.0531,0.0124,0.0626,0.0977,0.1226,0.1449,0.1723,0.2102,0.2608,0.3229,0.3933,0.4678,0.5425,0.6141,0.6797,0.7360,0.7785,0.8017,0.8007,0.7728,0.7184,0.6412,0.5476,0.4439,0.3347,0.2204,0.0979,-0.0379,-0.1913,-0.3620,-0.5433,-0.7216,-0.8787,-0.9956,-1.0570,-1.0544,-0.9874,-0.8638,-0.6970,-0.5030,-0.2983,-0.0976,0.0869,0.2456,0.3713,0.4600,0.5119,0.5318,0.5290,0.5169,0.5109,0.5238,0.5637,0.6322,0.7235,0.8268,0.9286,1.0159,1.0785,1.1102,1.1086,1.0745,1.0099,0.9172,0.7990,0.6591,0.5025,0.3356,0.1666,0.0039,-0.1448,-0.2737,-0.3790,-0.4585,-0.5117,-0.5396,-0.5446,-0.5303,-0.5026,-0.4690,-0.4383,-0.4192,-0.4176,-0.4348,-0.4664,-0.5024,-0.5291,-0.5320,-0.4993,-0.4245,-0.3079,-0.1564,0.0176,0.1984,0.3691,0.5137,0.6178,0.6693,0.6591,0.5824,0.4401,0.2396,-0.0041,-0.2696,-0.5310,-0.7611,-0.9352,-1.0349,-1.0516,-0.9872,-0.8534,-0.6706,-0.4649,-0.2652,-0.0998,0.0066,0.0368,-0.0173,-0.1517,-0.3495,-0.5818,-0.8109,-0.9956,-1.0972,-1.0866,-0.9501,-0.6923,-0.3352,0.0843,0.5206,0.9261,1.2585,1.4855,1.5886,1.5643,1.4234,1.1880,0.8882,0.5586,0.2346,-0.0513,-0.2722,-0.4102,-0.4578,-0.4187,-0.3073,-0.1468,0.0336,0.2023,0.3296,0.3906,0.3687,0.2572,0.0610,-0.2042,-0.5121,-0.8283,-1.1134,-1.3271,-1.4335,-1.4065,-1.2350,-0.9254,-0.5037,-0.0125,0.4940,0.9573,1.3234,1.5508,1.6163,1.5182,1.2758,0.9257,0.5162,0.1004,-0.2706,-0.5542,-0.7206,-0.7555,-0.6616,-0.4573,-0.1747,0.1449,0.4555,0.7135,0.8845,0.9473,0.8974,0.7470,0.5226,0.2605,0.0017,-0.2146,-0.3562,-0.4011,-0.3401,-0.1765,0.0739,0.3851,0.7227,1.0472,1.3182,1.4991,1.5628,1.4955,1.2998,0.9955,0.6177,0.2117,-0.1730,-0.4898,-0.7020,-0.7870,-0.7389,-0.5686,-0.3012,0.0277,0.3760,0.7003,0.9611,1.1273,1.1798,1.1138,0.9398,0.6825,0.3774,0.0659,-0.2100,-0.4140,-0.5200,-0.5158,-0.4042,-0.2021,0.0623,0.3529,0.6311,0.8599,1.0085,1.0559,0.9935,0.8262,0.5724,0.2613,-0.0704,-0.3840,-0.6437,-0.8212,-0.8998,-0.8762,-0.7607,-0.5748,-0.3489,-0.1179,0.0843,0.2286,0.2945,0.2725,0.1659,-0.0099,-0.2298,-0.4620,-0.6718,-0.8271,-0.9020,-0.8807,-0.7594,-0.5468,-0.2629,0.0631,0.3970,0.7034,0.9498,1.1111,1.1723,1.1308,0.9967,0.7916,0.5457,0.2940,0.0709,-0.0943,-0.1817,-0.1834,-0.1049,0.0359,0.2119,0.3902,0.5381,0.6270,0.6374,0.5613,0.4036,0.1808,-0.0817,-0.3534,-0.6033,-0.8039,-0.9342,-0.9819,-0.9439,-0.8256,-0.6394,-0.4030,-0.1377,0.1338,0.3894,0.6089,0.7758,0.8786,0.9127,0.8800,0.7892,0.6553,0.4973,0.3366,0.1953,0.0931,0.0457,0.0627,0.1459,0.2875,0.4712,0.6722,0.8598,1.0017,1.0698,1.0440,0.9169,0.6959,0.4026,0.0698,-0.2634,-0.5571,-0.7765,-0.8963,-0.9037,-0.7989,-0.5952,-0.3174,0.0010,0.3216,0.6047,0.8142,0.9218,0.9106,0.7783,0.5372,0.2131,-0.1585,-0.5367,-0.8817,-1.1588,-1.3430,-1.4204,-1.3896,-1.2603,-1.0525,-0.7931,-0.5139,-0.2477,-0.0247,0.1312,0.2053,0.1940,0.1063,-0.0386,-0.2140,-0.3896,-0.5368,-0.6325,-0.6614,-0.6181,-0.5060,-0.3361,-0.1253,0.1062,0.3373,0.5470,0.7172,0.8336,0.8869,0.8746,0.8013,0.6783,0.5222,0.3528,0.1906,0.0539,-0.0441,-0.0964,-0.1036,-0.0733,-0.0182,0.0455,0.1008,0.1315,0.1255,0.0762,-0.0166,-0.1457,-0.2984,-0.4571,-0.6030,-0.7185,-0.7901,-0.8103,-0.7785,-0.7004,-0.5868,-0.4509,-0.3061,-0.1643,-0.0346,0.0767,0.1663,0.2327,0.2749,0.2930,0.2871,0.2582,0.2085,0.1422,0.0659,-0.0123,-0.0825,-0.1347,-0.1602,-0.1522,-0.1078,-0.0285,0.0792,0.2047,0.3342,0.4525,0.5456,0.6024,0.6162,0.5860,0.5161,0.4152,0.2947,0.1676,0.0463,-0.0581,-0.1371,-0.1845,-0.1968,-0.1733,-0.1166,-0.0325,0.0698,0.1783,0.2790,0.3580,0.4020,0.4015,0.3515,0.2528,0.1118,-0.0585,-0.2408,-0.4144,-0.5579,-0.6513,-0.6789,-0.6316,-0.5089,-0.3191,-0.0791,0.1877,0.4543,0.6941,0.8847,1.0101,1.0630,1.0446,0.9643,0.8381,0.6860,0.5301,0.3915,0.2884,0.2333,0.2318,0.2817,0.3728,0.4885,0.6074,0.7074,0.7680,0.7744,0.7197,0.6046,0.4379,0.2348,0.0136,-0.2056,-0.4040,-0.5661,-0.6811,-0.7440,-0.7559,-0.7235,-0.6585,-0.5761,-0.4922,-0.4220,-0.3769,-0.3631,-0.3811,-0.4250,-0.4843,-0.5450,-0.5931,-0.6163,-0.6064,-0.5606,-0.4817,-0.3776,-0.2599,-0.1418,-0.0363,0.0463,0.0995,0.1217,0.1160,0.0897,0.0523,0.0148,-0.0123,-0.0203,-0.0034,0.0406,0.1094,0.1959,0.2892,0.3751,0.4375,0.4616,0.4363,0.3558,0.2221,0.0445,-0.1609,-0.3740,-0.5735,-0.7399,-0.8584,-0.9198,-0.9218,-0.8682,-0.7677,-0.6325,-0.4773,-0.3175,-0.1682,-0.0429,0.0485,0.1003,0.1118,0.0872,0.0353,-0.0324,-0.1034,-0.1670,-0.2147,-0.2419,-0.2473,-0.2326,-0.2015,-0.1592,-0.1114,-0.0637,-0.0215,0.0105,0.0293,0.0342,0.0269,0.0119,-0.0040,-0.0131,-0.0082,0.0163,0.0623,0.1277,0.2075,0.2943,0.3797,0.4551,0.5136,0.5501,0.5614,0.5468,0.5078,0.4485,0.3755,0.2974,0.2237,0.1635,0.1236,0.1071,0.1124,0.1336,0.1614,0.1851,0.1952,0.1844,0.1492,0.0901,0.0103,-0.0844,-0.1867,-0.2889,-0.3831,-0.4617,-0.5174,-0.5440,-0.5380,-0.4995,-0.4330,-0.3475,-0.2557,-0.1727,-0.1134,-0.0893,-0.1066,-0.1653,-0.2596,-0.3779,-0.5060,-0.6284,-0.7312,-0.8029,-0.8355,-0.8251,-0.7720,-0.6801,-0.5568,-0.4129,-0.2614,-0.1159,0.0096,0.1037,0.1582,0.1700,0.1412,0.0784,-0.0081,-0.1063,-0.2037,-0.2891,-0.3536,-0.3916,-0.4012,-0.3843,-0.3464,-0.2964,-0.2456,-0.2059,-0.1882,-0.2005,-0.2456,-0.3207,-0.4166,-0.5194,-0.6121,-0.6774,-0.7008,-0.6730,-0.5914,-0.4606,-0.2920,-0.1022,0.0889,0.2606,0.3938,0.4733,0.4890,0.4383,0.3260,0.1641,-0.0294,-0.2324,-0.4208,-0.5722,-0.6681,-0.6969,-0.6551,-0.5480,-0.3891,-0.1986,-0.0003,0.1809,0.3220,0.4055,0.4208,0.3661,0.2486,0.0844,-0.1042,-0.2908,-0.4490,-0.5553,-0.5930,-0.5540,-0.4403,-0.2640,-0.0448,0.1922,0.4204,0.6144,0.7541,0.8259,0.8244,0.7520,0.6184,0.4389,0.2328,0.0211,-0.1755,-0.3380,-0.4515,-0.5066,-0.5002,-0.4361,-0.3250,-0.1828,-0.0293,0.1150,0.2304,0.3009,0.3167,0.2750,0.1812,0.0474,-0.1086,-0.2659,-0.4030,-0.5013,-0.5469,-0.5328,-0.4597,-0.3366,-0.1793,-0.0077,0.1566,0.2934,0.3874,0.4297,0.4197,0.3644,0.2781,0.1792,0.0875,0.0212,-0.0058,0.0137,0.0797,0.1848,0.3160,0.4559,0.5856,0.6875,0.7472,0.7557,0.7102,0.6144,0.4774,0.3122,0.1339,-0.0424,-0.2032,-0.3384,-0.4415,-0.5105,-0.5464,-0.5530,-0.5354,-0.4994,-0.4500,-0.3909,-0.3246,-0.2524,-0.1753,-0.0946,-0.0128,0.0666,0.1384,0.1967,0.2358,0.2513,0.2415,0.2075,0.1535,0.0862,0.0136,-0.0560,-0.1155,-0.1594,-0.1840,-0.1876,-0.1706,-0.1354,-0.0861,-0.0287,0.0298,0.0816,0.1187,0.1343,0.1235,0.0838,0.0163,-0.0747,-0.1821,-0.2969,-0.4088,-0.5072,-0.5827,-0.6275,-0.6365,-0.6081,-0.5445,-0.4513,-0.3368,-0.2110,-0.0846,0.0330,0.1344,0.2152,0.2744,0.3139,0.3381,0.3531,0.3646,0.3781,0.3966,0.4207,0.4486,0.4758,0.4968,0.5054,0.4968,0.4679,0.4176,0.3473,0.2600,0.1600,0.0523,-0.0582,-0.1664,-0.2675,-0.3567,-0.4297,-0.4824,-0.5124,-0.5188,-0.5027,-0.4675,-0.4184,-0.3617,-0.3037,-0.2497,-0.2036,-0.1672,-0.1397,-0.1184,-0.0984,-0.0739,-0.0382,0.0144,0.0881,0.1844,0.3015,0.4337,0.5725,0.7076,0.8278,0.9231,0.9850,1.0086,0.9924,0.9385,0.8521,0.7410,0.6148,0.4839,0.3584,0.2480,0.1602,0.0998,0.0680,0.0624,0.0771,0.1030,0.1299,0.1476,0.1474,0.1235,0.0743,0.0022,-0.0863,-0.1817,-0.2725,-0.3473,-0.3966,-0.4137,-0.3963,-0.3464,-0.2701,-0.1767,-0.0768,0.0191,0.1028,0.1686,0.2145,0.2419,0.2544,0.2580,0.2591,0.2638,0.2776,0.3044,0.3461,0.4027,0.4712,0.5470,0.6240,0.6943,0.7503,0.7851,0.7935,0.7724,0.7207,0.6396,0.5315,0.4012,0.2547,0.1004,-0.0518,-0.1904,-0.3038,-0.3814,-0.4157,-0.4031,-0.3455,-0.2498,-0.1269,0.0098,0.1465,0.2703,0.3705,0.4390,0.4711,0.4655,0.4242,0.3528,0.2602,0.1582,0.0595,-0.0233,-0.0807,-0.1076,-0.1048,-0.0788,-0.0402,-0.0013,0.0257,0.0316,0.0113,-0.0354,-0.1046,-0.1887,-0.2783,-0.3636,-0.4350,-0.4842,-0.5053,-0.4949,-0.4530,-0.3830,-0.2923,-0.1909,-0.0902,-0.0018,0.0652,0.1050,0.1162,0.1014,0.0671,0.0213,-0.0276,-0.0723,-0.1070,-0.1283,-0.1350,-0.1273,-0.1078,-0.0802,-0.0501,-0.0238,-0.0084,-0.0101,-0.0331,-0.0789,-0.1448,-0.2242,-0.3082,-0.3865,-0.4493,-0.4894,-0.5025,-0.4886,-0.4510,-0.3961,-0.3324,-0.2692,-0.2162,-0.1815,-0.1710,-0.1868,-0.2263,-0.2828,-0.3453,-0.4011,-0.4375,-0.4454,-0.4202,-0.3630,-0.2801,-0.1814,-0.0778,0.0206,0.1067,0.1766,0.2293,0.2661,0.2891,0.3002,0.3006,0.2905,0.2694,0.2365,0.1909,0.1323,0.0606,-0.0233,-0.1172,-0.2177,-0.3204,-0.4196,-0.5097,-0.5856,-0.6430,-0.6794,-0.6941,-0.6880,-0.6630,-0.6217,-0.5663,-0.4995,-0.4239,-0.3428,-0.2599,-0.1794,-0.1053,-0.0412,0.0109,0.0509,0.0805,0.1031,0.1228,0.1439,0.1699,0.2022,0.2409,0.2835,0.3263,0.3642,0.3920,0.4047,0.3985,0.3714,0.3227,0.2546,0.1706,0.0761,-0.0226,-0.1184,-0.2050,-0.2766,-0.3288,-0.3593,-0.3681,-0.3570,-0.3297,-0.2915,-0.2486,-0.2070,-0.1720,-0.1471,-0.1340,-0.1319,-0.1375,-0.1459,-0.1511,-0.1467,-0.1266,-0.0861,-0.0230,0.0623,0.1663,0.2823,0.4010,0.5115,0.6025,0.6644,0.6906,0.6788,0.6314,0.5553,0.4608,0.3603,0.2657,0.1870,0.1313,0.1017,0.0977,0.1159,0.1508,0.1950,0.2405,0.2793,0.3038,0.3072,0.2847,0.2341,0.1566,0.0567,-0.0572,-0.1741,-0.2812,-0.3660,-0.4174,-0.4284,-0.3967,-0.3251,-0.2219,-0.0992,0.0282,0.1452,0.2381,0.2967,0.3154,0.2942,0.2382,0.1568,0.0622,-0.0323,-0.1139,-0.1720,-0.1994,-0.1933,-0.1555,-0.0925,-0.0147,0.0648,0.1325,0.1759,0.1863,0.1596,0.0974,0.0061,-0.1038,-0.2201,-0.3309,-0.4258,-0.4974,-0.5412,-0.5556,-0.5414,-0.5007,-0.4374,-0.3565,-0.2643,-0.1683,-0.0762,0.0047,0.0692,0.1144,0.1405,0.1503,0.1480,0.1384,0.1260,0.1138,0.1037,0.0970,0.0946,0.0976,0.1071,0.1237,0.1470,0.1748,0.2035,0.2285,0.2453,0.2509,0.2446,0.2282,0.2057,0.1818,0.1608,0.1456,0.1375,0.1362,0.1406,0.1495,0.1622,0.1787,0.1994,0.2248,0.2548,0.2893,0.3275,0.3691,0.4135,0.4603,0.5087,0.5569,0.6020,0.6393,0.6641,0.6717,0.6597,0.6282,0.5804,0.5216,0.4581,0.3951,0.3361,0.2819,0.2307,0.1793,0.1248,0.0656,0.0023,-0.0622,-0.1236,-0.1772,-0.2189,-0.2464,-0.2594,-0.2591,-0.2487,-0.2324,-0.2151,-0.2016,-0.1962,-0.2017,-0.2192,-0.2476,-0.2838,-0.3230,-0.3598,-0.3889,-0.4065,-0.4109,-0.4029,-0.3848,-0.3599,-0.3310,-0.3004,-0.2689,-0.2360,-0.2011,-0.1641,-0.1257,-0.0874,-0.0520,-0.0222,-0.0002,0.0128,0.0169,0.0132,0.0035,-0.0102,-0.0265,-0.0440,-0.0622,-0.0807,-0.0996,-0.1183,-0.1360,-0.1512,-0.1615,-0.1643,-0.1564,-0.1356,-0.1004,-0.0514,0.0083,0.0733,0.1364,0.1898,0.2262,0.2410,0.2328,0.2042,0.1614,0.1129,0.0673,0.0322,0.0124,0.0090,0.0203,0.0417,0.0680,0.0935,0.1138,0.1259,0.1287,0.1229,0.1101,0.0927,0.0731,0.0538,0.0365,0.0225,0.0120,0.0045,-0.0010,-0.0058,-0.0113,-0.0187,-0.0291,-0.0432,-0.0622,-0.0873,-0.1202,-0.1620,-0.2137,-0.2746,-0.3421,-0.4116,-0.4770,-0.5312,-0.5680,-0.5826,-0.5735,-0.5416,-0.4907,-0.4264,-0.3550,-0.2815,-0.2100,-0.1420,-0.0772,-0.0138,0.0512,0.1206,0.1963,0.2791,0.3677,0.4592,0.5485,0.6292,0.6943,0.7374,0.7538,0.7415,0.7016,0.6386,0.5596,0.4730,0.3874,0.3101,0.2469,0.2009,0.1733,0.1630,0.1672,0.1815,0.2001,0.2162,0.2222,0.2106,0.1758,0.1147,0.0279,-0.0797,-0.1994,-0.3198,-0.4231];var T1_s025_s=0.17610391657596094;var ux_s025_mm=8.99433;var V_s025_kNm=90.29561270000002;var VW_s025=0.6514834971139973;var T1_s005_s=0.3920726974622808;var ux_s005_mm=118.64;var V_s005_kNm=209.56354599999992;var VW_s005=1.5120024963924958;
+figure(); var t=[]; for(var i=0;i<ux_s1_t.length;i++) t.push((i+1)*0.01);
+plot(t, ux_fija_t, 'b-'); hold('on'); plot(t, ux_s1_t, 'r-'); plot(t, ux_s025_t, 'g-');
+title('Coronación del muro, APO1 N-S'); xlabel('t [s]'); ylabel('u_x [mm]'); grid('on'); legend('base fija', 'suelo x1', 'suelo x0.25');</script><p><span class="eq"><var>ux_fija_t</var> = [3500 valores]</span> &nbsp; <span class="eq"><var>T1_fija_s</var> = 0.0342715253986434</span> &nbsp; <span class="eq"><var>ux_fija_mm</var> = 0.177989</span> &nbsp; <span class="eq"><var>T1_s4_s</var> = 0.05030355982196769</span> &nbsp; <span class="eq"><var>ux_s4_mm</var> = 0.52242</span> &nbsp; <span class="eq"><var>V_s4_kNm</var> = 53.13213330000001</span> &nbsp; <span class="eq"><var>VW_s4</var> = 0.38334872510822515</span> &nbsp; <span class="eq"><var>ux_s1_t</var> = [3500 valores]</span> &nbsp; <span class="eq"><var>T1_s1_s</var> = 0.0897047920778649</span> &nbsp; <span class="eq"><var>ux_s1_mm</var> = 1.55478</span> &nbsp; <span class="eq"><var>V_s1_kNm</var> = 58.807289899999994</span> &nbsp; <span class="eq"><var>VW_s1</var> = 0.4242950209235209</span> &nbsp; <span class="eq"><var>ux_s025_t</var> = [3500 valores]</span> &nbsp; <span class="eq"><var>T1_s025_s</var> = 0.17610391657596094</span> &nbsp; <span class="eq"><var>ux_s025_mm</var> = 8.99433</span> &nbsp; <span class="eq"><var>V_s025_kNm</var> = 90.29561270000002</span> &nbsp; <span class="eq"><var>VW_s025</var> = 0.6514834971139973</span> &nbsp; <span class="eq"><var>T1_s005_s</var> = 0.3920726974622808</span> &nbsp; <span class="eq"><var>ux_s005_mm</var> = 118.64</span> &nbsp; <span class="eq"><var>V_s005_kNm</var> = 209.56354599999992</span> &nbsp; <span class="eq"><var>VW_s005</var> = 1.5120024963924958</span></p>

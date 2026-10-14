@@ -1,0 +1,1114 @@
+<script>window._c=window._c||function(l,d){return window.HK_DARK?d:l};if(location.search.indexOf('dark')>=0||true){window.HK_DARK=true;document.documentElement.className='hkd';}</script><style>
+/* ===== Formato de libro: el mismo de los reportes de Hekatan LISP (crema, Segoe UI 11 pt, secciones centradas y numeradas) ===== */
+:root{--bg:#FBF7EC;--fg:#171310;--mut:#544d3a;--var:#0b4fa8;--num:#08306b;--sep:#9c86b8;--fig:#FFFDF6;--bord:#d8cfb8;--code:#F3EDDB;--ok:#2b8a3e;--err:#c62828}
+html.hkd{--bg:#141109;--fg:#E8E2D4;--mut:#A89F8C;--var:#7fb2ff;--num:#8ec5ff;--sep:#3a3226;--fig:#1a1712;--bord:#3a3226;--code:#1a1712;--ok:#6fd6a0;--err:#ff8a80}
+*{box-sizing:border-box}
+body{margin:0;padding:10px 1.5em;background:var(--bg);color:var(--fg);font-family:'Segoe UI','Arial Nova',Helvetica,sans-serif;font-size:11pt;line-height:150%;overflow-x:hidden;counter-reset:sec}
+h1,h2,h3,h4,h5,h6{font-family:'Segoe UI','Arial Nova',Helvetica,sans-serif;line-height:150%;color:var(--fg)}
+h1{font-weight:700;font-size:15pt;text-align:center;margin:.7em 0 .5em}
+h2{font-weight:600;font-size:12.5pt;text-align:center;margin:.9em 0 .35em;counter-increment:sec}
+h2::before{content:counter(sec) " ·  "}
+h3{font-weight:600;font-size:11pt;margin:.6em 0 .25em;color:var(--mut)}
+h4{font-weight:600;font-size:10.5pt;margin:.6em 0 .25em;color:var(--mut)}
+p,.osdoc{margin:.35em 0;line-height:150%}
+b,strong,th{color:var(--fg)}
+/* ecuaciones: Georgia, variables en cursiva azul (como .m-var de Hekatan LISP) */
+.eq,.matrix{font-family:Georgia,'Times New Roman',Times,serif;font-size:11.5pt;font-variant-numeric:lining-nums}
+.eq{margin:.4em 0;padding:.3em 0}
+.eq var{font-style:italic;color:var(--var);font-size:105%}
+.eq i{color:var(--num);font-style:normal;font-size:90%}
+.eq b{font-weight:600}
+.eq sub{font-family:Calibri,Candara,Corbel,sans-serif;font-size:80%;vertical-align:-18%;margin-left:1pt}
+.eq sup{display:inline-block;margin-left:1pt;margin-top:-3pt;font-size:75%}
+/* matrices con corchetes, números en azul oscuro */
+.matrix{display:inline-table;vertical-align:middle;margin:4pt 6pt}
+.matrix .tr{display:table-row}
+.matrix .td{white-space:nowrap;padding:0 6pt;min-width:10pt;display:table-cell;font-size:10pt;text-align:right;color:var(--num)}
+.matrix .td:first-child,.matrix .td:last-child{width:.75pt;min-width:.75pt;max-width:.75pt;padding:0 1pt}
+.matrix .td:first-child{border-left:solid 1.2pt var(--fg)}
+.matrix .td:last-child{border-right:solid 1.2pt var(--fg)}
+.matrix .tr:first-child .td:first-child,.matrix .tr:first-child .td:last-child{border-top:solid 1.2pt var(--fg)}
+.matrix .tr:last-child .td:first-child,.matrix .tr:last-child .td:last-child{border-bottom:solid 1.2pt var(--fg)}
+/* figuras: centradas, con su pie «Título · detalle» pequeño y gris */
+.osdefwrap,.osvtkwrap{position:relative;display:block;margin:.6em auto 1em;text-align:center}
+.osdefwrap canvas{border:1px solid var(--bord);background:var(--fig);border-radius:4px;max-width:100%}
+.osvtk{width:660px;max-width:100%;height:420px;border:1px solid var(--bord);background:var(--fig);border-radius:4px;position:relative;margin:0 auto}
+.osvtip{position:absolute;pointer-events:none;display:none;background:var(--fig);border:1px solid var(--bord);border-radius:5px;padding:4px 7px;font:10px/1.35 'Cascadia Code',Consolas,monospace;color:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+canvas{border-color:var(--bord)}
+.hk-cap{font-family:'Segoe UI',sans-serif;font-size:10pt;color:var(--fg);margin:.3em 0 .6em;text-align:center}
+.hk-cap span{color:var(--mut);font-size:.92em}
+/* bloques propios de Hekatan OpenSees (código y salida): Cascadia, fondo suave */
+.osblk{font:10.5pt/1.5 'Cascadia Code',Consolas,monospace;background:var(--code);border:1px solid var(--bord);border-radius:6px;padding:10px 14px;white-space:pre;overflow:auto;margin:.4em 0}
+.osblk .cmt{color:var(--ok);font-style:italic}
+.osblk .kw{color:#cf222e;font-weight:600}
+.osblk .num{color:var(--num)}
+.osout{font:10.5pt/1.5 'Cascadia Code',Consolas,monospace;color:var(--num);white-space:pre-wrap;margin:4px 0}
+.oserr{color:var(--err);background:var(--code);border:1px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:6px;white-space:pre-wrap}
+.osh{font-family:'Segoe UI',sans-serif;margin:.7em 0 .3em;font-weight:600;font-size:12.5pt;line-height:150%;color:var(--fg);text-align:center}
+.osh{counter-increment:sec}
+.osh::before{content:counter(sec) " · "}
+.osh.nonum{counter-increment:none}
+.osh.nonum::before{content:""}
+h4{text-align:center;color:var(--fg)}
+/* tablas estilo libro técnico (booktabs): regla arriba y abajo del encabezado, filita fina entre datos */
+table{border-collapse:collapse;font-size:10.3pt;margin:.5em auto .9em}
+table thead tr,table tr:first-child{border-top:1.4px solid var(--fg)}
+table th{font-weight:700;border-bottom:1.4px solid var(--fg);padding:.3em .85em;white-space:nowrap;text-align:left}
+table td{padding:.26em .85em;border-bottom:.75px solid var(--sep);white-space:nowrap}
+table tr:last-child td{border-bottom:1.4px solid var(--fg)}
+.pagebreak{break-before:page;page-break-before:always;height:0;margin:0;border:0}
+@media print{body{background:#fff}h1,h2,h3{break-after:avoid;page-break-after:avoid}.matrix,.eq{break-inside:avoid}}
+
+.ws-deq{display:flex;flex-wrap:wrap;align-items:center;gap:.3em 1.2em;margin:.2em 0}
+.ws-deq>.deq-body{flex:0 1 auto;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;padding:.4em 0 .25em}
+.ws-deq>.deq-tag{flex:0 0 auto;margin-left:auto;color:var(--mut);font-size:.85em;white-space:nowrap;font-family:'Segoe UI',sans-serif}
+.ws-eq{font-family:Georgia,'Times New Roman',Times,serif;font-size:11.5pt}
+.m-var{font-style:italic;color:var(--var);font-size:105%}.m-num{color:var(--num)}
+.m-op{color:var(--mut);padding:0 .08em}.m-fn{font-style:normal;font-weight:600;color:var(--fg);padding-right:.05em}
+.m-frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:110%}
+.m-frn{border-bottom:1pt solid currentColor;padding:0 .35em .5pt}.m-frd{padding:.5pt .35em 0}
+.m-sup{display:inline-block;margin-left:1pt;vertical-align:.55em;line-height:1;font-size:75%}
+.m-sub{font-family:Calibri,Candara,Corbel,sans-serif;font-size:80%;vertical-align:-18%;margin-left:1pt}
+.m-sqrt{display:inline-flex;align-items:flex-start}.m-rad{font-size:1.05em}.m-radarg{border-top:1.2px solid currentColor;padding:0 .2em;margin-left:-.05em}
+.m-paren{display:inline-flex;align-items:stretch;vertical-align:middle}
+.m-paren>.m-pl,.m-paren>.m-pr{width:.26em;flex:0 0 auto;border:.075em solid var(--mut);border-radius:50%}
+.m-paren>.m-pl{border-right:0;border-top-right-radius:0;border-bottom-right-radius:0;margin-right:.14em}
+.m-paren>.m-pr{border-left:0;border-top-left-radius:0;border-bottom-left-radius:0;margin-left:.14em}
+</style><script>window._c=window._c||function(l,d){return window.HK_DARK?d:l};
+/* mlplot.js — motor de graficas estilo MATLAB para Calcpad.
+   Todo el dibujo canvas vive aqui. Los .cpd solo llaman ML.* (sin <> ).
+   2D: mapeo DATOS->pixeles via ML.axis. 3D: ML.axis3 + arrastrar para ORBITAR. Colormap = jet_r. */
+(function (global) {
+  var ML = {
+    figs: {}, cur: null,
+
+    figure: function (id, w, h) {              // el .js CREA el canvas (no hay <canvas> en el .cpd)
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "position:relative;display:inline-block;vertical-align:top;margin:4px";
+      var cv = document.createElement("canvas"); cv.id = id;
+      cv.style.cssText = "display:block;background:" + _c("#FFFDF6","#1a1712") + ";border:1px solid #ccc;width:" + w + "px;height:" + h + "px";
+      var tip = document.createElement("div");   // datatip 2D (hover) que sigue al cursor
+      tip.style.cssText = "position:absolute;pointer-events:none;display:none;background:rgba(25,28,32,0.9);color:#fff;font:11px Segoe UI;padding:3px 7px;border-radius:4px;white-space:nowrap;transform:translate(10px,-50%);z-index:5;box-shadow:0 1px 4px rgba(0,0,0,0.3)";
+      wrap.appendChild(cv); wrap.appendChild(tip);
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(wrap, sc); else document.body.appendChild(wrap);
+      var dpr = Math.max(2, window.devicePixelRatio || 1);   // render a >=2x para que no pixele al acercar
+      cv.width = w * dpr; cv.height = h * dpr;
+      var ctx = cv.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.font = "11px Segoe UI";
+      this.figs[id] = { ctx: ctx, cv: cv, tip: tip, dpr: dpr, w: w, h: h, xmin: 0, xmax: w, ymin: 0, ymax: h,
+                        sc: 1, padx: 8, pady: 8, mode: "2d", az: 0.7, el: 0.45, prims: [], dpts: [], tipOn: false, tipLabel: "" };
+      this.cur = id;
+    },
+    S: function () { return this.figs[this.cur]; },
+    hold: function () { },
+
+    // ===================== 2D =====================
+    axis: function (x0, x1, y0, y1) {            // EQUAL-aspect (geometria / FEM)
+      var s = this.S(); s.mode = "2d";
+      s.xmin = x0; s.xmax = x1; s.ymin = y0; s.ymax = y1;
+      s.mL = 38; s.mB = 26; s.mR = 84; s.mT = 14;   // margenes: izq(numeros y), abajo(numeros x), der(colorbar), arriba
+      var aW = s.w - s.mL - s.mR, aH = s.h - s.mT - s.mB;
+      s.sc = Math.min(aW / (x1 - x0), aH / (y1 - y0));
+      s.scx = s.sc; s.scy = s.sc; s.bx0 = x0; s.by0 = y0; s.xlog = 0; s.ylog = 0;
+    },
+    axischart: function (x0, x1, y0, y1) {       // escala INDEPENDIENTE (datos: estira para llenar)
+      var s = this.S(); s.mode = "2d";
+      s.xmin = x0; s.xmax = x1; s.ymin = y0; s.ymax = y1; s.xlog = 0; s.ylog = 0;
+      s.mL = 46; s.mB = 28; s.mR = 18; s.mT = 16;
+      s.scx = (s.w - s.mL - s.mR) / (x1 - x0); s.scy = (s.h - s.mT - s.mB) / (y1 - y0);
+      s.sc = Math.min(s.scx, s.scy); s.bx0 = x0; s.by0 = y0;
+    },
+    axislog: function (x0, x1, y0, y1, xl, yl) { // ejes log (semilogx/semilogy/loglog)
+      this.axischart(x0, x1, y0, y1); var s = this.S(); s.xlog = xl ? 1 : 0; s.ylog = yl ? 1 : 0;
+      s.bx0 = s.xlog ? Math.log10(x0) : x0; s.by0 = s.ylog ? Math.log10(y0) : y0;
+      s.scx = (s.w - s.mL - s.mR) / ((s.xlog ? Math.log10(x1) : x1) - s.bx0);
+      s.scy = (s.h - s.mT - s.mB) / ((s.ylog ? Math.log10(y1) : y1) - s.by0);
+    },
+    X: function (x) { var s = this.S(); return s.mL + ((s.xlog ? Math.log10(x) : x) - s.bx0) * s.scx; },
+    Y: function (y) { var s = this.S(); return s.h - s.mB - ((s.ylog ? Math.log10(y) : y) - s.by0) * s.scy; },
+    grid: function (ndx, ndy) {                  // plano cartesiano 2D: grilla + ticks + numeros + caja
+      var s = this.S(), ctx = s.ctx, i;
+      ctx.lineWidth = 1; ctx.font = "10px Segoe UI";
+      for (i = 0; i <= ndx; i++) {
+        var xv = s.xmin + i * (s.xmax - s.xmin) / ndx, px = this.X(xv);
+        ctx.strokeStyle = _c("rgba(0,0,0,0.06)","rgba(255,255,255,0.08)"); ctx.beginPath(); ctx.moveTo(px, this.Y(s.ymax)); ctx.lineTo(px, this.Y(s.ymin)); ctx.stroke();
+        ctx.fillStyle = _c("#555","#c9c0ad"); ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText(this._fmt(xv), px, this.Y(s.ymin) + 4);
+      }
+      for (i = 0; i <= ndy; i++) {
+        var yv = s.ymin + i * (s.ymax - s.ymin) / ndy, py = this.Y(yv);
+        ctx.strokeStyle = _c("rgba(0,0,0,0.06)","rgba(255,255,255,0.08)"); ctx.beginPath(); ctx.moveTo(this.X(s.xmin), py); ctx.lineTo(this.X(s.xmax), py); ctx.stroke();
+        ctx.fillStyle = _c("#555","#c9c0ad"); ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillText(this._fmt(yv), this.X(s.xmin) - 5, py);
+      }
+      ctx.strokeStyle = _c("#888","#8a8272"); ctx.lineWidth = 1;
+      ctx.strokeRect(this.X(s.xmin), this.Y(s.ymax), this.X(s.xmax) - this.X(s.xmin), this.Y(s.ymin) - this.Y(s.ymax));
+    },
+    _fmt: function (v) { return Math.abs(v) < 1e-9 ? "0" : (v === Math.round(v) ? v.toFixed(0) : v.toFixed(1)); },
+    _nf: function (v) { var a = Math.abs(v); if (a < 1e-12) return "0"; if (a >= 1e4 || a < 1e-3) return v.toExponential(2); if (a < 1) return parseFloat(v.toPrecision(3)).toString(); return v.toFixed(2); },
+    datatip: function (label) {                  // datatip 2D (hover) estilo MATLAB datacursormode
+      var s = this.S(), ML = this; s.tipOn = true; s.tipLabel = "" + label;
+      if (s._tipBound) return; s._tipBound = true;
+      s.cv.onmousemove = function (e) {
+        if (!s.tipOn || !s.dpts.length) return;
+        var r = s.cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = Infinity, i, px, py, dx, dy;
+        for (i = 0; i < s.dpts.length; i++) { var d = s.dpts[i]; px = ML.X(d.x); py = ML.Y(d.y); dx = px - mx; dy = py - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) {
+          var d = s.dpts[best];
+          s.tip.style.display = "block"; s.tip.style.left = mx + "px"; s.tip.style.top = my + "px";   // SIGUE AL CURSOR
+          s.tip.innerHTML = "x = " + ML._nf(d.x) + "<br>y = " + ML._nf(d.y) + (s.tipLabel ? "<br>" + s.tipLabel + " = " + ML._nf(d.v) : "");
+        }
+      };
+      s.cv.onmouseleave = function () { s.tip.style.display = "none"; };
+    },
+    datapoint: function (x, y, v) { this.S().dpts.push({ x: x, y: y, v: v }); },
+    jet: function (t) {
+      t = Math.max(0, Math.min(1, t)); var u = 1 - t;
+      function c(z) { return Math.round(255 * Math.max(0, Math.min(1, 1.5 - Math.abs(4 * u - z)))); }
+      return "rgb(" + c(3) + "," + c(2) + "," + c(1) + ")";
+    },
+    patch: function (p, t) {
+      var ctx = this.S().ctx; ctx.beginPath(); ctx.moveTo(this.X(p[0]), this.Y(p[1]));
+      for (var i = 2; i < p.length; i += 2) ctx.lineTo(this.X(p[i]), this.Y(p[i + 1]));
+      ctx.closePath(); ctx.fillStyle = this.jet(t); ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.18)"; ctx.lineWidth = 0.5; ctx.stroke();
+    },
+    fill: function (p, col) {
+      var ctx = this.S().ctx; ctx.beginPath(); ctx.moveTo(this.X(p[0]), this.Y(p[1]));
+      for (var i = 2; i < p.length; i += 2) ctx.lineTo(this.X(p[i]), this.Y(p[i + 1]));
+      ctx.closePath(); ctx.fillStyle = col; ctx.fill();
+      ctx.strokeStyle = _c("#888","#8a8272"); ctx.lineWidth = 1; ctx.stroke();
+    },
+    line: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    plot: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    scatter: function (x, y, col) {
+      var ctx = this.S().ctx; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(this.X(x), this.Y(y), 4, 0, 6.2832); ctx.fill();
+    },
+    rectangle: function (x1, y1, x2, y2, col) {
+      var ctx = this.S().ctx; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      ctx.strokeRect(this.X(x1), this.Y(y1), this.X(x2) - this.X(x1), this.Y(y2) - this.Y(y1));
+    },
+    fixed: function (x1, y, x2) {                  // apoyo EMPOTRADO: linea + rayado de tierra
+      var ctx = this.S().ctx, a = this.X(x1), b = this.X(x2), yy = this.Y(y), i, n, d = 8;
+      ctx.strokeStyle = _c("#333","#e8e2d4"); ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(a, yy); ctx.lineTo(b, yy); ctx.stroke();
+      ctx.lineWidth = 1; n = Math.max(4, Math.round((b - a) / 11));
+      for (i = 0; i <= n; i++) { var px = a + i * (b - a) / n; ctx.beginPath(); ctx.moveTo(px, yy); ctx.lineTo(px - d, yy + d); ctx.stroke(); }
+    },
+    pinned: function (x, y) {                       // apoyo ARTICULADO: triangulo + rayado
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y), w = 8, h = 11, i;
+      ctx.strokeStyle = _c("#333","#e8e2d4"); ctx.fillStyle = "#fff"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px - w, py + h); ctx.lineTo(px + w, py + h); ctx.closePath(); ctx.stroke();
+      ctx.lineWidth = 1;
+      for (i = 0; i <= 5; i++) { var qx = px - w + i * 2 * w / 5; ctx.beginPath(); ctx.moveTo(qx, py + h); ctx.lineTo(qx - 5, py + h + 5); ctx.stroke(); }
+    },
+    quiver: function (x, y, dx, dy, col) {
+      var ctx = this.S().ctx, x1 = this.X(x), y1 = this.Y(y), x2 = this.X(x + dx), y2 = this.Y(y + dy);
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      var a = Math.atan2(y2 - y1, x2 - x1), h = 8;
+      ctx.beginPath(); ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - h * Math.cos(a - 0.4), y2 - h * Math.sin(a - 0.4));
+      ctx.lineTo(x2 - h * Math.cos(a + 0.4), y2 - h * Math.sin(a + 0.4));
+      ctx.closePath(); ctx.fill();
+    },
+    moment: function (x, y, col) {
+      var ctx = this.S().ctx, cx = this.X(x), cy = this.Y(y), r = 16, a1 = -2.2, a2 = 2.2;
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(cx, cy, r, a1, a2, false); ctx.stroke();
+      var ex = cx + r * Math.cos(a2), ey = cy + r * Math.sin(a2), tx = -Math.sin(a2), ty = Math.cos(a2), h = 8;
+      ctx.beginPath(); ctx.moveTo(ex + h * tx, ey + h * ty);
+      ctx.lineTo(ex - 0.5 * h * ty, ey + 0.5 * h * tx); ctx.lineTo(ex + 0.5 * h * ty, ey - 0.5 * h * tx);
+      ctx.closePath(); ctx.fill();
+    },
+    text: function (x, y, s, col) {
+      var ctx = this.S().ctx; ctx.fillStyle = col || _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI";
+      ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(s, this.X(x), this.Y(y));
+    },
+    title: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "bold 14px Segoe UI";
+      ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText(s, st.w / 2, 4); ctx.textAlign = "left";
+    },
+    xlabel: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center"; ctx.fillText(s, st.w / 2, st.h - 4); ctx.textAlign = "left";
+    },
+    ylabel: function (s) {
+      var st = this.S(), ctx = st.ctx; ctx.save(); ctx.translate(12, st.h / 2); ctx.rotate(-1.5708);
+      ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center"; ctx.fillText(s, 0, 0); ctx.restore();
+    },
+    colorbar: function (vmin, vmax) {
+      var s = this.S();
+      if (s.mode === "3d") { s.prims.push({ k: "cbar", a: vmin, b: vmax }); return; }
+      this._cbar(s, vmin, vmax);
+    },
+    _cbar: function (s, vmin, vmax) {
+      var ctx = s.ctx, n = 24, x0 = s.w - 76, y1 = s.mT, y0 = s.h - s.mB, w = 18, i, k;
+      for (i = 0; i < n; i++) {
+        var t = (i + 0.5) / n, ya = y0 - i / n * (y0 - y1), yb = y0 - (i + 1) / n * (y0 - y1);
+        ctx.fillStyle = this.jet(t); ctx.fillRect(x0, yb, w, ya - yb + 0.6);
+      }
+      ctx.strokeStyle = _c("#444","#a89f8c"); ctx.lineWidth = 1; ctx.strokeRect(x0, y1, w, y0 - y1);
+      ctx.fillStyle = _c("#333","#e8e2d4"); ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      for (k = 0; k <= 5; k++) {
+        var v = vmin + k / 5 * (vmax - vmin), yy = y0 - k / 5 * (y0 - y1);
+        ctx.fillText(this._nf(v), x0 + w + 6, yy);
+        ctx.beginPath(); ctx.moveTo(x0 + w, yy); ctx.lineTo(x0 + w + 4, yy); ctx.stroke();
+      }
+    },
+    colormap: function (name) { },
+
+    // ===================== CHARTS MATLAB (elemento por elemento; el .cpd hace el #for) =====================
+    bar: function (x, y, w, col) {                  // una barra (de 0 a y), centrada en x, ancho w
+      var ctx = this.S().ctx, x1 = this.X(x - w / 2), x2 = this.X(x + w / 2), y0 = this.Y(0), y1 = this.Y(y);
+      ctx.fillStyle = col || "#1f6feb"; ctx.fillRect(x1, Math.min(y0, y1), x2 - x1, Math.abs(y1 - y0));
+      ctx.strokeStyle = "rgba(0,0,0,0.35)"; ctx.lineWidth = 1; ctx.strokeRect(x1, Math.min(y0, y1), x2 - x1, Math.abs(y1 - y0));
+    },
+    stem: function (x, y, col) {                    // tallo (stem): linea 0->y + circulo
+      var ctx = this.S().ctx, c = col || "#1f6feb"; ctx.strokeStyle = c; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(this.X(x), this.Y(0)); ctx.lineTo(this.X(x), this.Y(y)); ctx.stroke();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(this.X(x), this.Y(y), 3.5, 0, 6.2832); ctx.fill();
+    },
+    area: function (x1, y1, x2, y2, col) {          // relleno hasta y=0 (trapecio) + borde superior
+      var ctx = this.S().ctx; ctx.beginPath();
+      ctx.moveTo(this.X(x1), this.Y(0)); ctx.lineTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.lineTo(this.X(x2), this.Y(0)); ctx.closePath();
+      ctx.fillStyle = col || "rgba(31,111,235,0.35)"; ctx.fill();
+      ctx.strokeStyle = "#1f6feb"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    stairs: function (x1, y1, x2, y2, col) {        // escalon: horizontal en y1 hasta x2, luego sube a y2
+      var ctx = this.S().ctx; ctx.strokeStyle = col || _c("#333","#e8e2d4"); ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(this.X(x1), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y1)); ctx.lineTo(this.X(x2), this.Y(y2)); ctx.stroke();
+    },
+    errorbar: function (x, y, e, col) {             // punto + barra vertical ±e con tapas
+      var ctx = this.S().ctx, c = col || _c("#333","#e8e2d4"), px = this.X(x), pa = this.Y(y - e), pb = this.Y(y + e), w = 4;
+      ctx.strokeStyle = c; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(px, pa); ctx.lineTo(px, pb); ctx.moveTo(px - w, pa); ctx.lineTo(px + w, pa); ctx.moveTo(px - w, pb); ctx.lineTo(px + w, pb); ctx.stroke();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(px, this.Y(y), 3, 0, 6.2832); ctx.fill();
+    },
+    marker: function (x, y, type, col) {            // marcadores MATLAB: o . * + x s d ^ v
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y), r = 4, c = col || "#1f6feb", t = "" + type;
+      ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 1.5;
+      if (t === "o") { ctx.beginPath(); ctx.arc(px, py, r, 0, 6.2832); ctx.stroke(); }
+      else if (t === ".") { ctx.beginPath(); ctx.arc(px, py, 2, 0, 6.2832); ctx.fill(); }
+      else if (t === "*" || t === "+") { ctx.beginPath(); ctx.moveTo(px - r, py); ctx.lineTo(px + r, py); ctx.moveTo(px, py - r); ctx.lineTo(px, py + r); if (t === "*") { ctx.moveTo(px - r * 0.7, py - r * 0.7); ctx.lineTo(px + r * 0.7, py + r * 0.7); ctx.moveTo(px - r * 0.7, py + r * 0.7); ctx.lineTo(px + r * 0.7, py - r * 0.7); } ctx.stroke(); }
+      else if (t === "x") { ctx.beginPath(); ctx.moveTo(px - r, py - r); ctx.lineTo(px + r, py + r); ctx.moveTo(px - r, py + r); ctx.lineTo(px + r, py - r); ctx.stroke(); }
+      else if (t === "s") { ctx.strokeRect(px - r, py - r, 2 * r, 2 * r); }
+      else if (t === "d") { ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r, py); ctx.lineTo(px, py + r); ctx.lineTo(px - r, py); ctx.closePath(); ctx.stroke(); }
+      else if (t === "^") { ctx.beginPath(); ctx.moveTo(px, py - r); ctx.lineTo(px + r, py + r); ctx.lineTo(px - r, py + r); ctx.closePath(); ctx.stroke(); }
+      else if (t === "v") { ctx.beginPath(); ctx.moveTo(px, py + r); ctx.lineTo(px + r, py - r); ctx.lineTo(px - r, py - r); ctx.closePath(); ctx.stroke(); }
+    },
+    imagesc: function (x, y, w, h, t) {             // una celda coloreada (imagesc/pcolor/heatmap) por valor t∈[0,1]
+      var ctx = this.S().ctx, x1 = this.X(x), y1 = this.Y(y + h);
+      ctx.fillStyle = this.jet(t); ctx.fillRect(x1, y1, this.X(x + w) - x1 + 0.6, this.Y(y) - y1 + 0.6);
+    },
+    contourCell: function (x0, y0, x1, y1, v00, v10, v11, v01, lv, col) {  // marching squares de 1 celda
+      var c = [v00, v10, v11, v01], xx = [x0, x1, x1, x0], yy = [y0, y0, y1, y1], pts = [], i, j;
+      for (i = 0; i < 4; i++) { j = (i + 1) % 4; var a = c[i], b = c[j]; if ((a < lv) !== (b < lv)) { var tt = (lv - a) / (b - a); pts.push(xx[i] + tt * (xx[j] - xx[i]), yy[i] + tt * (yy[j] - yy[i])); } }
+      if (pts.length >= 4) { var ctx = this.S().ctx; ctx.strokeStyle = col || _c("#222","#f3eddd"); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(this.X(pts[0]), this.Y(pts[1])); for (var k = 2; k < pts.length; k += 2) ctx.lineTo(this.X(pts[k]), this.Y(pts[k + 1])); ctx.stroke(); }
+    },
+    polar: function (theta, r, col) {               // un punto polar (theta en GRADOS); usar axis simetrico ±rmax
+      var a = theta * 0.0174533, ctx = this.S().ctx;
+      ctx.fillStyle = col || "#1f6feb"; ctx.beginPath(); ctx.arc(this.X(r * Math.cos(a)), this.Y(r * Math.sin(a)), 3, 0, 6.2832); ctx.fill();
+    },
+    legend: function (x, y, label, col) {           // una entrada de leyenda (swatch + texto) en coords de DATOS
+      var ctx = this.S().ctx, px = this.X(x), py = this.Y(y);
+      ctx.fillStyle = col || "#1f6feb"; ctx.fillRect(px, py - 5, 16, 3.5);
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(label, px + 22, py - 3);
+    },
+    pie: function (cx, cy, r, a0, a1, col) {         // una porcion de pastel (angulos en GRADOS, a0>a1 = horario); el .cpd recorre las rebanadas
+      var s = this.S(), ctx = s.ctx, pcx = this.X(cx), pcy = this.Y(cy), pr = r * s.scx;
+      ctx.beginPath(); ctx.moveTo(pcx, pcy); ctx.arc(pcx, pcy, pr, -a0 * 0.0174533, -a1 * 0.0174533, false); ctx.closePath();
+      ctx.fillStyle = col || "#1f6feb"; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+    },
+    compass: function (dx, dy, col) {               // flecha desde el ORIGEN (0,0) — campo polar/direccional
+      this.quiver(0, 0, dx, dy, col || "#1f6feb");
+    },
+
+    // ===================== 3D (interactivo: arrastrar para orbitar) =====================
+    view3: function (azd, eld) { var s = this.S(); s.az = azd * 0.0174533; s.el = eld * 0.0174533; },
+    axis3: function (x0, x1, y0, y1, z0, z1) {
+      var s = this.S(); s.mode = "3d"; s.prims = []; s.dpts3 = []; s.bb = [x0, x1, y0, y1, z0, z1];
+    },
+    datapoint3: function (x, y, z, v) { var s = this.S(); (s.dpts3 || (s.dpts3 = [])).push({ x: x, y: y, z: z, v: v }); },
+    fill3: function (p, t) { this.S().prims.push({ k: "face", p: p, c: this.jet(t) }); },
+    line3: function (x1, y1, z1, x2, y2, z2, col) { this.S().prims.push({ k: "line3", p: [x1, y1, z1, x2, y2, z2], c: col }); },
+    text3: function (x, y, z, str, col) { this.S().prims.push({ k: "text3", p: [x, y, z], s: str, c: col || _c("#333","#e8e2d4") }); },
+    _pr: function (s, x, y, z) {                       // proyeccion ortografica con s.az, s.el
+      var ca = Math.cos(s.az), sa = Math.sin(s.az), ce = Math.cos(s.el), se = Math.sin(s.el);
+      var x1 = x * ca + y * sa, y1 = -x * sa + y * ca;
+      return [x1, -(y1 * se) + z * ce, y1 * ce + z * se];
+    },
+    _fit: function (s) {                               // escala/centro segun bbox proyectada
+      var b = s.bb, p = [], i, j, k;
+      for (i = 0; i < 2; i++) for (j = 0; j < 2; j++) for (k = 0; k < 2; k++)
+        p.push(this._pr(s, i ? b[1] : b[0], j ? b[3] : b[2], k ? b[5] : b[4]));
+      var mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9;
+      for (i = 0; i < p.length; i++) { mnx = Math.min(mnx, p[i][0]); mxx = Math.max(mxx, p[i][0]); mny = Math.min(mny, p[i][1]); mxy = Math.max(mxy, p[i][1]); }
+      var aW = s.w - 2 * s.padx - 80, aH = s.h - 2 * s.pady;
+      s.sc3 = Math.min(aW / (mxx - mnx), aH / (mxy - mny));
+      s.ox3 = s.padx + (aW - (mxx - mnx) * s.sc3) / 2 - mnx * s.sc3;
+      s.oy3 = s.h - s.pady - (aH - (mxy - mny) * s.sc3) / 2 + mny * s.sc3;
+    },
+    _P: function (s, x, y, z) { var q = this._pr(s, x, y, z); return [s.ox3 + q[0] * s.sc3, s.oy3 - q[1] * s.sc3, q[2]]; },
+    // ---- ejes cartesianos 3D: caja (bbox) + ejes X/Y/Z con ticks, numeros y etiquetas ----
+    _axes3: function (s) {
+      var ctx = s.ctx, ML = this, b = s.bb, i;
+      function P(x, y, z) { return ML._P(s, x, y, z); }
+      var c = [[b[0], b[2], b[4]], [b[1], b[2], b[4]], [b[1], b[3], b[4]], [b[0], b[3], b[4]],
+               [b[0], b[2], b[5]], [b[1], b[2], b[5]], [b[1], b[3], b[5]], [b[0], b[3], b[5]]];
+      var e = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+      ctx.strokeStyle = "rgba(120,130,140,0.30)"; ctx.lineWidth = 1;
+      for (i = 0; i < e.length; i++) { var a = P.apply(null, c[e[i][0]]), d = P.apply(null, c[e[i][1]]); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(d[0], d[1]); ctx.stroke(); }
+      this._axis3line(s, b[0], b[2], b[4], b[1], b[2], b[4], "x");
+      this._axis3line(s, b[0], b[2], b[4], b[0], b[3], b[4], "y");
+      this._axis3line(s, b[0], b[2], b[4], b[0], b[2], b[5], "z");
+    },
+    _axis3line: function (s, x0, y0, z0, x1, y1, z1, w) {
+      var ctx = s.ctx, ML = this, a = ML._P(s, x0, y0, z0), b = ML._P(s, x1, y1, z1), i, n = 4;
+      ctx.strokeStyle = _c("#777","#9a9180"); ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      ctx.fillStyle = _c("#555","#c9c0ad"); ctx.font = "10px Segoe UI"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (i = 0; i <= n; i++) {
+        var t = i / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t, z = z0 + (z1 - z0) * t, q = ML._P(s, x, y, z);
+        var val = w === "x" ? x : (w === "y" ? y : z);
+        ctx.fillText(ML._nf(val), q[0] + (w === "y" ? -13 : (w === "z" ? -13 : 0)), q[1] + (w === "x" ? 11 : 0));
+      }
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.font = "bold 12px Segoe UI";
+      ctx.fillText(w.toUpperCase(), b[0] + (w === "x" ? 16 : (w === "y" ? -16 : -16)), b[1] + (w === "z" ? -10 : 10));
+    },
+    _draw3: function (s) {                             // re-dibuja toda la escena 3D
+      var ctx = s.ctx, ML = this, i, k, q;
+      ctx.clearRect(0, 0, s.w, s.h);
+      this._fit(s);
+      if (s.bb) this._axes3(s);                        // ejes cartesianos XYZ al fondo
+      var items = [];
+      for (i = 0; i < s.prims.length; i++) {
+        var o = s.prims[i];
+        if (o.k === "face") {
+          var poly = [], d = 0, n = o.p.length / 3;
+          for (k = 0; k < n; k++) { q = ML._P(s, o.p[3 * k], o.p[3 * k + 1], o.p[3 * k + 2]); poly.push(q[0], q[1]); d += q[2]; }
+          items.push({ k: "face", poly: poly, depth: d / n, c: o.c });
+        } else if (o.k === "line3") {
+          var a = ML._P(s, o.p[0], o.p[1], o.p[2]), b = ML._P(s, o.p[3], o.p[4], o.p[5]);
+          items.push({ k: "line", a: a, b: b, depth: (a[2] + b[2]) / 2, c: o.c });
+        } else if (o.k === "text3") {
+          q = ML._P(s, o.p[0], o.p[1], o.p[2]); items.push({ k: "text", x: q[0], y: q[1], s: o.s, depth: q[2] + 1e6, c: o.c });
+        }
+      }
+      items.sort(function (a, b) { return a.depth - b.depth; });
+      for (i = 0; i < items.length; i++) {
+        var t = items[i];
+        if (t.k === "face") {
+          ctx.beginPath(); ctx.moveTo(t.poly[0], t.poly[1]);
+          for (k = 2; k < t.poly.length; k += 2) ctx.lineTo(t.poly[k], t.poly[k + 1]);
+          ctx.closePath(); ctx.fillStyle = t.c; ctx.fill();
+          ctx.strokeStyle = "rgba(0,0,0,0.22)"; ctx.lineWidth = 0.4; ctx.stroke();
+        } else if (t.k === "line") {
+          ctx.strokeStyle = t.c; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(t.a[0], t.a[1]); ctx.lineTo(t.b[0], t.b[1]); ctx.stroke();
+        } else { ctx.fillStyle = t.c; ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(t.s, t.x + 4, t.y); }
+      }
+      for (i = 0; i < s.prims.length; i++) if (s.prims[i].k === "cbar") this._cbar(s, s.prims[i].a, s.prims[i].b);
+      ctx.fillStyle = "#999"; ctx.font = "10px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("(arrastra para girar)", 6, s.h - 4);
+    },
+    render3: function () {                             // primer dibujo + handlers de rotacion
+      var ML = this, s = this.S(), cv = s.cv;
+      ML._draw3(s);
+      cv.style.cursor = "grab";
+      var drag = false, x0 = 0, y0 = 0, az0 = 0, el0 = 0;
+      cv.onmousedown = function (e) { drag = true; x0 = e.clientX; y0 = e.clientY; az0 = s.az; el0 = s.el; cv.style.cursor = "grabbing"; e.preventDefault(); };
+      cv.onmousemove = function (e) {
+        if (!drag) return;
+        s.az = az0 + (e.clientX - x0) * 0.01;
+        s.el = el0 + (e.clientY - y0) * 0.01;
+        if (s.el > 1.5) s.el = 1.5; if (s.el < -1.5) s.el = -1.5;
+        ML._draw3(s);
+      };
+      var up = function () { drag = false; cv.style.cursor = "grab"; };
+      cv.onmouseup = up;
+      // HOVER 3D: con el cursor (sin arrastrar) marca el nudo mas cercano y su (x,y,z)
+      cv.addEventListener("mousemove", function (e) {
+        if (drag || !s.dpts3 || !s.dpts3.length) return;
+        var r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = Infinity, i, q, dx, dy;
+        for (i = 0; i < s.dpts3.length; i++) { var dp = s.dpts3[i]; q = ML._P(s, dp.x, dp.y, dp.z); dx = q[0] - mx; dy = q[1] - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) {
+          var dp = s.dpts3[best];
+          s.tip.style.display = "block"; s.tip.style.left = mx + "px"; s.tip.style.top = my + "px";   // SIGUE AL CURSOR
+          s.tip.innerHTML = "x = " + ML._nf(dp.x) + "<br>y = " + ML._nf(dp.y) + "<br>z = " + ML._nf(dp.z);
+        }
+      });
+      cv.addEventListener("mouseleave", function () { drag = false; cv.style.cursor = "grab"; s.tip.style.display = "none"; });
+    },
+
+    // ===================== STEPPER (botones "paso a paso") =====================
+    // steps$("titulo") -> step$("titulo paso"; "texto") x N -> endsteps$
+    // El usuario navega con los botones ◀ Anterior / Siguiente ▶. En el texto:
+    //   *negrita*  y  //  = salto de linea. (sin " ; ' < > para no romper el .cpd)
+    steps: function (title) {
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "display:inline-block;vertical-align:top;width:560px;max-width:100%;margin:6px;border:1px solid #cfd6dd;border-radius:10px;background:" + _c("#FFFDF6","#1a1712") + ";font:13px Segoe UI;box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow:hidden";
+      var head = document.createElement("div");
+      head.style.cssText = "background:#1f6feb;color:#fff;padding:8px 14px;font-weight:bold;font-size:14px";
+      head.textContent = title || "Pasos";
+      var body = document.createElement("div");
+      body.style.cssText = "padding:14px 16px;min-height:96px;line-height:1.55;color:#222";
+      var foot = document.createElement("div");
+      foot.style.cssText = "display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid #eee;background:#fafbfc";
+      var bcss = "border:1px solid #1f6feb;border-radius:6px;padding:5px 14px;font:13px Segoe UI;cursor:pointer";
+      var bprev = document.createElement("button"); bprev.style.cssText = bcss + ";background:" + _c("#FFFDF6","#1a1712") + ";color:#1f6feb"; bprev.textContent = "◀ Anterior";
+      var bnext = document.createElement("button"); bnext.style.cssText = bcss + ";background:#1f6feb;color:#fff"; bnext.textContent = "Siguiente ▶";
+      var dots = document.createElement("div"); dots.style.cssText = "flex:1;text-align:center;color:#9aa4ad;letter-spacing:2px";
+      foot.appendChild(bprev); foot.appendChild(dots); foot.appendChild(bnext);
+      wrap.appendChild(head); wrap.appendChild(body); wrap.appendChild(foot);
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(wrap, sc); else document.body.appendChild(wrap);
+      this._stp = { cards: [], cur: 0, body: body, dots: dots, prev: bprev, next: bnext };
+    },
+    step: function (t, html) { if (this._stp) this._stp.cards.push({ t: t, h: html }); },
+    endsteps: function () {
+      var st = this._stp; if (!st || !st.cards.length) return;
+      function fmt(s) { return String(s).replace(/\*([^*]+)\*/g, "<b>$1</b>").replace(/\/\//g, "<br>"); }
+      function show(i) {
+        st.cur = Math.max(0, Math.min(st.cards.length - 1, i));
+        var c = st.cards[st.cur];
+        st.body.innerHTML = "<div style='font-weight:bold;color:#1f6feb;margin-bottom:7px;font-size:14px'>" + fmt(c.t) + "</div>" + fmt(c.h);
+        var d = ""; for (var k = 0; k < st.cards.length; k++) d += (k === st.cur ? "●" : "○") + " ";
+        st.dots.innerHTML = d + "<span style='margin-left:6px;font-size:12px;letter-spacing:0'>" + (st.cur + 1) + " / " + st.cards.length + "</span>";
+        st.prev.style.opacity = st.cur === 0 ? 0.4 : 1;
+        st.next.style.opacity = st.cur === st.cards.length - 1 ? 0.4 : 1;
+      }
+      st.prev.onclick = function () { show(st.cur - 1); };
+      st.next.onclick = function () { show(st.cur + 1); };
+      show(0);
+      this._stp = null;
+    }
+  };
+  global.ML = ML;
+})(window);
+
+/* glplot.js — motor 3D REAL con WebGL crudo sobre <canvas> (sin three.js, sin CDN).
+   GPU, depth-test, perspectiva, orbita con el mouse. fill3 = caras; line3 = lineas
+   (malla sin deformar, apoyos, flecha de carga, caja de ejes). Embebible inline en figure3$. */
+(function (global) {
+  var GL3 = {
+    st: null,
+    etabs: false,   // true = paleta de bandas DISCRETAS de ETABS; false = jet_r suave
+    // paleta de contorno de ETABS — INGENIERIA INVERSA (15 bandas muestreadas de la
+    // leyenda real, capture_20260624_174436): magenta(min) -> rojo -> amarillo -> verde -> azul(max)
+    pal: [[0.784,0,0.784],[0.894,0,0.392],[1,0,0],[1,0.251,0],[1,0.502,0],[1,0.667,0],
+          [1,0.831,0],[1,1,0],[0.502,1,0],[0,1,0],[0,1,0.502],[0,1,1],[0,0.667,1],[0,0.333,1],[0,0,1]],
+    _ins: function (el) {                       // inserta un elemento donde esta el <script> actual
+      var sc = document.currentScript;
+      if (sc && sc.parentNode) sc.parentNode.insertBefore(el, sc); else document.body.appendChild(el);
+    },
+    figure3: function (id, w, h) {              // el .js CREA el canvas WebGL + un overlay 2D para el texto
+      var wrap = document.createElement("div");
+      wrap.style.cssText = "position:relative;display:inline-block;vertical-align:top;margin:4px";
+      var cv = document.createElement("canvas"); cv.id = id; cv.style.cssText = "display:block;border:1px solid #ccc";
+      var ov = document.createElement("canvas"); ov.style.cssText = "position:absolute;left:0;top:0;pointer-events:none";
+      var tip = document.createElement("div");   // datatip tipo MATLAB (sigue al cursor, sobre la malla)
+      tip.style.cssText = "position:absolute;pointer-events:none;display:none;background:rgba(25,28,32,0.9);color:#fff;font:11px Segoe UI;padding:3px 7px;border-radius:4px;white-space:nowrap;transform:translate(12px,-50%);z-index:5;box-shadow:0 1px 4px rgba(0,0,0,0.3)";
+      wrap.appendChild(cv); wrap.appendChild(ov); wrap.appendChild(tip);
+      var row = document.createElement("div");   // fila flex: canvas + colorbar SIEMPRE en la misma línea
+      row.style.cssText = "display:flex;align-items:flex-start;flex-wrap:nowrap";
+      this._ins(row); row.appendChild(wrap);
+      var dpr = Math.max(2, window.devicePixelRatio || 1);   // render a >=2x para que no pixele al acercar
+      cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
+      ov.width = w * dpr; ov.height = h * dpr; ov.style.width = w + "px"; ov.style.height = h + "px";
+      var octx = ov.getContext("2d"); octx.scale(dpr, dpr);
+      var opt = { preserveDrawingBuffer: true, antialias: true };
+      var gl = cv.getContext("webgl", opt) || cv.getContext("experimental-webgl", opt);
+      this.st = { gl: gl, cv: cv, octx: octx, w: w, h: h, row: row, verts: [], lverts: [], ticks: [], dpts: [], tip: tip, tipOn: false, tipLabel: "", az: 0.8, el: 0.5, bb: [0, 1, 0, 1, 0, 1], dist: 3 };
+      gl.viewport(0, 0, cv.width, cv.height); gl.enable(gl.DEPTH_TEST); gl.clearColor(1, 1, 1, 1);
+    },
+    tick3: function (x, y, z, t) { this.st.ticks.push({ x: x, y: y, z: z, t: "" + t }); },   // texto 3D (numero/etiqueta) que sigue la rotacion
+    datatip: function (label) { this.st.tipOn = true; this.st.tipLabel = "" + label; },      // activa el datatip (hover) tipo MATLAB datacursormode
+    datapoint: function (x, y, z, v) { this.st.dpts.push({ x: x, y: y, z: z, v: v }); },      // registra un nudo y su valor para el hover
+    cartesian3: function (x0, x1, y0, y1, z0, z1, ndx, ndz) {   // plano cartesiano 3D: caja + numeros X/Z (1 llamada)
+      var L = this.st.lverts, c = this.hex("cfd4d8"), i, dx = x1 - x0, dz = z1 - z0;
+      function ln(ax, ay, az, bx, by, bz) { L.push(ax, ay, az, c[0], c[1], c[2], bx, by, bz, c[0], c[1], c[2]); }
+      ln(x0, y0, z0, x1, y0, z0); ln(x1, y0, z0, x1, y1, z0); ln(x1, y1, z0, x0, y1, z0); ln(x0, y1, z0, x0, y0, z0);
+      ln(x0, y0, z1, x1, y0, z1); ln(x1, y0, z1, x1, y1, z1); ln(x1, y1, z1, x0, y1, z1); ln(x0, y1, z1, x0, y0, z1);
+      ln(x0, y0, z0, x0, y0, z1); ln(x1, y0, z0, x1, y0, z1); ln(x1, y1, z0, x1, y1, z1); ln(x0, y1, z0, x0, y1, z1);
+      for (i = 0; i <= ndx; i++) { var xv = x0 + i * dx / ndx; this.tick3(xv, y0, z0 - dz * 0.05, Math.round(xv)); }
+      for (i = 0; i <= ndz; i++) { var zv = z0 + i * dz / ndz; this.tick3(x0 - dx * 0.06, y0, zv, Math.round(zv)); }
+      this.tick3((x0 + x1) / 2, y0, z0 - dz * 0.13, "X (ancho, m)");
+      this.tick3(x0 - dx * 0.15, y0, (z0 + z1) / 2, "Z (altura, m)");
+    },
+    _proj2: function (s, x, y, z) {              // proyecta un punto 3D a pixeles de pantalla (con la MVP actual)
+      var m = s.mvp, cw = m[3] * x + m[7] * y + m[11] * z + m[15];
+      var cx = m[0] * x + m[4] * y + m[8] * z + m[12], cy = m[1] * x + m[5] * y + m[9] * z + m[13];
+      return [(cx / cw * 0.5 + 0.5) * s.w, (1 - (cy / cw * 0.5 + 0.5)) * s.h];
+    },
+    _nf: function (v) {                          // formato: notacion cientifica para valores muy chicos/grandes
+      var a = Math.abs(v);
+      if (a < 1e-12) return "0";
+      if (a >= 1e4 || a < 1e-3) return v.toExponential(2);
+      if (a < 1) return parseFloat(v.toPrecision(3)).toString();
+      return v.toFixed(2);
+    },
+    colorbar3: function (vmin, vmax, h) {        // el .js CREA el <div> de la barra de color
+      var d = document.createElement("div");
+      d.style.cssText = "display:inline-flex;vertical-align:top;margin:6px 0 0 10px;font:11px Segoe UI;color:#333";
+      function rgb(c){ return "rgb(" + Math.round(c[0]*255) + "," + Math.round(c[1]*255) + "," + Math.round(c[2]*255) + ")"; }
+      var grad, lab = "", k, i;
+      if (this.etabs) {                          // BANDAS DISCRETAS con la paleta ETABS (15 colores)
+        var N = 15, stops = [];
+        for (i = 0; i < N; i++) {                 // cada banda = color solido de la paleta, con corte duro
+          var col = rgb(this.pal[i]), p0 = (i / N * 100).toFixed(2), p1 = ((i + 1) / N * 100).toFixed(2);
+          stops.push(col + " " + p0 + "%", col + " " + p1 + "%");
+        }
+        grad = "linear-gradient(to top," + stops.join(",") + ")";
+        for (k = N; k >= 0; k--) lab += "<span>" + this._nf(vmin + k / N * (vmax - vmin)) + "</span>";
+      } else {                                    // jet suave (didactico)
+        grad = "linear-gradient(to top,rgb(128,0,0),rgb(255,0,0),rgb(255,128,0),rgb(255,255,0),rgb(120,255,120),rgb(0,220,255),rgb(0,120,255),rgb(0,0,255),rgb(0,0,140))";
+        for (k = 4; k >= 0; k--) lab += "<span>" + this._nf(vmin + k / 4 * (vmax - vmin)) + "</span>";
+      }
+      d.innerHTML = '<div style="width:18px;height:' + h + 'px;background:' + grad + ';border:1px solid #444"></div>'
+        + '<div style="display:flex;flex-direction:column;justify-content:space-between;height:' + h + 'px;margin-left:5px">' + lab + '</div>';
+      if (this.st && this.st.row) this.st.row.appendChild(d); else this._ins(d);   // misma fila que el canvas
+    },
+    view3: function (azd, eld) { this.st.az = azd * 0.0174533; this.st.el = eld * 0.0174533; },
+    axis3: function (x0, x1, y0, y1, z0, z1) {
+      this.st.bb = [x0, x1, y0, y1, z0, z1]; this.st.verts = []; this.st.lverts = []; this.st.ticks = []; this.st.dpts = []; this.st.tipOn = false;
+      var dx = x1 - x0, dy = y1 - y0, dz = z1 - z0; this.st.dist = 2.1 * Math.sqrt(dx * dx + dy * dy + dz * dz);
+    },
+    jet: function (t) {
+      t = Math.max(0, Math.min(1, t)); var u = 1 - t;
+      function c(z) { return Math.max(0, Math.min(1, 1.5 - Math.abs(4 * u - z))); }
+      return [c(3), c(2), c(1)];
+    },
+    hex: function (s) {
+      if (s.charCodeAt(0) === 35) s = s.substr(1);
+      if (s.length === 3) s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
+      return [parseInt(s.substr(0, 2), 16) / 255, parseInt(s.substr(2, 2), 16) / 255, parseInt(s.substr(4, 2), 16) / 255];
+    },
+    fill3: function (p, t1, t2, t3, t4) {        // guarda el ESCALAR t por vertice (el shader hace jet suave O bandas ETABS)
+      if (t2 === undefined) { t2 = t1; t3 = t1; t4 = t1; }
+      var tt = [t1, t2, t3, t4], idx = [0, 1, 2, 0, 2, 3], i, k, t, V = this.st.verts;
+      for (i = 0; i < 6; i++) { k = idx[i]; t = tt[k]; V.push(p[3 * k], p[3 * k + 1], p[3 * k + 2], t, t, t); }
+    },
+    line3: function (x1, y1, z1, x2, y2, z2, col) {
+      var c = this.hex(col), L = this.st.lverts;
+      L.push(x1, y1, z1, c[0], c[1], c[2], x2, y2, z2, c[0], c[1], c[2]);
+    },
+    point3: function (x, y, z, t, sz) {          // scatter3: marcador 3D = 3 quads cruzados (visible desde cualquier angulo)
+      var b = this.st.bb, d = Math.max(b[1] - b[0], b[3] - b[2], b[5] - b[4]) * (sz || 0.015);
+      this.fill3([x - d, y - d, z, x + d, y - d, z, x + d, y + d, z, x - d, y + d, z], t, t, t, t);  // plano XY
+      this.fill3([x - d, y, z - d, x + d, y, z - d, x + d, y, z + d, x - d, y, z + d], t, t, t, t);  // plano XZ
+      this.fill3([x, y - d, z - d, x, y + d, z - d, x, y + d, z + d, x, y - d, z + d], t, t, t, t);  // plano YZ
+    },
+    quiver3: function (x, y, z, dx, dy, dz, col) {  // vector 3D: tallo + cabeza de flecha (2 lineas)
+      this.line3(x, y, z, x + dx, y + dy, z + dz, col);
+      var L = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1, ux = dx / L, uy = dy / L, uz = dz / L, h = L * 0.22;
+      var ax = x + dx, ay = y + dy, az = z + dz, px = -uy, py = ux, pz = 0, pl = Math.sqrt(px * px + py * py + pz * pz);
+      if (pl < 1e-6) { px = 0; py = -uz; pz = uy; pl = Math.sqrt(py * py + pz * pz) || 1; } px /= pl; py /= pl; pz /= pl;
+      this.line3(ax, ay, az, ax - ux * h + px * h * 0.5, ay - uy * h + py * h * 0.5, az - uz * h + pz * h * 0.5, col);
+      this.line3(ax, ay, az, ax - ux * h - px * h * 0.5, ay - uy * h - py * h * 0.5, az - uz * h - pz * h * 0.5, col);
+    },
+    stem3: function (x, y, z, t) {               // tallo 3D vertical (z=0 -> z) + marcador
+      this.line3(x, y, 0, x, y, z, "808080"); this.point3(x, y, z, t);
+    },
+    tri3: function (x1, y1, z1, x2, y2, z2, x3, y3, z3, t1, t2, t3) {  // trisurf/trimesh: cara TRIANGULAR (4o vertice = 3o, degenerado)
+      this.fill3([x1, y1, z1, x2, y2, z2, x3, y3, z3, x3, y3, z3], t1, t2, t3 === undefined ? t1 : t3, t3 === undefined ? t1 : t3);
+    },
+    sphere: function (cx, cy, cz, r, t, nu, nv) {  // esfera completa (loops lat/long -> fill3)
+      nu = nu || 16; nv = nv || 10; var i, j, GL = this;
+      function P(u, v) { var th = u / nu * 6.28318, ph = v / nv * 3.14159; return [cx + r * Math.sin(ph) * Math.cos(th), cy + r * Math.sin(ph) * Math.sin(th), cz + r * Math.cos(ph)]; }
+      for (j = 0; j < nv; j++) for (i = 0; i < nu; i++) { var a = P(i, j), b = P(i + 1, j), c = P(i + 1, j + 1), d = P(i, j + 1); GL.fill3([a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2], d[0], d[1], d[2]], t, t, t, t); }
+    },
+    cylinder: function (cx, cy, z0, z1, r, t, nu) {  // cilindro (cara lateral) -> fill3
+      nu = nu || 20; var i; for (i = 0; i < nu; i++) { var a0 = i / nu * 6.28318, a1 = (i + 1) / nu * 6.28318, x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1); this.fill3([x0, y0, z0, x1, y1, z0, x1, y1, z1, x0, y0, z1], t, t, t, t); }
+    },
+    light: false,                                          // iluminacion 3D (GL3.lighting / lighting$ en el .cpd)
+    lighting: function (on) { this.light = !(on === 0 || on === "off" || on === "none" || on === false); },
+    shading: function (m) { this.light = !(m === "none" || m === "off" || m === 0); },   // flat/interp -> con luz
+    render3: function () {
+      var s = this.st, gl = s.gl, GL3 = this;
+      gl.getExtension("OES_standard_derivatives");          // normal por derivadas de pantalla (para iluminar)
+      var vs = "attribute vec3 a;attribute vec3 c;uniform mat4 m;varying vec3 v;varying vec3 vp;void main(){gl_Position=m*vec4(a,1.0);v=c;vp=a;}";
+      // uMode: 0=jet suave · 1=bandas DISCRETAS con la paleta ETABS · 2=linea (rgb directo). uLight: 0/1 iluminacion difusa.
+      var fs = "#extension GL_OES_standard_derivatives : enable\n"
+        + "precision mediump float;varying vec3 v;varying vec3 vp;uniform float uMode;uniform float uLight;uniform vec3 pal[15];"
+        + "void main(){"
+        + " if(uMode>1.5){gl_FragColor=vec4(v,1.0);return;}" // lineas: rgb directo, sin luz
+        + " float t=clamp(v.r,0.0,1.0); vec3 col;"
+        + " if(uMode>0.5){"                                  // BANDAS ETABS: indexar la paleta de 15 colores
+        + "   int bi=int(clamp(floor(t*15.0),0.0,14.0)); col=pal[0];"
+        + "   for(int i=0;i<15;i++){ if(i<=bi) col=pal[i]; } }"
+        + " else { float u=1.0-t;"                           // jet suave (didactico)
+        + "   col=vec3(clamp(1.5-abs(4.0*u-3.0),0.0,1.0),clamp(1.5-abs(4.0*u-2.0),0.0,1.0),clamp(1.5-abs(4.0*u-1.0),0.0,1.0)); }"
+        + " if(uLight>0.5){"                                 // luz difusa: normal de la cara = cross de las derivadas
+        + "   vec3 N=normalize(cross(dFdx(vp),dFdy(vp))); vec3 L=normalize(vec3(0.4,0.5,0.85));"
+        + "   col=col*(0.55+0.45*abs(dot(N,L))); }"          // dos caras (abs): ambiente 0.55 + difuso 0.45
+        + " gl_FragColor=vec4(col,1.0);}";
+      function sh(t, src) { var o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; }
+      var pr = gl.createProgram();
+      gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs));
+      gl.linkProgram(pr); gl.useProgram(pr); s.pr = pr;
+      s.um = gl.getUniformLocation(pr, "m"); s.la = gl.getAttribLocation(pr, "a"); s.lc = gl.getAttribLocation(pr, "c");
+      s.umode = gl.getUniformLocation(pr, "uMode"); s.ulight = gl.getUniformLocation(pr, "uLight");
+      var P = this.pal, pf = []; for (var pi = 0; pi < 15; pi++) { pf.push(P[pi][0], P[pi][1], P[pi][2]); }
+      gl.uniform3fv(gl.getUniformLocation(pr, "pal"), new Float32Array(pf));
+      s.tb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, s.tb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.verts), gl.STATIC_DRAW); s.nv = s.verts.length / 6;
+      s.lb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, s.lb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(s.lverts), gl.STATIC_DRAW); s.nl = s.lverts.length / 6;
+      var draw = function () { GL3._draw(s); }; s.draw = draw; draw();
+      var cv = s.cv, drag = false, panning = false, px = 0, py = 0; cv.style.cursor = "grab";
+      cv.oncontextmenu = function (e) { e.preventDefault(); };   // permitir arrastrar con boton derecho (pan)
+      cv.onmousedown = function (e) { drag = true; panning = e.shiftKey || e.button === 2; px = e.clientX; py = e.clientY; cv.style.cursor = panning ? "move" : "grabbing"; e.preventDefault(); };
+      cv.onmousemove = function (e) {
+        if (drag && panning) {                        // PAN (shift o boton derecho): desplaza el centro en pantalla
+          s.panx = (s.panx || 0) + (e.clientX - px) * s.dist * 0.0022; s.pany = (s.pany || 0) - (e.clientY - py) * s.dist * 0.0022;
+          px = e.clientX; py = e.clientY; draw(); return;
+        }
+        if (drag) {                                   // TRACKBALL: rotación incremental en TODOS los sentidos
+          var dx = (e.clientX - px) * 0.01, dy = (e.clientY - py) * 0.01; px = e.clientX; py = e.clientY;
+          var dR = GL3._mul(GL3._rotX(dy), GL3._rotY(dx));
+          s.rot = GL3._mul(dR, s.rot); draw(); return;
+        }
+        if (!s.tipOn || !s.dpts.length || !s.mvp) return;   // hover: nudo más cercano al cursor → datatip
+        var r = cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = 324, i, p, dx, dy;
+        for (i = 0; i < s.dpts.length; i++) { p = GL3._proj2(s, s.dpts[i].x, s.dpts[i].y, s.dpts[i].z); dx = p[0] - mx; dy = p[1] - my; if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = i; } }
+        if (best >= 0) { var dp = s.dpts[best], pp = GL3._proj2(s, dp.x, dp.y, dp.z); s.tip.style.display = "block"; s.tip.style.left = pp[0] + "px"; s.tip.style.top = pp[1] + "px"; s.tip.innerHTML = (s.tipLabel ? s.tipLabel + " = " : "") + GL3._nf(dp.v); }
+        else s.tip.style.display = "none";
+      };
+      var up = function () { drag = false; cv.style.cursor = "grab"; if (s.tip) s.tip.style.display = "none"; };
+      cv.onmouseup = up; cv.onmouseleave = up;
+      cv.onwheel = function (e) { s.dist *= e.deltaY > 0 ? 1.1 : 0.9; draw(); e.preventDefault(); };
+    },
+    _attr: function (s, b) {
+      var gl = s.gl; gl.bindBuffer(gl.ARRAY_BUFFER, b);
+      gl.enableVertexAttribArray(s.la); gl.vertexAttribPointer(s.la, 3, gl.FLOAT, false, 24, 0);
+      gl.enableVertexAttribArray(s.lc); gl.vertexAttribPointer(s.lc, 3, gl.FLOAT, false, 24, 12);
+    },
+    _draw: function (s) {
+      var gl = s.gl; gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      var b = s.bb, cx = (b[0] + b[1]) / 2, cy = (b[2] + b[3]) / 2, cz = (b[4] + b[5]) / 2;
+      // TRACKBALL: rotación libre acumulada en s.rot (todos los sentidos). V = pull-back · rot · centrar.
+      if (!s.rot) s.rot = this._mul(this._rotZ(-0.6), this._rotX(-1.25));   // vista iso inicial (modelo Z-up)
+      var V = this._mul(this._trans(s.panx || 0, s.pany || 0, -s.dist), this._mul(s.rot, this._trans(-cx, -cy, -cz)));
+      var P = this._persp(0.8, s.w / s.h, 0.01, s.dist * 12);
+      s.mvp = this._mul(P, V);
+      gl.uniformMatrix4fv(s.um, false, s.mvp);
+      gl.uniform1f(s.umode, GL3.etabs ? 1 : 0);                 // caras: jet suave o bandas ETABS
+      gl.uniform1f(s.ulight, GL3.light ? 1 : 0);                // iluminacion difusa on/off
+      this._attr(s, s.tb); gl.drawArrays(gl.TRIANGLES, 0, s.nv);
+      if (s.nl > 0) { gl.uniform1f(s.umode, 2); this._attr(s, s.lb); gl.drawArrays(gl.LINES, 0, s.nl); }  // lineas: rgb directo
+      var oc = s.octx; oc.clearRect(0, 0, s.w, s.h);
+      if (s.ticks.length) {
+        oc.fillStyle = "#444"; oc.font = "11px Segoe UI"; oc.textAlign = "center"; oc.textBaseline = "middle";
+        for (var i = 0; i < s.ticks.length; i++) { var k = s.ticks[i], p = this._proj2(s, k.x, k.y, k.z); oc.fillText(k.t, p[0], p[1]); }
+      }
+    },
+    _persp: function (fy, a, n, f) {
+      var t = 1 / Math.tan(fy / 2), nf = 1 / (n - f);
+      return [t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (f + n) * nf, -1, 0, 0, 2 * f * n * nf, 0];
+    },
+    _look: function (e, c, u) {
+      var z0 = e[0] - c[0], z1 = e[1] - c[1], z2 = e[2] - c[2], zl = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+      z0 *= zl; z1 *= zl; z2 *= zl;
+      var x0 = u[1] * z2 - u[2] * z1, x1 = u[2] * z0 - u[0] * z2, x2 = u[0] * z1 - u[1] * z0, xl = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+      if (xl) { xl = 1 / xl; x0 *= xl; x1 *= xl; x2 *= xl; }
+      var y0 = z1 * x2 - z2 * x1, y1 = z2 * x0 - z0 * x2, y2 = z0 * x1 - z1 * x0;
+      return [x0, y0, z0, 0, x1, y1, z1, 0, x2, y2, z2, 0, -(x0 * e[0] + x1 * e[1] + x2 * e[2]), -(y0 * e[0] + y1 * e[1] + y2 * e[2]), -(z0 * e[0] + z1 * e[1] + z2 * e[2]), 1];
+    },
+    _mul: function (a, b) {
+      var o = new Array(16), c, r, k;
+      for (c = 0; c < 4; c++) for (r = 0; r < 4; r++) { var s = 0; for (k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; }
+      return o;
+    },
+    _trans: function (x, y, z) { return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]; },          // column-major
+    _rotX: function (a) { var c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]; },
+    _rotY: function (a) { var c = Math.cos(a), s = Math.sin(a); return [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]; },
+    _rotZ: function (a) { var c = Math.cos(a), s = Math.sin(a); return [c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; }
+  };
+  global.GL3 = GL3;
+})(window);
+
+window._c=window._c||function(l,d){return window.HK_DARK?d:l};
+/* matlab.js — capa de ALTO NIVEL con nombres de MATLAB sobre el motor embebido (ML / glplot).
+   Objetivo: escribir las graficas como en MATLAB (figure, plot, surf, contourf, bar, legend,
+   title, xlabel, colorbar, axis equal ...) recibiendo VECTORES/MATRICES, sin tocar canvas ni JS crudo.
+   No hay <script src>: este .js se EMBEBE inline junto a mlplot.js. Colormap = jet_r (siempre).
+
+   Modelo: cada funcion acumula "ops" en la figura actual y programa un re-dibujo (flush) diferido,
+   asi MATLAB calcula los limites de los ejes con TODOS los datos (auto-escala), como el de verdad. */
+(function (global) {
+  var ML = global.ML;
+  var FIG = null, FIGN = 0;
+
+  // ---- utilidades de arrays (acepta vector JS, o escalar) ----
+  function isArr(a) { return Array.isArray(a); }
+  function arr(a) { return isArr(a) ? a : [a]; }
+  function isMat(a) { return isArr(a) && isArr(a[0]); }
+  function rows(M) { return M.length; }
+  function cols(M) { return M[0].length; }
+  function minA(a) { var m = Infinity, i; for (i = 0; i < a.length; i++) if (a[i] < m) m = a[i]; return m; }
+  function maxA(a) { var m = -Infinity, i; for (i = 0; i < a.length; i++) if (a[i] > m) m = a[i]; return m; }
+  function minM(M) { var m = Infinity, i, j; for (i = 0; i < M.length; i++) for (j = 0; j < M[i].length; j++) if (M[i][j] < m) m = M[i][j]; return m; }
+  function maxM(M) { var m = -Infinity, i, j; for (i = 0; i < M.length; i++) for (j = 0; j < M[i].length; j++) if (M[i][j] > m) m = M[i][j]; return m; }
+  function range(n) { var a = [], i; for (i = 1; i <= n; i++) a.push(i); return a; }   // 1:n estilo MATLAB
+
+  // paleta de Calcpad (chartPens): Tomato, YellowGreen, CornflowerBlue, oro, MediumVioletRed, ...
+  var CORD = ["#FF6347", "#9ACD32", "#6495ED", "#F0D000", "#C71585", "#00FA9A", "#8A2BE2", "#FFA07A", "#FF1493", "#00CED1"];
+  var CMAP = { r: "#e00000", g: "#00a000", b: "#0000ff", c: "#00bdbd", m: "#bd00bd", y: "#cccc00", k: "#000000", w: "#ffffff" };
+
+  // parsea un "linespec" de MATLAB:  'r--o' , 'b:' , 'k.' , 'g-' ...
+  function spec(s) {
+    var o = { color: null, style: "-", marker: null };
+    if (typeof s !== "string") return o;
+    if (s.indexOf("--") >= 0) o.style = "--"; else if (s.indexOf("-.") >= 0) o.style = "-."; else if (s.indexOf(":") >= 0) o.style = ":"; else if (s.indexOf("-") >= 0) o.style = "-"; else o.style = "none";
+    for (var i = 0; i < s.length; i++) { var ch = s[i]; if (CMAP[ch]) o.color = CMAP[ch]; if ("o.*+xsd^v><ph".indexOf(ch) >= 0) o.marker = ch; }
+    return o;
+  }
+
+  // ---- figura ----
+  function newFig() {
+    var id = "mlfig" + (++FIGN);
+    ML.figure(id, 600, 420);
+    FIG = {
+      id: id, ops: [], is3d: false,
+      xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity, zmin: Infinity, zmax: -Infinity,
+      ttl: null, xl: null, yl: null, zl: null, grid: true, equal: false, off: false,
+      lim: null, az: -37.5, el: 30, cidx: 0, cbar: false, crange: null, legends: [], tip: null, sched: false
+    };
+    return FIG;
+  }
+  function fig() { return FIG || newFig(); }
+  function nextColor() { var f = fig(); return CORD[(f.cidx++) % CORD.length]; }
+  function bx(f, x, y, z) {
+    if (x < f.xmin) f.xmin = x; if (x > f.xmax) f.xmax = x;
+    if (y < f.ymin) f.ymin = y; if (y > f.ymax) f.ymax = y;
+    if (z != null) { if (z < f.zmin) f.zmin = z; if (z > f.zmax) f.zmax = z; }
+  }
+  function sched(f) { if (f.sched) return; f.sched = true; setTimeout(function () { f.sched = false; flush2(f); }, 0); }   // el 3D (GL3) se dibuja directo, no por flush
+
+  // ===================== 2D =====================
+  function flush2(f) {
+    var s = ML.figs[f.id], ctx = s.ctx; ML.cur = f.id;
+    ctx.clearRect(0, 0, s.w, s.h);
+    var dx0 = f.xmin, dx1 = f.xmax, dy0 = f.ymin, dy1 = f.ymax;     // rango de DATOS (esquinas)
+    if (f.lim) { dx0 = f.lim[0]; dx1 = f.lim[1]; dy0 = f.lim[2]; dy1 = f.lim[3]; }
+    if (!isFinite(dx0)) { dx0 = 0; dx1 = 1; dy0 = 0; dy1 = 1; }
+    var x0 = dx0, x1 = dx1, y0 = dy0, y1 = dy1;
+    var px = (x1 - x0) * 0.05 || 0.5, py = (y1 - y0) * 0.05 || 0.5;
+    x0 -= px; x1 += px; y0 -= py; y1 += py;
+    if (f.equal) ML.axis(x0, x1, y0, y1); else ML.axischart(x0, x1, y0, y1);
+    if (f.cbar) { s.mR = 92; if (f.equal) { s.sc = Math.min((s.w - s.mL - s.mR) / (x1 - x0), (s.h - s.mT - s.mB) / (y1 - y0)); s.scx = s.sc; s.scy = s.sc; } else { s.scx = (s.w - s.mL - s.mR) / (x1 - x0); s.scy = (s.h - s.mT - s.mB) / (y1 - y0); } }
+    s.dpts = []; s._tipBound = false; s.tipOn = false;
+    // marco SOLO para charts de función o mapas; geometría (axis equal, sin grid) = dibujo limpio como Calcpad
+    if (!f.off && (f.cbar || !f.equal || f.gridForced)) cpframe(f, s, ctx, x0, x1, y0, y1, dx0, dx1, dy0, dy1);
+    var i;
+    for (i = 0; i < f.ops.length; i++) drawOp(f, s, ctx, f.ops[i]);
+    if (f.ttl) ML.title(f.ttl);
+    if (f.cbar) { var cr = f.crange || [Math.min(y0, 0), y1]; ML._cbar(s, cr[0], cr[1]); }
+    if (f.legends.length) drawLegend(f, s, ctx);
+    if (s.dpts.length) ML.datatip(f.tip || "");        // cursor de datos (hover) por defecto
+  }
+
+  // ===== marco estilo Calcpad: grilla tenue, ejes negros en 0 con x/y, numeros en margenes, rangos en esquinas =====
+  function niceStep(range, maxSteps) {
+    var raw = range / Math.max(1, maxSteps); if (!(raw > 0)) return 1;
+    var mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+  }
+  function fmtN(v) {
+    if (Math.abs(v) < 1e-12) return "0";
+    var a = Math.abs(v);
+    if (a >= 1e4 || a < 1e-3) return v.toExponential(1).replace("e+", "E").replace("e-", "E-").replace("e", "E");
+    return parseFloat(v.toPrecision(4)).toString();
+  }
+  function hexA(hex, a) {
+    var c = (hex || "#cc0000").replace("#", ""); if (c.length === 3) c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+    return "rgba(" + parseInt(c.substr(0, 2), 16) + "," + parseInt(c.substr(2, 2), 16) + "," + parseInt(c.substr(4, 2), 16) + "," + a + ")";
+  }
+  function cpframe(f, s, ctx, x0, x1, y0, y1, dx0, dx1, dy0, dy1) {
+    var L = s.mL, R = s.w - s.mR, T = s.mT, B = s.h - s.mB, v, p;
+    ctx.font = "11px Segoe UI";
+    var sy = niceStep(y1 - y0, 8);                 // grilla + numeros Y (margen izq, alineados der)
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (v = Math.ceil(y0 / sy) * sy; v <= y1 + 1e-9; v += sy) {
+      p = ML.Y(v); ctx.strokeStyle = _c("rgba(0,0,0,0.08)","rgba(255,255,255,0.10)"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, p); ctx.lineTo(R, p); ctx.stroke();
+      ctx.fillStyle = _c("#777","#9a9180"); ctx.fillText(fmtN(v), L - 6, p);
+    }
+    var sx = niceStep(x1 - x0, 9);                 // grilla + numeros X (margen inf, centrados)
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (v = Math.ceil(x0 / sx) * sx; v <= x1 + 1e-9; v += sx) {
+      p = ML.X(v); ctx.strokeStyle = _c("rgba(0,0,0,0.08)","rgba(255,255,255,0.10)"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p, T); ctx.lineTo(p, B); ctx.stroke();
+      ctx.fillStyle = _c("#777","#9a9180"); ctx.fillText(fmtN(v), p, B + 5);
+    }
+    ctx.strokeStyle = "rgba(0,0,0,0.25)"; ctx.lineWidth = 1; ctx.strokeRect(L, T, R - L, B - T);   // marco tenue
+    ctx.lineWidth = 1.4; ctx.strokeStyle = _c("#000","#e8e2d4"); ctx.fillStyle = _c("#000","#e8e2d4");    // ejes NEGROS en 0 + x / y
+    if (0 > y0 && 0 < y1) { p = ML.Y(0); ctx.beginPath(); ctx.moveTo(L, p); ctx.lineTo(R, p); ctx.stroke(); ctx.font = "italic 13px Georgia,serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(f.xl || "x", R + 6, p); }
+    if (0 > x0 && 0 < x1) { p = ML.X(0); ctx.beginPath(); ctx.moveTo(p, T); ctx.lineTo(p, B); ctx.stroke(); ctx.font = "italic 13px Georgia,serif"; ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillText(f.yl || "y", p, T - 3); }
+    ctx.fillStyle = _c("#555","#c9c0ad"); ctx.font = "11px Segoe UI"; ctx.textBaseline = "alphabetic";   // rangos en esquinas
+    ctx.textAlign = "left"; ctx.fillText("[" + fmtN(dx0) + "; " + fmtN(dy0) + "]", 3, s.h - 3);
+    ctx.textAlign = "right"; ctx.fillText("[" + fmtN(dx1) + "; " + fmtN(dy1) + "]", s.w - 3, T - 4);
+  }
+
+  function dash(ctx, style) {
+    if (style === "--") ctx.setLineDash([7, 5]); else if (style === ":") ctx.setLineDash([2, 4]);
+    else if (style === "-.") ctx.setLineDash([8, 4, 2, 4]); else ctx.setLineDash([]);
+  }
+
+  function drawOp(f, s, ctx, op) {
+    var i, X = ML.X.bind(ML), Y = ML.Y.bind(ML);
+    if (op.t === "line") {
+      if (op.fill) {                                  // relleno tenue hasta y=0 (estilo Calcpad)
+        var st = ML.S(), b0 = Math.min(Math.max(0, st.ymin), st.ymax), yb = Y(b0);
+        ctx.beginPath(); ctx.moveTo(X(op.x[0]), yb);
+        for (i = 0; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i]));
+        ctx.lineTo(X(op.x[op.x.length - 1]), yb); ctx.closePath();
+        ctx.fillStyle = hexA(op.color, 0.10); ctx.fill();
+      }
+      if (op.style !== "none") {
+        ctx.strokeStyle = op.color; ctx.lineWidth = op.lw || 2.2; dash(ctx, op.style);
+        ctx.beginPath(); ctx.moveTo(X(op.x[0]), Y(op.y[0]));
+        for (i = 1; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i]));
+        ctx.stroke(); ctx.setLineDash([]);
+      }
+      if (op.marker) for (i = 0; i < op.x.length; i++) ML.marker(op.x[i], op.y[i], op.marker, op.color);
+      for (i = 0; i < op.x.length; i++) ML.datapoint(op.x[i], op.y[i], op.y[i]);
+    } else if (op.t === "patch") {                      // cuadrilátero/polígono coloreado jet (como Calcpad)
+      var pp = []; for (i = 0; i < op.x.length; i++) pp.push(op.x[i], op.y[i]); ML.patch(pp, op.tv);
+    } else if (op.t === "cline") {                      // elemento 1D con GRADIENTE de color continuo por valor (jet_r)
+      var dc = (op.cmax - op.cmin) || 1;
+      for (i = 0; i < op.x.length - 1; i++) {
+        var ax = X(op.x[i]), ay = Y(op.y[i]), bx2 = X(op.x[i + 1]), by2 = Y(op.y[i + 1]);
+        var g = ctx.createLinearGradient(ax, ay, bx2, by2);
+        g.addColorStop(0, ML.jet((op.c[i] - op.cmin) / dc)); g.addColorStop(1, ML.jet((op.c[i + 1] - op.cmin) / dc));
+        ctx.strokeStyle = g; ctx.lineWidth = op.lw || 3; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx2, by2); ctx.stroke();
+      }
+      for (i = 0; i < op.x.length; i++) ML.datapoint(op.x[i], op.y[i], op.c[i]);
+    } else if (op.t === "scatter") {
+      for (i = 0; i < op.x.length; i++) { ML.marker(op.x[i], op.y[i], op.mk || "o", op.color); ML.datapoint(op.x[i], op.y[i], op.y[i]); }
+    } else if (op.t === "bar") {
+      for (i = 0; i < op.x.length; i++) ML.bar(op.x[i], op.y[i], op.w, op.color);
+    } else if (op.t === "stem") {
+      for (i = 0; i < op.x.length; i++) ML.stem(op.x[i], op.y[i], op.color);
+    } else if (op.t === "area") {
+      for (i = 0; i < op.x.length - 1; i++) ML.area(op.x[i], op.y[i], op.x[i + 1], op.y[i + 1], op.color);
+    } else if (op.t === "stairs") {
+      for (i = 0; i < op.x.length - 1; i++) ML.stairs(op.x[i], op.y[i], op.x[i + 1], op.y[i + 1], op.color);
+    } else if (op.t === "errorbar") {
+      ctx.strokeStyle = op.color; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(X(op.x[0]), Y(op.y[0])); for (i = 1; i < op.x.length; i++) ctx.lineTo(X(op.x[i]), Y(op.y[i])); ctx.stroke();
+      for (i = 0; i < op.x.length; i++) ML.errorbar(op.x[i], op.y[i], op.e[i], op.color);
+    } else if (op.t === "fill") {
+      var p = []; for (i = 0; i < op.x.length; i++) p.push(op.x[i], op.y[i]); ML.fill(p, op.color);
+    } else if (op.t === "quiver") {
+      for (i = 0; i < op.x.length; i++) ML.quiver(op.x[i], op.y[i], op.u[i] * op.sc, op.v[i] * op.sc, op.color);
+    } else if (op.t === "imagesc" || op.t === "pcolor" || op.t === "contourf") {
+      var Z = op.Z, nr = rows(Z), nc = cols(Z), zmin = minM(Z), zmax = maxM(Z), dz = (zmax - zmin) || 1;
+      var gx = op.x, gy = op.y, r, c2;
+      for (r = 0; r < nr; r++) for (c2 = 0; c2 < nc; c2++) {
+        var xc = gx[c2], yc = gy[r], w = (c2 < nc - 1 ? gx[c2 + 1] - gx[c2] : gx[c2] - gx[c2 - 1]), h = (r < nr - 1 ? gy[r + 1] - gy[r] : gy[r] - gy[r - 1]);
+        ML.imagesc(xc, yc, w, h, (Z[r][c2] - zmin) / dz);
+      }
+      if (op.t === "contourf" || op.t === "contour") drawContourLines(f, s, op);
+    } else if (op.t === "contour") {
+      drawContourLines(f, s, op);
+    } else if (op.t === "pie") {
+      var tot = 0; for (i = 0; i < op.v.length; i++) tot += op.v[i]; var a = 90;
+      for (i = 0; i < op.v.length; i++) { var sweep = op.v[i] / tot * 360, a2 = a - sweep; ML.pie(0, 0, 1, a, a2, CORD[i % CORD.length]); var am = (a + a2) / 2 * 0.0174533; ML.text(1.15 * Math.cos(am), 1.15 * Math.sin(am), (100 * op.v[i] / tot).toFixed(1) + "%", _c("#222","#f3eddd")); a = a2; }
+    } else if (op.t === "polar") {
+      ctx.strokeStyle = op.color; ctx.lineWidth = 1.8; ctx.beginPath();
+      for (i = 0; i < op.th.length; i++) { var aa = op.th[i] * 0.0174533, xx = op.r[i] * Math.cos(aa), yy = op.r[i] * Math.sin(aa); if (i === 0) ctx.moveTo(X(xx), Y(yy)); else ctx.lineTo(X(xx), Y(yy)); } ctx.stroke();
+    } else if (op.t === "text") {
+      ML.text(op.x, op.y, op.s, op.color);
+    }
+  }
+
+  function drawContourLines(f, s, op) {
+    var Z = op.Z, nr = rows(Z), nc = cols(Z), zmin = minM(Z), zmax = maxM(Z), nl = op.nl || 8, L, r, c2;
+    for (L = 1; L < nl; L++) {
+      var lv = zmin + L / nl * (zmax - zmin);
+      for (r = 0; r < nr - 1; r++) for (c2 = 0; c2 < nc - 1; c2++)
+        ML.contourCell(op.x[c2], op.y[r], op.x[c2 + 1], op.y[r + 1], Z[r][c2], Z[r][c2 + 1], Z[r + 1][c2 + 1], Z[r + 1][c2], lv, _c("#222","#f3eddd"));
+    }
+  }
+
+  function drawLegend(f, s, ctx) {
+    var n = f.legends.length, bw = 120, bh = 16 * n + 8, x = s.w - s.mR - bw - 8, y = s.mT + 6, i;
+    ctx.fillStyle = _c("rgba(255,255,255,0.85)","rgba(26,23,18,0.85)"); ctx.strokeStyle = "#999"; ctx.lineWidth = 1;
+    ctx.fillRect(x, y, bw, bh); ctx.strokeRect(x, y, bw, bh);
+    ctx.font = "11px Segoe UI"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    for (i = 0; i < n; i++) {
+      var yy = y + 12 + i * 16; ctx.strokeStyle = f.legends[i].color; ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.moveTo(x + 8, yy); ctx.lineTo(x + 28, yy); ctx.stroke();
+      ctx.fillStyle = _c("#222","#f3eddd"); ctx.fillText(f.legends[i].label, x + 34, yy);
+    }
+  }
+
+  // ===================== 3D (usa el pipeline 3D interactivo de ML) =====================
+  function flush3(f) {
+    var s = ML.figs[f.id]; ML.cur = f.id;
+    ML.view3(f.az, f.el);
+    ML.axis3(f.xmin, f.xmax, f.ymin, f.ymax, f.zmin, f.zmax);
+    var i; for (i = 0; i < f.ops.length; i++) build3(f, f.ops[i]);
+    // datapoints para el hover 3D (cursor que muestra x,y,z del nudo mas cercano)
+    for (i = 0; i < f.ops.length; i++) {
+      var op = f.ops[i];
+      if (op.t === "surf" || op.t === "mesh") { for (var a = 0; a < rows(op.Z); a++) for (var b = 0; b < cols(op.Z); b++) ML.datapoint3(op.X[a][b], op.Y[a][b], op.Z[a][b], op.Z[a][b]); }
+      else if (op.t === "plot3" || op.t === "scatter3") { for (var k = 0; k < op.x.length; k++) ML.datapoint3(op.x[k], op.y[k], op.z[k], op.z[k]); }
+    }
+    if (f.cbar) ML.colorbar((f.crange || [f.zmin, f.zmax])[0], (f.crange || [f.zmin, f.zmax])[1]);
+    ML.render3();
+  }
+  function build3(f, op) {
+    var i, j, dz = (f.zmax - f.zmin) || 1;
+    if (op.t === "surf" || op.t === "mesh") {
+      var X = op.X, Y = op.Y, Z = op.Z, nr = rows(Z), nc = cols(Z);
+      for (i = 0; i < nr - 1; i++) for (j = 0; j < nc - 1; j++) {
+        var p = [X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], X[i + 1][j + 1], Y[i + 1][j + 1], Z[i + 1][j + 1], X[i + 1][j], Y[i + 1][j], Z[i + 1][j]];
+        var zm = (Z[i][j] + Z[i][j + 1] + Z[i + 1][j + 1] + Z[i + 1][j]) / 4;
+        if (op.t === "surf") ML.fill3(p, (zm - f.zmin) / dz);
+        else { var c = ML.jet((zm - f.zmin) / dz); ML.line3(p[0], p[1], p[2], p[3], p[4], p[5], c); ML.line3(p[3], p[4], p[5], p[6], p[7], p[8], c); ML.line3(p[6], p[7], p[8], p[9], p[10], p[11], c); ML.line3(p[9], p[10], p[11], p[0], p[1], p[2], c); }
+      }
+    } else if (op.t === "plot3") {
+      for (i = 0; i < op.x.length - 1; i++) ML.line3(op.x[i], op.y[i], op.z[i], op.x[i + 1], op.y[i + 1], op.z[i + 1], op.color);
+    } else if (op.t === "scatter3") {
+      for (i = 0; i < op.x.length; i++) ML.line3(op.x[i], op.y[i], op.z[i], op.x[i], op.y[i], op.z[i], op.color);
+    } else if (op.t === "text3") {
+      ML.text3(op.x, op.y, op.z, op.s, op.color);
+    }
+  }
+
+  // ===================== API GLOBAL con nombres de MATLAB =====================
+  function figure() { return newFig(); }
+  function clf() { var f = fig(); f.ops = []; f.legends = []; f.cidx = 0; f.xmin = Infinity; f.xmax = -Infinity; f.ymin = Infinity; f.ymax = -Infinity; f.zmin = Infinity; f.zmax = -Infinity; sched(f); }
+  function hold() { }   // en este modelo las series siempre se acumulan en la figura actual
+
+  function plot(x, y, sp) {            // plot(y) | plot(x,y) | plot(x,y,'r--o')
+    var f = fig(); if (y === undefined || typeof y === "string") { sp = y; y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); }
+    var o = spec(sp); var col = o.color || nextColor();
+    for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]);
+    f.ops.push({ t: "line", x: x, y: y, color: col, style: o.style, marker: o.marker, fill: true, lw: 2.4 }); sched(f); return f;
+  }
+  function scatter(x, y, sz, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "scatter", x: x, y: y, color: (typeof c === "string" ? c : nextColor()), mk: "o" }); sched(f); }
+  function line(x, y, sp) { var f = fig(); x = arr(x); y = arr(y); var o = spec(sp); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "line", x: x, y: y, color: o.color || _c("#333","#e8e2d4"), style: o.style === "none" ? "-" : o.style, marker: o.marker, fill: false, lw: 1.8 }); sched(f); }
+  function cline(x, y, c) { var f = fig(); x = arr(x); y = arr(y); c = arr(c); var cmin = minA(c), cmax = maxA(c); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.crange = [cmin, cmax]; f.cbar = true; f.tip = f.tip || "valor"; f.ops.push({ t: "cline", x: x, y: y, c: c, cmin: cmin, cmax: cmax, lw: 3 }); sched(f); }
+  function cline3(x, y, z, c) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z); c = arr(c); var cmin = minA(c), cmax = maxA(c), dc = (cmax - cmin) || 1, i;
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z));
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z), 6, 6);
+    for (i = 0; i < x.length - 1; i++) GL3.line3(x[i], y[i], z[i], x[i + 1], y[i + 1], z[i + 1], jethex(((c[i] + c[i + 1]) / 2 - cmin) / dc));
+    for (i = 0; i < x.length; i++) GL3.datapoint(x[i], y[i], z[i], c[i]);
+    GL3.datatip("valor"); GL3.colorbar3(cmin, cmax, 360); GL3.render3();
+  }
+  function patch(x, y, t) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "patch", x: x, y: y, tv: (t == null ? 0.5 : t) }); sched(f); }
+  function bar(x, y, c) { var f = fig(); if (y === undefined) { y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); } var w = (x.length > 1 ? (x[1] - x[0]) * 0.7 : 0.7); for (var i = 0; i < x.length; i++) bx(f, x[i] - w, y[i]), bx(f, x[i] + w, 0); f.ops.push({ t: "bar", x: x, y: y, w: w, color: (c || CORD[0]) }); sched(f); }
+  function stem(x, y, c) { var f = fig(); if (y === undefined) { y = arr(x); x = range(y.length); } else { x = arr(x); y = arr(y); } for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]), bx(f, x[i], 0); f.ops.push({ t: "stem", x: x, y: y, color: (c || CORD[0]) }); sched(f); }
+  function area(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]), bx(f, x[i], 0); f.ops.push({ t: "area", x: x, y: y, color: c }); sched(f); }
+  function stairs(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "stairs", x: x, y: y, color: (c || _c("#333","#e8e2d4")) }); sched(f); }
+  function errorbar(x, y, e, c) { var f = fig(); x = arr(x); y = arr(y); e = arr(e); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i] - e[i]), bx(f, x[i], y[i] + e[i]); f.ops.push({ t: "errorbar", x: x, y: y, e: e, color: (c || _c("#333","#e8e2d4")) }); sched(f); }
+  function fill(x, y, c) { var f = fig(); x = arr(x); y = arr(y); for (var i = 0; i < x.length; i++) bx(f, x[i], y[i]); f.ops.push({ t: "fill", x: x, y: y, color: (typeof c === "string" && CMAP[c] ? CMAP[c] : (c || CORD[0])) }); sched(f); }
+  function quiver(x, y, u, v, c) { var f = fig(); x = arr(x); y = arr(y); u = arr(u); v = arr(v); var mx = 0; for (var i = 0; i < u.length; i++) mx = Math.max(mx, Math.hypot(u[i], v[i])); var spc = (x.length > 1 ? Math.abs(x[1] - x[0]) || 1 : 1); var scl = mx > 0 ? spc / mx : 1; for (i = 0; i < x.length; i++) { bx(f, x[i], y[i]); bx(f, x[i] + u[i] * scl, y[i] + v[i] * scl); } f.ops.push({ t: "quiver", x: x, y: y, u: u, v: v, sc: scl, color: (c || CORD[0]) }); sched(f); }
+  function histogram(d, nb) { d = arr(d); nb = nb || Math.ceil(Math.sqrt(d.length)); var lo = minA(d), hi = maxA(d), w = (hi - lo) / nb || 1, cnt = [], cx = [], i; for (i = 0; i < nb; i++) { cnt[i] = 0; cx[i] = lo + (i + 0.5) * w; } for (i = 0; i < d.length; i++) { var k = Math.min(nb - 1, Math.floor((d[i] - lo) / w)); cnt[k]++; } var f = fig(); for (i = 0; i < nb; i++) bx(f, cx[i] - w / 2, cnt[i]), bx(f, cx[i] + w / 2, 0); f.ops.push({ t: "bar", x: cx, y: cnt, w: w * 0.95, color: CORD[0] }); sched(f); }
+  function pie(v) { var f = fig(); v = arr(v); f.equal = true; f.off = true; f.xmin = -1.4; f.xmax = 1.4; f.ymin = -1.4; f.ymax = 1.4; f.ops.push({ t: "pie", v: v }); sched(f); }
+  function polarplot(th, r, c) { var f = fig(); th = arr(th); r = arr(r); f.equal = true; var rm = maxA(r.map(Math.abs)); bx(f, -rm, -rm); bx(f, rm, rm); f.ops.push({ t: "polar", th: th, r: r, color: (spec(c).color || nextColor()) }); sched(f); }
+  function imagesc(a, b, C) { var f = fig(); var Z = (C === undefined ? a : C); var gx, gy; if (C === undefined) { gx = range(cols(Z)); gy = range(rows(Z)); } else { gx = arr(a); gy = arr(b); } for (var i = 0; i < gx.length; i++) bx(f, gx[i], gy[0]); bx(f, gx[gx.length - 1], gy[gy.length - 1]); f.equal = true; f.crange = [minM(Z), maxM(Z)]; f.cbar = true; f.ops.push({ t: "imagesc", x: gx, y: gy, Z: Z }); sched(f); }
+  function pcolor(a, b, C) { imagesc(a, b, C); fig().ops[fig().ops.length - 1].t = "pcolor"; }
+  function contourf(a, b, C, n) { gridplot("contourf", a, b, C, n); }
+  function contour(a, b, C, n) { gridplot("contour", a, b, C, n); }
+  function gridplot(kind, a, b, C, n) { var f = fig(); var Z, gx, gy; if (C === undefined || typeof C === "number") { Z = a; n = b; gx = range(cols(Z)); gy = range(rows(Z)); } else { gx = isMat(a) ? a[0] : arr(a); gy = isMat(b) ? b.map(function (r) { return r[0]; }) : arr(b); Z = C; } for (var i = 0; i < gx.length; i++) bx(f, gx[i], gy[0]); bx(f, gx[gx.length - 1], gy[gy.length - 1]); f.crange = [minM(Z), maxM(Z)]; f.cbar = true; f.ops.push({ t: kind, x: gx, y: gy, Z: Z, nl: n || 10 }); sched(f); }
+
+  // ---- 3D ----
+  // ===== 3D con GL3 (glplot.js, WebGL suave) — igual que Calcpad-FEM-3D =====
+  function hex6(c) { return (c || "#cc0000").replace("#", ""); }
+  function jethex(t) { var c = GL3.jet(t); function h2(n) { n = Math.round(n * 255); return (n < 16 ? "0" : "") + n.toString(16); } return h2(c[0]) + h2(c[1]) + h2(c[2]); }
+  function gl3init(f) {                                  // quita el canvas ML vacío y crea el lienzo WebGL en su lugar
+    var m = ML.figs[f.id]; if (m && m.cv && m.cv.parentNode && m.cv.parentNode.parentNode) m.cv.parentNode.parentNode.removeChild(m.cv.parentNode);
+    GL3.figure3("gl_" + f.id, 600, 440); GL3.view3(f.az, f.el);
+  }
+  function surf(X, Y, Z) { surf3("surf", X, Y, Z); }
+  function mesh(X, Y, Z) { surf3("mesh", X, Y, Z); }
+  function surf3(kind, X, Y, Z) {
+    var f = fig();
+    if (Z === undefined) { Z = X; X = []; Y = []; for (var r = 0; r < rows(Z); r++) { X[r] = []; Y[r] = []; for (var c = 0; c < cols(Z); c++) { X[r][c] = c + 1; Y[r][c] = r + 1; } } }
+    var nr = rows(Z), nc = cols(Z), i, j, xmn = Infinity, xmx = -Infinity, ymn = Infinity, ymx = -Infinity, zmn = Infinity, zmx = -Infinity;
+    for (i = 0; i < nr; i++) for (j = 0; j < nc; j++) { var x = X[i][j], y = Y[i][j], z = Z[i][j]; if (x < xmn) xmn = x; if (x > xmx) xmx = x; if (y < ymn) ymn = y; if (y > ymx) ymx = y; if (z < zmn) zmn = z; if (z > zmx) zmx = z; }
+    var dz = (zmx - zmn) || 1;
+    gl3init(f);
+    GL3.axis3(xmn, xmx, ymn, ymx, zmn, zmx);
+    GL3.cartesian3(xmn, xmx, ymn, ymx, zmn, zmx, Math.min(8, nc - 1) || 1, Math.min(8, nr - 1) || 1);   // plano cartesiano XYZ
+    for (i = 0; i < nr - 1; i++) for (j = 0; j < nc - 1; j++) {
+      var t1 = (Z[i][j] - zmn) / dz, t2 = (Z[i][j + 1] - zmn) / dz, t3 = (Z[i + 1][j + 1] - zmn) / dz, t4 = (Z[i + 1][j] - zmn) / dz;
+      if (kind === "surf") GL3.fill3([X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], X[i + 1][j + 1], Y[i + 1][j + 1], Z[i + 1][j + 1], X[i + 1][j], Y[i + 1][j], Z[i + 1][j]], t1, t2, t3, t4);
+      else { var col = jethex((t1 + t3) / 2); GL3.line3(X[i][j], Y[i][j], Z[i][j], X[i][j + 1], Y[i][j + 1], Z[i][j + 1], col); GL3.line3(X[i][j], Y[i][j], Z[i][j], X[i + 1][j], Y[i + 1][j], Z[i + 1][j], col); }
+    }
+    for (i = 0; i < nr; i++) for (j = 0; j < nc; j++) GL3.datapoint(X[i][j], Y[i][j], Z[i][j], Z[i][j]);
+    GL3.datatip("z"); GL3.colorbar3(zmn, zmx, 360); GL3.render3();
+  }
+  function plot3(x, y, z, sp) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z);
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z));
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), minA(z), maxA(z), 6, 6);
+    var col = hex6(spec(sp).color || nextColor()), i;
+    for (i = 0; i < x.length - 1; i++) GL3.line3(x[i], y[i], z[i], x[i + 1], y[i + 1], z[i + 1], col);
+    for (i = 0; i < x.length; i++) GL3.datapoint(x[i], y[i], z[i], z[i]);
+    GL3.datatip("z"); GL3.render3();
+  }
+  function scatter3(x, y, z, c) {
+    var f = fig(); x = arr(x); y = arr(y); z = arr(z);
+    var zmn = minA(z), zmx = maxA(z), dz = (zmx - zmn) || 1, i;
+    gl3init(f); GL3.axis3(minA(x), maxA(x), minA(y), maxA(y), zmn, zmx);
+    GL3.cartesian3(minA(x), maxA(x), minA(y), maxA(y), zmn, zmx, 6, 6);
+    for (i = 0; i < x.length; i++) { GL3.point3(x[i], y[i], z[i], (z[i] - zmn) / dz); GL3.datapoint(x[i], y[i], z[i], z[i]); }
+    GL3.datatip("z"); GL3.colorbar3(zmn, zmx, 360); GL3.render3();
+  }
+
+  // ---- decoradores / ejes ----
+  function title(s) { var f = fig(); f.ttl = s; sched(f); }
+  function xlabel(s) { var f = fig(); f.xl = s; sched(f); }
+  function ylabel(s) { var f = fig(); f.yl = s; sched(f); }
+  function zlabel(s) { var f = fig(); f.zl = s; sched(f); }
+  function legend() { var f = fig(), a = arguments, k = 0, i; for (i = 0; i < f.ops.length && k < a.length; i++) { var op = f.ops[i]; if (op.color && (op.t === "line" || op.t === "scatter")) f.legends.push({ label: a[k++], color: op.color }); } sched(f); }
+  function colorbar() { var f = fig(); f.cbar = true; sched(f); }
+  function caxis(lo, hi) { var f = fig(); f.crange = [lo, hi]; sched(f); }
+  function colormap() { }   // siempre jet_r (lo fija el motor)
+  function grid(s) { var f = fig(); f.gridForced = (s !== "off" && s !== false); sched(f); }
+  function view(az, el) { var f = fig(); f.az = az; f.el = el; sched(f); }
+  function text(x, y, s, c) { var f = fig(); if (f.is3d) { f.ops.push({ t: "text3", x: x, y: y, z: arguments[2], s: arguments[3], color: arguments[4] || _c("#222","#f3eddd") }); } else { bx(f, x, y); f.ops.push({ t: "text", x: x, y: y, s: s, color: c || _c("#222","#f3eddd") }); } sched(f); }
+  function datacursor(label) { var f = fig(); f.tip = label || "y"; sched(f); }
+  function axis(a, b, c, d) {
+    var f = fig();
+    if (a === "equal") f.equal = true;
+    else if (a === "normal" || a === "auto") f.equal = false;
+    else if (a === "off") f.off = true;
+    else if (a === "on") f.off = false;
+    else if (isArr(a)) f.lim = a;
+    else if (b !== undefined) f.lim = [a, b, c, d];
+    sched(f);
+  }
+  function semilogy(x, y, sp) { plot(x, y, sp); }   // (ejes log: se aproximan como lineales en este motor)
+  function semilogx(x, y, sp) { plot(x, y, sp); }
+  function loglog(x, y, sp) { plot(x, y, sp); }
+  function subplot() { return figure(); }            // simplificado: cada subplot = nueva figura
+
+  // helpers de datos util (estilo MATLAB), por si el reporte los necesita
+  function linspace(a, b, n) { n = n || 100; var o = [], i; for (i = 0; i < n; i++) o.push(a + (b - a) * i / (n - 1)); return o; }
+  function meshgrid(x, y) { y = y || x; var X = [], Y = [], i, j; for (i = 0; i < y.length; i++) { X[i] = []; Y[i] = []; for (j = 0; j < x.length; j++) { X[i][j] = x[j]; Y[i][j] = y[i]; } } return [X, Y]; }
+  function zeros(r, c) { c = c || r; var M = [], i, j; for (i = 0; i < r; i++) { M[i] = []; for (j = 0; j < c; j++) M[i][j] = 0; } return M; }
+
+  // exporta TODOS los nombres MATLAB al ambito global
+  var api = {
+    figure: figure, clf: clf, hold: hold, plot: plot, line: line, cline: cline, cline3: cline3, patch: patch, scatter: scatter, bar: bar, stem: stem, area: area,
+    stairs: stairs, errorbar: errorbar, fill: fill, quiver: quiver, histogram: histogram, hist: histogram,
+    pie: pie, polarplot: polarplot, polar: polarplot, imagesc: imagesc, pcolor: pcolor, contourf: contourf,
+    contour: contour, surf: surf, mesh: mesh, surfc: surf, plot3: plot3, scatter3: scatter3,
+    title: title, xlabel: xlabel, ylabel: ylabel, zlabel: zlabel, legend: legend, colorbar: colorbar,
+    caxis: caxis, colormap: colormap, grid: grid, view: view, text: text, axis: axis,
+    semilogy: semilogy, semilogx: semilogx, loglog: loglog, subplot: subplot, datacursor: datacursor,
+    linspace: linspace, meshgrid: meshgrid, zeros: zeros
+  };
+  for (var k in api) global[k] = api[k];
+  global.MLAB = api;
+})(window);
+
+</script><div class="osdoc">Portico espacial 3D — 4 columnas + vigas en cabeza, carga lateral en el techo.</div><div class="osdoc">Sirve para ver el visor vtk.js ORBITABLE de la deformada (ndm 3).</div><div class="osdoc">--- nudos: base (1-4) y techo (5-8), planta 4x4 m, altura 3 m ---</div><div class="osdoc">--- empotramiento en la base ---</div><div class="osdoc">--- seccion elastica (columna/viga de hormigon 0.3x0.3) ---</div><div class="osdoc">columnas (transf 1)</div><div class="osdoc">vigas de techo (transf 2)</div><div class="osdoc">--- carga lateral en X sobre los 4 nudos del techo ---</div><div class="osvtkwrap"><div id="osv1" class="osvtk"></div><div id="osv1_tip" class="osvtip"></div></div><script>window.osvtkMount({"gid": "osv1", "pts": [0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 4.0, 4.0, 0.0, 0.0, 4.0, 0.0, 0.47999624617631576, 6.037077644054989e-16, 3.0018983299614415, 4.479996246176316, -5.804703600788823e-16, 2.9981016700385585, 4.479996246176319, 3.9999999999999996, 2.9981016700385585, 0.47999624617631903, 4.000000000000001, 3.0018983299614415], "pts0": [0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 4.0, 4.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 3.0, 4.0, 0.0, 3.0, 4.0, 4.0, 3.0, 0.0, 4.0, 3.0], "umag": [0.0, 0.0, 0.0, 0.0, 0.010328175928199415, 0.010328175928199413, 0.010328175928199484, 0.010328175928199486], "uvec": [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.010328095157050706, 1.299e-17, 4.084642877403975e-05], [0.010328095157050705, -1.249e-17, -4.084642877403977e-05], [0.010328095157050776, -1.249e-17, -4.084642877403994e-05], [0.010328095157050778, 1.299e-17, 4.084642877403994e-05]], "lines": [2, 0, 4, 2, 1, 5, 2, 2, 6, 2, 3, 7, 2, 4, 5, 2, 5, 6, 2, 6, 7, 2, 7, 4], "polys": [], "tags": [1, 2, 3, 4, 5, 6, 7, 8], "umax": 0.010328175928199486, "sf": 46.47480865323317});</script><div class="hk-cap"><b>Deformada</b> <span>· color = |u| · pasa el cursor por un nudo · geometría en m</span></div><h4>Resultados</h4><p>Desplazamientos nodales &nbsp; <span class="eq"><b>U</b></span> &nbsp;(fila = nudo):</p><span class="matrix"><span class="tr"><span class="td"></span><span class="td"><b>nudo</b></span><span class="td"><b>ux</b></span><span class="td"><b>uy</b></span><span class="td"><b>uz</b></span><span class="td"><b>rx</b></span><span class="td"><b>ry</b></span><span class="td"><b>rz</b></span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>1</b></span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>2</b></span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>3</b></span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>4</b></span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>5</b></span><span class="td">0.010328</span><span class="td">0</span><span class="td">4.085e-05</span><span class="td">0</span><span class="td">0.002441</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>6</b></span><span class="td">0.010328</span><span class="td">0</span><span class="td">-4.085e-05</span><span class="td">0</span><span class="td">0.002441</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>7</b></span><span class="td">0.010328</span><span class="td">0</span><span class="td">-4.085e-05</span><span class="td">0</span><span class="td">0.002441</span><span class="td">0</span><span class="td"></span></span><span class="tr"><span class="td"></span><span class="td"><b>8</b></span><span class="td">0.010328</span><span class="td">0</span><span class="td">4.085e-05</span><span class="td">0</span><span class="td">0.002441</span><span class="td">0</span><span class="td"></span></span></span><p><span class="eq"><var>ux_techo</var> = 10.328095157050706 mm</span></p>
